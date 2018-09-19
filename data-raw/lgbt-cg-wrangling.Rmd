@@ -1,0 +1,438 @@
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, eval=FALSE}
+# pulling in the datasets
+
+### 2015
+cg2015_0<-c(15,17,18,42,51,54,55)
+cg2015_1<-24
+cg2015_2<-36
+
+BRFSS_2015_0<-read.xport("data/LLCP2015XPT.zip")
+BRFSS_2015_0 <- BRFSS_2015_0 %>%
+  filter(X_STATE %in% cg2015_0) %>%
+  mutate(YEAR=2015)
+
+BRFSS_2015_1<-read.xport("data/LLCP15V1_XPT.xpt")
+BRFSS_2015_1 <- BRFSS_2015_1 %>%
+  filter(X_STATE %in% cg2015_1) %>%
+  mutate(YEAR=2015)
+
+BRFSS_2015_2<-read.xport("data/LLCP15V2_XPT.xpt")
+BRFSS_2015_2 <- BRFSS_2015_2 %>%
+  filter(X_STATE %in% cg2015_2) %>%
+  mutate(YEAR=2015)
+
+list2015<-list(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2)
+data_2015<-bind_rows(list2015)
+rm(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2, list2015)
+### 2016
+
+cg2016_0<-c(13,27,29,32)
+cg2016_1<-39
+cg2016_2<-c(6,9,48)
+cg2016_3<-36
+
+BRFSS_2016_0<-read.xport("data/LLCP2016XPT.zip")
+BRFSS_2016_0 <- BRFSS_2016_0 %>%
+  filter(X_STATE %in% cg2016_0) %>%
+  mutate(YEAR=2016)
+
+BRFSS_2016_1<-read.xport("data/LLCP16V1_XPT.zip")
+BRFSS_2016_1 <- BRFSS_2016_1 %>%
+  filter(X_STATE %in% cg2016_1) %>%
+  mutate(YEAR=2016)
+
+BRFSS_2016_2<-read.xport("data/LLCP16V2_XPT.zip")
+BRFSS_2016_2 <- BRFSS_2016_2 %>%
+  filter(X_STATE %in% cg2016_2) %>%
+  mutate(YEAR=2016)
+
+BRFSS_2016_3<-read.xport("LLCP16V3_XPT.zip")
+BRFSS_2016_3 <- BRFSS_2016_3 %>%
+  filter(X_STATE %in% cg2016_3) %>%
+  mutate(year=2016)
+
+### Add datasets together
+list2016<-list(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3)
+data_2016<-bind_rows(list2016)
+data_2016$SEQNO<-as.integer(data_2016$SEQNO)
+rm(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3,list2016)
+
+### COMBINING 2015 AND 2016
+brfss_sgmcg<-bind_rows(data_2016,data_2015)
+rm(data_2016,data_2015)
+
+cgsgmstates<-c(6,9,13,15,17,18,24,27,29, 32,36,39,42,48,51,54,55)
+cgsgmstatelabel<-c("CA", "CT","GA", "HI", "IL", "ID", "MD", "MN", "MO", "NV", "NY", "OH", "PA", "TX", "VA", "WV", "WI")
+brfss_sgmcg$X_STATE<- factor(brfss_sgmcg$X_STATE, levels=cgsgmstates, labels=cgsgmstatelabel)
+```
+
+<!--- There are 17 states that included the optional Caregiving module and the SGM questions (New York included both modules in both 2015 and 2016). Thus we actually start with a sample size of: r nrow(brfss_sgmcg). And the breakdown of sample size by State: --->
+
+```{r, echo=FALSE, eval=FALSE}
+#Sanity check that just those states were included
+brfss_sgmcg %>%
+  group_by(X_STATE) %>%
+  summarise(n=n())
+```
+
+# Data Wrangling: Variables
+
+## Caregiving Variables
+```{r, echo=FALSE}
+# **********************************************************************************************
+# * RAW CAREGIVING VARIABLES: 
+# *	CRGVEXPT = 'DO YOU EXPECT TO HAVE A RELATIVE YOU WILL NEED TO PROVIDE CARE FOR?'
+# *	CRGVHOUS = 'MANAGED HOUSEHOLD TASKS'
+# *	CRGVHRS1 = 'HOW MANY HOURS DO YOU PROVIDE CARE FOR PERSON?'
+# *	CRGVLNG1 = 'HOW LONG PROVIDED CARE FOR PERSON.'
+# *	CRGVMST2 = 'WHICH SUPPORT DO YOU MOST NEED THAT YOU ARE NOT GETTING?'
+# *	CRGVPERS = 'MANAGED PERSONAL CARE'
+# *	CRGVPRB1 = 'WHAT IS THE MAJOR HEALTH PROBLEM, ILLNESS, DISABILITY FOR CARE FOR PERSON?'
+# *	CRGVREL1 = 'RELATIONSHIP OF PERSON TO WHOM YOU ARE GIVING CARE?'
+# *	CAREGIV1 = 'PROVIDED REGULAR CARE FOR FAMILY OR FRIEND'
+# **********************************************************************************************;
+
+# **** WORKING WITH	CAREGIV1 - WHETHER SOMEONE WAS A CAREGIVER OR NOT
+# Caregiving: cg_d --- Cloning caregiv1 & assigning factor labels
+
+brfss_sgmcg <- brfss_sgmcg %>%
+  mutate(cg_d=as.factor(if_else(CAREGIV1==1, "Caregiver", "Non-CG")),
+         cg_rel=as.factor(if_else(CRGVREL1 %in% 1:4, "Parent",
+                          if_else(CRGVREL1==5, "Child",
+                          if_else(CRGVREL1 %in% 6:8, "Spouse",
+                          if_else(CRGVREL1 %in% 9:10, "Sibling",
+                          if_else(CRGVREL1 %in% 11:12, "Grandparent",
+                          if_else(CRGVREL1 %in% 13:14, "Other Fam",
+                          if_else(CRGVREL1>14, "Non-Fam", NA_character_)))))))),
+         cg_nonfam=as.factor(if_else(CRGVREL1 %in% 14:15, "Non-Fam", "Other")),
+         cg_hrs_num=replace(CRGVHRS1,CRGVHRS1>4,NA),
+         cg_hrs_cat=as.factor(if_else(CRGVHRS1==1, "<8hr/wk",
+                          if_else(CRGVHRS1==2, "9-19hr/wk",
+                          if_else(CRGVHRS1==3, "20-39hr/wk",
+                          if_else(CRGVHRS1==4, "40+hr/wk", NA_character_))))),
+         cg_lngth_num=replace(CRGVLNG1,CRGVLNG1>5,NA),
+         cg_lngth=as.factor(if_else(CRGVLNG1==1, "<1mo",
+                          if_else(CRGVLNG1==2, "1-6mo",
+                          if_else(CRGVLNG1==3, "7mo-2yr",
+                          if_else(CRGVLNG1==4, "2-5yrs",
+                          if_else(CRGVLNG1==5, "5+yrs", NA_character_)))))),
+         cg_type=CRGVPRB1,
+             cg_type=replace(cg_type,CRGVPRB1==77,NA),
+             cg_type=replace(cg_type,CRGVPRB1==99,NA)
+  )
+```
+
+## Sexual / Gender Minority Status
+```{r}
+brfss_sgmcg <- brfss_sgmcg %>%
+  mutate(         
+#Sexual and Gender Minority Status
+    #Sexual Orientation - Lesbian, Gay, Bisexual vs. Heterosexual
+         lgb_d=as.factor(if_else(SXORIENT %in% 2:3, "Sexual Minority", "Heterosexual")),
+    #Gender Minority Identity - Trans* or Gender-non-Conforming vs. Cis-gendered
+         genmin_d=as.factor(if_else(TRNSGNDR %in% 1:3, "Gender Minority", "Non-Gender Minority")),
+    #Sexual / Gender Minority - Either LGB or Trans/GNC vs. Cis-gendered Heterosexuals
+         sgm_d=as.factor(if_else(lgb_d=="Sexual Minority" | genmin_d=="Gender Minority", "SGM", "Non-SGM"))
+  )
+```
+
+## Covariates & Health Outcomes
+```{r}
+brfss_sgmcg <- brfss_sgmcg %>%
+  mutate(  
+# Covariates
+    #Age
+         age5yr=replace(X_AGEG5YR,X_AGEG5YR==14,NA),
+    #Race / Ethnicity
+         race=as.factor(if_else(X_RACEGR3==1, "White",
+                        if_else(X_RACEGR3==2, "Black",
+                        if_else(X_RACEGR3==3, "Other",
+                        if_else(X_RACEGR3==4, "Multi",
+                        if_else(X_RACEGR3==5, "Hispanic",
+                        if_else(X_RACEGR3==9, "DK/NS/Refused", NA_character_))))))),
+
+    # Marital Status
+        marstat=as.factor(if_else(X_MARITAL==1, "Married",
+                          if_else(X_MARITAL==2, "Divorced",
+                          if_else(X_MARITAL==3, "Widowed",
+                          if_else(X_MARITAL==4, "Separated",
+                          if_else(X_MARITAL==5, "Never Married",
+                          if_else(X_MARITAL==6, "Coupled",
+                          if_else(X_MARITAL==9, "Refused",NA_character_)))))))),
+
+    # Children
+      numchild=as_factor(if_else(X_CHLDCNT==1,"None",
+               if_else(X_CHLDCNT==2, "One",
+               if_else(X_CHLDCNT==3, "Two",       
+               if_else(X_CHLDCNT %in% 4:6, "3+",NA_character_
+                       ))))),
+  
+    # Education
+        education=as.factor(if_else(EDUCA %in% 1:3, "<High School",
+                          if_else(EDUCA==4, "High School",
+                          if_else(EDUCA==5, "Some College",
+                          if_else(EDUCA==6, "College+",NA_character_))))),
+
+    # Income
+        income=as.factor(if_else(X_INCOMG==1, "<$10,000",
+                  if_else(X_INCOMG==2, "$10,000-$15,000",
+                  if_else(X_INCOMG==3, "$15,000-$20,000",
+                  if_else(X_INCOMG==4, "$20,000-$25,000",
+                  if_else(X_INCOMG==5, "$25,000-$35,000",
+                  if_else(X_INCOMG==6, "$35,000-$50,000",
+                  if_else(X_INCOMG==7, "$50,000-$75,000",
+                  if_else(X_INCOMG==8, ">$75,000",
+                  if_else(X_INCOMG>8, "Don't Know / Refused",NA_character_)))))))))),
+
+    # Work Status
+        employed=as.factor(if_else(EMPLOY1 %in% 1:2, "Employed",
+                  if_else(EMPLOY1 %in% c(3,4,8), "Not Working",
+                  if_else(EMPLOY1==5, "Homemaker",
+                  if_else(EMPLOY1==6, "Student",
+                  if_else(EMPLOY1==7, "Retired",NA_character_)))))),
+
+    # Chronic Conditions
+      # Diabetes
+        diabetes=as_factor(if_else(DIABETE3 %in% c(1,2,4),"Diabetic",
+                           if_else(DIABETE3==3,"Non-Diabetic",
+                                   NA_character_))),
+    # QOL
+      # Self-Rated Health
+           SRH=replace(GENHLTH,GENHLTH>5,NA),
+           SRH_d=as.factor(if_else(SRH %in% 3:5, "Good/Fair/Poor", "Very Good/Excellent")),
+      # Healthy Days - Physical, Mental, and Poor Health     
+           Days_Phys=replace(PHYSHLTH,PHYSHLTH>30,NA),
+           Days_Ment=replace(MENTHLTH,MENTHLTH>30,NA),
+           Days_Poor=replace(POORHLTH,POORHLTH>30,NA),
+
+    # Tobacco
+        smoking=as_factor(ifelse(SMOKE100==1 & SMOKDAY2 %in% 1:2, "Current",
+                          ifelse(SMOKE100==1 & SMOKDAY2==3, "Former",
+                          ifelse(SMOKE100==2 & SMOKDAY2==3, "Never", NA_character_       )))),
+
+    # Alcohol
+        binge_drink=as.factor(if_else(ALCDAY5==888 & DRNK3GE5==88, "None",
+                              if_else(DRNK3GE5>=1, "1+", NA_character_))),
+    # Physical Activity
+    physact=as.factor(if_else(EXERANY2==1,"Yes",
+                      if_else(EXERANY2==2,"No", NA_character_))),
+
+    # Sleep
+    sleephrs=if_else(SLEPTIM1>24,NA,SLEPTIM1)
+
+  )
+```
+
+
+# Labelling and Reordering Factor Levels
+```{r}
+    # Age
+      agegroups<- c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+")
+      brfss_sgmcg$age5yr <- factor( brfss_sgmcg$age5yr, levels=c(1:13), labels=agegroups)
+
+    # Caregiving Reason
+      careprobcode<- c("Arthritis/Rheumatism", "Asthma", "Cancer", "Chronic respiratory conditions such as Emphysema or COPD", "Dementia and other Cognitive Impairment Disorders", "Developmental Disabilities such as Autism, Down's Syndrome, and Spina Bifida", "Diabetes", "Heart Disease, Hypertension", "Human Immunodeficiency Virus Infection (HIV)", "Mental Illnesses, such as Anxiety, Depression, or Schizophrenia", "Other organ failure or diseases such as kidney or liver problems", "Substance Abuse or Addiction Disorders", "Other")
+      brfss_sgmcg$cg_type <- factor( brfss_sgmcg$cg_type, levels=c(1:13), labels=careprobcode) 
+
+    # Dichotomous Caregiving Indicator Variable: Caregiver vs. (reference) Non-Caregiver
+        brfss_sgmcg$cg_d<-relevel(factor(brfss_sgmcg$cg_d), ref="Non-CG")
+
+    # Dichotomous Non-Biological/Given Family CG Indicator Variable: Non-Family vs. (reference) Other
+        brfss_sgmcg$cg_nonfam<-relevel(factor(brfss_sgmcg$cg_nonfam), ref="Other")
+
+    # Dichotomous Sexual Minority Indicator Variable: LGB vs. (reference) Heterosexual
+        brfss_sgmcg$lgb_d<-relevel(factor(brfss_sgmcg$lgb_d), ref="Heterosexual")
+
+    # Dichotomous Gender Minority Indicator Variable: Trans/GNC vs. (reference) Cis
+        brfss_sgmcg$genmin_d<-relevel(factor(brfss_sgmcg$genmin_d), ref="Non-Gender Minority")
+
+    # Race: (reference) White
+        brfss_sgmcg$race<-relevel(factor(brfss_sgmcg$race), ref="White")
+
+    # Hours per Week of Caregiving: (reference) <8hrs/week
+        brfss_sgmcg$cg_hrs_cat<-relevel(factor(brfss_sgmcg$cg_hrs_cat), "<8hr/wk", "9-19hr/wk", "20-39hr/wk","40+hr/wk", ref="<8hr/wk")
+```
+
+# Creating data frame with just caregivers: brfss_sgmcg_2
+```{r}
+brfss_sgmcg_2<- brfss_sgmcg %>%
+  filter(cg_d=="Caregiver")
+```
+
+
+#ANALYSIS
+```{r, eval=FALSE}
+
+tally(~sgm_d, data=brfss_sgmcg)
+tally(~sgm_d, format="percent", data=brfss_sgmcg)
+#Descriptive
+
+library(epiR)
+lgb_d_temp<-factor(brfss_sgmcg$lgb_d, levels=c("Sexual Minority", "Heterosexual"))
+genmin_d_temp<-factor(brfss_sgmcg$genmin_d, levels=c("Gender Minority", "Non-Gender Minority"))
+sgm_d_temp<-factor(brfss_sgmcg$sgm_d, levels=c("SGM", "Non-SGM"))
+cg_d_temp<-factor(brfss_sgmcg$cg_d, levels=c("Caregiver", "Non-CG"))
+lgb <- table(lgb_d_temp,cg_d_temp)
+print(lgb)
+
+genmin <- table(genmin_d_temp,cg_d_temp)
+print(genmin)
+
+sgm <- table(sgm_d_temp,cg_d_temp)
+print(sgm)
+
+#crude_lgb<-epi.2by2(dat = lgb, method = "cross.sectional", conf.level = 0.95, units = 100, homogeneity = "breslow.day", outcome = "as.columns")
+#crude_genmin<-epi.2by2(dat = genmin, method = "cross.sectional", conf.level = 0.95, units = 100, homogeneity = "breslow.day", outcome = "as.columns")
+#crude_sgm<-epi.2by2(dat = sgm, method = "cross.sectional", conf.level = 0.95, units = 100, homogeneity = "breslow.day", outcome = "as.columns")
+#print(crude_lgb)
+#print(crude_genmin)
+#print(crude_sgm)
+
+```
+
+### Modeling
+```{r, echo=FALSE, warning=FALSE, message=FALSE, eval=FALSE}
+#Any CG - SGM
+sgma<-glm(cg_d~sgm_d, family=binomial, data=brfss_sgmcg)
+exp(cbind(OR=coef(sgma), confint(sgma)))
+
+sgmb<-glm(cg_d~sgm_d+age5yr+race, family=binomial, data=brfss_sgmcg)
+summary(sgmb)
+exp(cbind(OR=coef(sgmb), confint(sgmb)))
+
+#install.packages("sjPlot")
+devtools::install_github("strengejacke/sjlabelled")
+devtools::install_github("strengejacke/sjmisc")
+devtools::install_github("strengejacke/sjstats")
+devtools::install_github("strengejacke/ggeffects")
+devtools::install_github("strengejacke/sjPlot")
+
+library(sjPlot)
+library(sjmisc)
+# set basic theme options
+set_theme("forest",
+          axis.title.size = .85, 
+          axis.textsize = .85, 
+          legend.size = .8, 
+          geom.label.size = 3.5)
+brfss_temp<-brfss_sgmcg %>%
+  dplyr::select(cg_d,sgm_d,age5yr,race)
+
+
+sgma_temp<-glm(cg_d~sgm_d, family=binomial, data=brfss_temp)
+sgmb_temp<-glm(cg_d~sgm_d+age5yr+race, family=binomial, data=brfss_temp)
+summary(sgmb_temp)
+theme_set(theme_sjplot())
+plot_models(sgma_temp, sgmb_temp, transform, show.values = TRUE, rm.terms = c("age5yr25-29", "age5yr30-34", "age5yr35-39", "age5yr40-44", "age5yr45-49", "age5yr50-54", "age5yr55-59", "age5yr60-64", "age5yr65-69", "age5yr70-74", "age5yr75-79", "age5yr80+", "raceAmerican Indian", "raceAsian", "raceBlack", "raceHawaiian/Pacific Islander", "raceNo Prefered Race", "raceOther"))
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(broom)
+
+brfss_temp<-brfss_sgmcg %>%
+  dplyr::select(cg_d,sgm_d,age5yr,race)
+
+m1<-glm(cg_d~sgm_d, family=binomial, data=brfss_temp)
+
+m1_preds = tidy(m1, conf.int = TRUE, exponentiate = TRUE) %>%
+    mutate(Model = "m1")
+
+m2 = glm(cg_d~sgm_d+age5yr+race, family=binomial, data=brfss_temp)
+
+m2_preds = tidy(m2, conf.int = TRUE, exponentiate = TRUE) %>%
+    mutate(Model = "m2")
+
+# At this point we have a table of odds ratios and confidence intervals
+#   for plotting
+ors = bind_rows(m1_preds, m2_preds)
+ors
+
+
+dodger = position_dodge(width = 0.3)
+# Elements like pointrange and position_dodge only work when the outcome
+#   is mapped to y, need to go through with OR set as y then flip at the
+#   end
+ggplot(ors, aes(y = estimate, x = term, colour = Model)) +
+        geom_pointrange(aes(ymin = conf.low, ymax = conf.high),
+                       position = dodger,
+                       size = 1.2) +
+        geom_hline(yintercept = 1.0, linetype = "dotted", size = 1) +
+        scale_y_log10(breaks = c(0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10),
+                      minor_breaks = NULL) +
+        labs(y = "Odds ratio", x = "Effect") +
+        coord_flip(ylim = c(0.1, 10)) +
+        theme_bw()
+
+```
+
+```{r}
+# Among Caregivers
+
+library(MASS)
+# m1 <- polr(as.factor(cg_hrs_num) ~ lgb_d, data = brfss_sgmcg_2, Hess=TRUE)
+# summary(m1)
+# exp(coef(m1))
+# cim1<-confint(m1)
+# exp(cbind(OR = coef(m1), cim1))
+
+m2 <- polr(as.factor(cg_hrs_num) ~ sgm_d+age5yr+race, data = brfss_sgmcg_2, Hess=TRUE)
+summary(m2)
+exp(coef(m2))
+exp(confint(m2))
+
+
+# n1 <- polr(as.factor(cg_lngth_num) ~ lgb_d, data = brfss_sgmcg_2, Hess=TRUE)
+# summary(n1)
+# exp(coef(n1))
+# cin1<-confint(n1)
+# exp(cbind(OR = coef(n1), cin1))
+
+n2 <- polr(as.factor(cg_lngth_num) ~ sgm_d+age5yr+race, data = brfss_sgmcg_2, Hess=TRUE)
+summary(n2)
+exp(coef(n2))
+exp(confint(n2))
+
+brfss_sgmcg_2$cg_nonfam<-relevel(factor(brfss_sgmcg_2$cg_nonfam), ref="Other")
+o0<-glm(cg_nonfam~sgm_d+age5yr+race, data = brfss_sgmcg_2, family=binomial)
+summary(o0)
+exp(cbind(RR=coef(o0), confint(o0)))
+
+###Health
+####SRH
+#o1<-glm(SRH_d~lgb_d, data = brfss_sgmcg_2, family=binomial)
+#exp(cbind(OR=coef(o1), confint(o1)))
+
+o2<-glm(SRH_d~lgb_d+age5yr+race, data = brfss_sgmcg_2, family=binomial)
+exp(cbind(OR=coef(o2), confint(o2)))
+
+####Days_Phys
+#o3<-glm(Days_Phys~lgb_d, data = brfss_sgmcg_2, family=gaussian(link="identity"))
+#summary(o3)
+
+o4<-glm(Days_Phys~lgb_d+age5yr+race, data = brfss_sgmcg_2, family=gaussian(link="identity"))
+summary(o4)
+
+o5<-glm(Days_Phys~cg_d*lgb_d+age5yr+race, data = brfss_sgmcg, family=poisson(link="log"))
+summary(o5)
+exp(cbind(RR=coef(o5), confint(o5)))
+
+####Days_Ment
+#o5<-glm(Days_Ment~lgb_d, data = brfss_sgmcg_2, family=gaussian(link="identity"))
+#summary(o5)
+
+o6<-glm(Days_Ment~lgb_d+age5yr+race, data = brfss_sgmcg_2, family=gaussian(link="identity"))
+summary(o6)
+
+o7<-glm.nb(Days_Ment~cg_d*lgb_d+age5yr+race, data = brfss_sgmcg)
+summary(o7)
+
+
+
+summary(brfss_sgmcg$Days_Ment)
+qplot(x=Days_Ment, data=brfss_sgmcg)
+```
+
