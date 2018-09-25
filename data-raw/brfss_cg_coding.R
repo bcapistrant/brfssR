@@ -14,19 +14,22 @@ BRFSS_2015_0<-read.xport("data/LLCP2015.XPT")
 BRFSS_2015_0 <- BRFSS_2015_0 %>%
   filter(X.STATE %in% cg2015_0) %>%
   mutate(YEAR=2015,
-         svywt=X.LLCPWT)
+         CG_WT_RAW=X.LLCPWT,
+         SEQNO=as.integer(SEQNO))
 
 BRFSS_2015_1<-read.xport("data/LLCP15V1.xpt")
 BRFSS_2015_1 <- BRFSS_2015_1 %>%
   filter(X.STATE %in% cg2015_1) %>%
   mutate(YEAR=2015,
-         svywt=X.LCPWTV1)
+         CG_WT_RAW=X.LCPWTV1,
+         SEQNO=as.integer(SEQNO))
 
 BRFSS_2015_2<-read.xport("data/LLCP15V2.xpt")
 BRFSS_2015_2 <- BRFSS_2015_2 %>%
   filter(X.STATE %in% cg2015_2) %>%
   mutate(YEAR=2015,
-         svywt=X.LCPWTV2)
+         CG_WT_RAW=X.LCPWTV2,
+         SEQNO=as.integer(SEQNO))
 
 list2015<-list(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2)
 data_2015<-bind_rows(list2015)
@@ -42,25 +45,29 @@ BRFSS_2016_0<-read.xport("data/LLCP2016.XPT")
 BRFSS_2016_0 <- BRFSS_2016_0 %>%
   filter(X.STATE %in% cg2016_0) %>%
   mutate(YEAR=2016,
-         svywt=X.LLCPWT)
+         CG_WT_RAW=X.LLCPWT,
+         SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_1<-read.xport("data/LLCP16V1.XPT")
 BRFSS_2016_1 <- BRFSS_2016_1 %>%
   filter(X.STATE %in% cg2016_1) %>%
   mutate(YEAR=2016,
-         svywt=X.LCPWTV1)
+         CG_WT_RAW=X.LCPWTV1,
+         SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_2<-read.xport("data/LLCP16V2.XPT")
 BRFSS_2016_2 <- BRFSS_2016_2 %>%
   filter(X.STATE %in% cg2016_2) %>%
   mutate(YEAR=2016,
-         svywt=X.LCPWTV2)
+         CG_WT_RAW=X.LCPWTV2,
+         SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_3<-read.xport("data/LLCP16V3.XPT")
 BRFSS_2016_3 <- BRFSS_2016_3 %>%
   filter(X.STATE %in% cg2016_3) %>%
-  mutate(year=2016,
-         svywt=X.LCPWTV3)
+  mutate(YEAR=2016,
+         CG_WT_RAW=X.LCPWTV3,
+         SEQNO=as.integer(SEQNO))
 
 ### Add datasets together
 list2016<-list(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3)
@@ -68,19 +75,61 @@ data_2016<-bind_rows(list2016)
 data_2016$SEQNO<-as.integer(data_2016$SEQNO)
 rm(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3,list2016)
 
+
+### 2017
+
+cg2017_0<-c(2,15,35,41,44)
+cg2017_1<-c(20,26,34)
+cg2017_2<-c(36,40,49)
+cg2017_3<-c(24)
+
+BRFSS_2017_0<-read.xport("data/LLCP2017.XPT")
+BRFSS_2017_0 <- BRFSS_2017_0 %>%
+  filter(X.STATE %in% cg2017_0) %>%
+  mutate(YEAR=2017,
+         CG_WT_RAW=X.LLCPWT,
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2017_1<-read.xport("data/LLCP16V1.XPT")
+BRFSS_2017_1 <- BRFSS_2017_1 %>%
+  filter(X.STATE %in% cg2017_1) %>%
+  mutate(YEAR=2017,
+         CG_WT_RAW=X.LCPWTV1,
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2017_2<-read.xport("data/LLCP16V2.XPT")
+BRFSS_2017_2 <- BRFSS_2017_2 %>%
+  filter(X.STATE %in% cg2017_2) %>%
+  mutate(YEAR=2017,
+         CG_WT_RAW=X.LCPWTV2,
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2017_3<-read.xport("data/LLCP16V3.XPT")
+BRFSS_2017_3 <- BRFSS_2017_3 %>%
+  filter(X.STATE %in% cg2017_3) %>%
+  mutate(YEAR=2017,
+         CG_WT_RAW=X.LCPWTV3,
+         SEQNO=as.integer(SEQNO))
+### Add datasets together
+list2017<-list(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3)
+data_2017<-bind_rows(list2017)
+data_2017$SEQNO<-as.integer(data_2017$SEQNO)
+rm(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3,list2017)
+
+
 ### COMBINING 2015 AND 2016
 brfss_cg<-bind_rows(data_2016,data_2015)
 rm(data_2016,data_2015)
 
-cgsgmstates<-c(1,4,5,6,8,9,11,12,
-               13,15,16,17,18,19,21,22,
-               23,24,27,28,29,30,31,32,
-               34,36,38,39,41,42,45,46,
+cgsgmstates<-c(1,2,4,5,6,8,9,11,12,
+               13,15,16,17,18,19,20,21,22,
+               23,24,26,27,28,29,30,31,32,
+               34,35,36,38,39,40,41,42,45,46,
                47,48,49,51,54,55,56,72)
-cgsgmstatelabel<-c("AL","AZ","AR","CA","CO","CT","DC","FL",
-                   "GA","HI","ID","IL","IN","IA","KY","LA",
-                   "ME","MD","MN","MS","MO","MT","NE","NV",
-                   "NJ","NY","ND","OH","OR","PA","SC","SD",
+cgsgmstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DC","FL",
+                   "GA","HI","ID","IL","IN","IA","KS","KY","LA",
+                   "ME","MD","MI","MN","MS","MO","MT","NE","NV",
+                   "NJ","NM","NY","ND","OH","OK","OR","PA","SC","SD",
                    "TN","TX","UT","VA","WV","WI","WY","PR")
 brfss_cg$X.STATE<- factor(brfss_cg$X.STATE, levels=cgsgmstates, labels=cgsgmstatelabel)
 
@@ -94,7 +143,7 @@ NUMSTATES<-brfss_cg %>%
 
 ## Caregiving Variables
 # **********************************************************************************************
-# * RAW CAREGIVING VARIABLES: 
+# * RAW CAREGIVING VARIABLES:
 # *	CRGVEXPT = 'DO YOU EXPECT TO HAVE A RELATIVE YOU WILL NEED TO PROVIDE CARE FOR?'
 # *	CRGVHOUS = 'MANAGED HOUSEHOLD TASKS'
 # *	CRGVHRS1 = 'HOW MANY HOURS DO YOU PROVIDE CARE FOR PERSON?'
@@ -140,18 +189,18 @@ brfss_cg <- brfss_cg %>%
 brfss_cg$cg_d<-relevel(factor(brfss_cg$cg_d), ref="Non-CG")
 
 # Caregiving Reason
-careprobcode<- c("Arthritis/Rheumatism", "Asthma", "Cancer", 
-                 "Chronic respiratory conditions such as Emphysema or COPD", 
-                 "Dementia and other Cognitive Impairment Disorders", 
-                 "Developmental Disabilities such as Autism, Down's Syndrome, and Spina Bifida", 
-                 "Diabetes", "Heart Disease, Hypertension", "Human Immunodeficiency Virus Infection (HIV)", 
-                 "Mental Illnesses, such as Anxiety, Depression, or Schizophrenia", 
-                 "Other organ failure or diseases such as kidney or liver problems", 
+careprobcode<- c("Arthritis/Rheumatism", "Asthma", "Cancer",
+                 "Chronic respiratory conditions such as Emphysema or COPD",
+                 "Dementia and other Cognitive Impairment Disorders",
+                 "Developmental Disabilities such as Autism, Down's Syndrome, and Spina Bifida",
+                 "Diabetes", "Heart Disease, Hypertension", "Human Immunodeficiency Virus Infection (HIV)",
+                 "Mental Illnesses, such as Anxiety, Depression, or Schizophrenia",
+                 "Other organ failure or diseases such as kidney or liver problems",
                  "Substance Abuse or Addiction Disorders", "Other")
-brfss_cg$cg_type_cat <- factor( brfss_cg$cg_type_cat, levels=c(1:13), labels=careprobcode) 
+brfss_cg$cg_type_cat <- factor( brfss_cg$cg_type_cat, levels=c(1:13), labels=careprobcode)
 
 # Caregiving Relationship: (reference) Parent
-brfss_cg$cg_rel_cat<-relevel(factor(brfss_cg$cg_rel_cat), "Parent", "Child", "Spouse","Sibling", 
+brfss_cg$cg_rel_cat<-relevel(factor(brfss_cg$cg_rel_cat), "Parent", "Child", "Spouse","Sibling",
                              "Grandparent", "Other Fam", "Non-Fam", ref="Parent")
 
 # Dichotomous Non-Biological/Given Family CG Indicator Variable: Non-Family vs. (reference) Other
@@ -174,7 +223,7 @@ brfss_cg_clean <- brfss_cg %>%
          income,education,employed,
          diabetes, smoking, binge_drink,physact,sleephrs,
          SRH_d,Days_Phys,Days_Ment,Days_Poor,
-         X.PSU, X.STSTR, svywt
+         X.PSU, X.STSTR, CG_WT_RAW
          )
 #rm(brfss_cg)
 
