@@ -118,19 +118,19 @@ rm(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3,list2017)
 
 
 ### COMBINING 2015 AND 2016
-brfss_cg<-bind_rows(data_2016,data_2015)
-rm(data_2016,data_2015)
+brfss_cg<-bind_rows(data_2017,data_2016,data_2015)
+rm(data_2017,data_2016,data_2015)
 
-cgsgmstates<-c(1,2,4,5,6,8,9,11,12,
-               13,15,16,17,18,19,20,21,22,
-               23,24,26,27,28,29,30,31,32,
-               34,35,36,38,39,40,41,42,45,46,
-               47,48,49,51,54,55,56,72)
-cgsgmstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DC","FL",
-                   "GA","HI","ID","IL","IN","IA","KS","KY","LA",
-                   "ME","MD","MI","MN","MS","MO","MT","NE","NV",
-                   "NJ","NM","NY","ND","OH","OK","OR","PA","SC","SD",
-                   "TN","TX","UT","VA","WV","WI","WY","PR")
+cgsgmstates<-c(1,2,4,5,6,8,9,11,12,13,
+               15,16,17,18,19,20,21,22,23,24,
+               26,27,28,29,30,31,32,34,35,36,
+               38,39,40,41,42,44,45,46,47,48,49,
+               51,54,55,56,72)
+cgsgmstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DC","FL","GA",
+                   "HI","ID","IL","IN","IA","KS","KY","LA","ME","MD",
+                   "MI","MN","MS","MO","MT","NE","NV","NJ","NM","NY",
+                   "ND","OH","OK","OR","PA","RI","SC","SD","TN","TX",
+                   "UT","VA","WV","WI","WY","PR")
 brfss_cg$X.STATE<- factor(brfss_cg$X.STATE, levels=cgsgmstates, labels=cgsgmstatelabel)
 
 
@@ -158,17 +158,22 @@ NUMSTATES<-brfss_cg %>%
 # **** WORKING WITH	CAREGIV1 - WHETHER SOMEONE WAS A CAREGIVER OR NOT
 # Caregiving: cg_d --- Cloning caregiv1 & assigning factor labels
 
+## Notes: Relationship codes changed between 2016 and 2017 - unmarried partner (16) was added in 2017
+##        CG Type / Health Problem changed in 2016, adding two categories that resulted in recoding "other" (13) from 2015
+
 brfss_cg <- brfss_cg %>%
-  mutate(cg_d=as.factor(if_else(CAREGIV1==1, "Caregiver", "Non-CG")),
-         cg=as.numeric(if_else(CAREGIV1==1, 1, 0)),
+  mutate(cg_d_fct=as.factor(if_else(CAREGIV1==1, "CG",
+                                CAREGIV1==2, "Non-CG", NA)),
+         cg_d_num=as.numeric(if_else(CAREGIV1==1, 1,
+                               CAREGIV1==2, 0, NA)),
          cg_rel_cat=as.factor(if_else(CRGVREL1 %in% 1:4, "Parent",
                                   if_else(CRGVREL1==5, "Child",
-                                          if_else(CRGVREL1 %in% 6:8, "Spouse",
+                                          if_else(CRGVREL1 %in% c(6:8,16), "Spouse/Partner",
                                                   if_else(CRGVREL1 %in% 9:10, "Sibling",
                                                           if_else(CRGVREL1 %in% 11:12, "Grandparent",
                                                                   if_else(CRGVREL1 %in% 13:14, "Other Fam",
-                                                                          if_else(CRGVREL1>14, "Non-Fam", NA_character_)))))))),
-         cg_nonfam=as.factor(if_else(CRGVREL1 %in% 14:15, "Non-Fam", "Other")),
+                                                                          if_else(CRGVREL1==15, "Non-Fam", NA_character_)))))))),
+         cg_nonfam=as.factor(if_else(CRGVREL1==15, "Non-Fam", "Other")),
          cg_hrs_num=replace(CRGVHRS1,CRGVHRS1>4,NA),
          cg_hrs_cat=as.factor(if_else(CRGVHRS1==1, "<8hr/wk",
                                       if_else(CRGVHRS1==2, "9-19hr/wk",
@@ -180,13 +185,13 @@ brfss_cg <- brfss_cg %>%
                                             if_else(CRGVLNG1==3, "7mo-2yr",
                                                     if_else(CRGVLNG1==4, "2-5yrs",
                                                             if_else(CRGVLNG1==5, "5+yrs", NA_character_)))))),
-         cg_type_cat=CRGVPRB1,
+         cg_type_cat=if_else(YEAR==2015,CRGVPRB1,CRGVPRB2),
          cg_type_cat=replace(cg_type_cat,CRGVPRB1==77,NA),
          cg_type_cat=replace(cg_type_cat,CRGVPRB1==99,NA)
   )
 
 # Dichotomous Caregiving Indicator Variable: Caregiver vs. (reference) Non-Caregiver
-brfss_cg$cg_d<-relevel(factor(brfss_cg$cg_d), ref="Non-CG")
+brfss_cg$cg_d<-relevel(factor(brfss_cg$cg_d_fct), ref="Non-CG")
 
 # Caregiving Reason
 careprobcode<- c("Arthritis/Rheumatism", "Asthma", "Cancer",
@@ -213,19 +218,12 @@ brfss_cg$cg_hrs_cat<-relevel(factor(brfss_cg$cg_hrs_cat), "<8hr/wk", "9-19hr/wk"
 brfss_cg$cg_lngth_cat<-relevel(factor(brfss_cg$cg_lngth_cat), "<1mo", "1-6mo", "7mo-2yr","2-5yr", "5+yrs", ref="5+yrs")
 
 
-## CLEANING VARIABLES
-source("brfss_covariate_coding.R")
-
-## CREATING NEW DATAFRAME OF JUST VARIABLES FOR ANALYSIS
-brfss_cg_clean <- brfss_cg %>%
-  select(cg,cg_d,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
-         age5yr, millennial,millennial_d,race,marstat,lgb_d,genmin_d,sgm_d,numchild,
-         income,education,employed,
-         diabetes, smoking, binge_drink,physact,sleephrs,
-         SRH_d,Days_Phys,Days_Ment,Days_Poor,
-         X.PSU, X.STSTR, CG_WT_RAW
+## CREATING NEW DATAFRAME OF JUST CAREGIVING VARIABLES FOR ANALYSIS
+cg_data <- brfss_cg %>%
+  select(cg_d_num,cg_d_fct,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
+         X.PSU, X.STSTR, CG_WT_RAW, YEAR
          )
-#rm(brfss_cg)
+rm(brfss_cg)
 
 
 

@@ -1,16 +1,28 @@
 ##README: REPLACE BRFSS_CG WITH FILE NAME AS NEEDED
 
+### VARIABLES TO BRING IN
+# brfss_cg <- brfss_cg %>%
+#   select(cg,cg_d,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
+#          age5yr, millennial,millennial_d,race,marstat,lgb_d,genmin_d,sgm_d,numchild,
+#          income,education,employed,
+#          diabetes, smoking, binge_drink,physact,sleephrs,
+#          SRH_d,Days_Phys,Days_Ment,Days_Poor,
+#          X.PSU, X.STSTR, CG_WT_RAW, YEAR
+#   )
+# ## FLU VACCINATION
+# ## ALL OF HIV VARIABLES
+# ## ALL OF VETERANS VARIABLES
 
 ## Demographics, Covariates & Health Outcomes
 
 brfss_cg <- brfss_cg %>%
-  mutate(  
+  mutate(
     # Covariates
     #Age
     age5yr=as.numeric(if_else(X.AGEG5YR<14, X.AGEG5YR,NA_integer_)),
     millennial=as.numeric(if_else(age5yr %in% 1:3, 1,
                if_else(age5yr %in% 4:13,0, NA_real_))),
-    
+
     millennial_d=as.factor(if_else(age5yr %in% 1:3, "Yes",
                                  if_else(age5yr %in% 4:13, "No", NA_character_))),
     #Race / Ethnicity
@@ -20,7 +32,7 @@ brfss_cg <- brfss_cg %>%
                                            if_else(X.RACEGR3==4, "Multi",
                                                    if_else(X.RACEGR3==5, "Hispanic",
                                                            if_else(X.RACEGR3==9, "DK/NS/Refused", NA_character_))))))),
-    
+
     # Marital Status
     marstat=as.factor(if_else(MARITAL==1, "Married",
                               if_else(MARITAL==2, "Divorced",
@@ -39,16 +51,16 @@ brfss_cg <- brfss_cg %>%
     # Children
     numchild=as_factor(if_else(X.CHLDCNT==1,"None",
                                if_else(X.CHLDCNT==2, "One",
-                                       if_else(X.CHLDCNT==3, "Two",       
+                                       if_else(X.CHLDCNT==3, "Two",
                                                if_else(X.CHLDCNT %in% 4:6, "3+",NA_character_
                                                ))))),
-    
+
     # Education
     education=as.factor(if_else(EDUCA %in% 1:3, "<High School",
                                 if_else(EDUCA==4, "High School",
                                         if_else(EDUCA==5, "Some College",
                                                 if_else(EDUCA==6, "College+",NA_character_))))),
-    
+
     # Income
     income=as.factor(if_else(INCOME2==1, "<$10,000",
                              if_else(INCOME2==2, "$10,000-$15,000",
@@ -59,48 +71,48 @@ brfss_cg <- brfss_cg %>%
                                                                      if_else(INCOME2==7, "$50,000-$75,000",
                                                                              if_else(INCOME2==8, ">$75,000",
                                                                                      if_else(INCOME2>8, "Don't Know / Refused",NA_character_)))))))))),
-    
+
     # Work Status
     employed=as.factor(if_else(EMPLOY1 %in% 1:2, "Employed",
                                if_else(EMPLOY1 %in% c(3,4,8), "Not Working",
                                        if_else(EMPLOY1==5, "Homemaker",
                                                if_else(EMPLOY1==6, "Student",
                                                        if_else(EMPLOY1==7, "Retired",NA_character_)))))),
-    
+
     # Chronic Conditions
     # Diabetes
     diabetes=as_factor(if_else(DIABETE3 %in% c(1,2,4),"Diabetic",
                                if_else(DIABETE3==3,"Non-Diabetic",
                                        NA_character_))),
-    
+
     # Tobacco
-    
+
     smoking=as_factor(if_else((SMOKE100==1 & SMOKDAY2 %in% 1:2), "Current",
                        if_else((SMOKE100==1 & SMOKDAY2==3), "Former",
                        if_else((SMOKE100==2), "Never", NA_character_)))),
-    
+
     # Alcohol
     binge_drink=as.factor(if_else((ALCDAY5==888 | DRNK3GE5==88), "None",
                                   if_else(DRNK3GE5>=1, "1+", NA_character_))),
     # Physical Activity
     physact=as.factor(if_else(EXERANY2==1,"Yes",
                               if_else(EXERANY2==2,"No", NA_character_))),
-    
+
     # Sleep
     sleephrs=if_else(SLEPTIM1>24,NA_integer_,SLEPTIM1),
-    
+
     # QOL
     # Self-Rated Health
     SRH=replace(GENHLTH,GENHLTH>5,NA_integer_),
     SRH_d=as.factor(if_else(SRH %in% 3:5, "Good/Fair/Poor", "Very Good/Excellent")),
-    # Healthy Days - Physical, Mental, and Poor Health     
+    # Healthy Days - Physical, Mental, and Poor Health
     Days_Phys=(if_else(PHYSHLTH<=30, PHYSHLTH,
                 if_else(PHYSHLTH>30,NA_integer_, NA_integer_))),
     Days_Ment=(if_else(MENTHLTH<=30, MENTHLTH,
                        if_else(MENTHLTH>30,NA_integer_, NA_integer_))),
     Days_Poor=(if_else(POORHLTH<=30, POORHLTH,
                        if_else(POORHLTH>30,NA_integer_, NA_integer_)))
-    
+
   )
 
 
@@ -108,7 +120,7 @@ brfss_cg <- brfss_cg %>%
 # Labelling and Reordering Factor Levels
 
 # Age
-agegroups<- c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", 
+agegroups<- c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54",
               "55-59", "60-64", "65-69", "70-74", "75-79", "80+")
 brfss_cg$age5yr <- factor( brfss_cg$age5yr, levels=c(1:13), labels=agegroups)
 
