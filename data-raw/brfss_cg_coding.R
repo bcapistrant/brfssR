@@ -5,30 +5,29 @@ library(tidyverse)
 
 # pulling in the datasets
 ### 2015
-#No NJ(34),NY(36),OR(41),TN(47),UT(49) - they have 2016 data
 cg2015_0<-c(1,15,16,17,18,19,21,22,28,42,45,51,54,55,56)
-cg2015_1<-c(23,25,39)
-cg2015_2<-40
+cg2015_1<-c(23,24,31,39)
+cg2015_2<-c(12,40)
 
-BRFSS_2015_0<-read.xport("data/LLCP2015.XPT")
+BRFSS_2015_0<-read.xport("data-raw/LLCP2015.XPT")
 BRFSS_2015_0 <- BRFSS_2015_0 %>%
-  filter(X.STATE %in% cg2015_0) %>%
+  filter(X_STATE %in% cg2015_0) %>%
   mutate(YEAR=2015,
-         CG_WT_RAW=X.LLCPWT,
+         CG_WT_RAW=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2015_1<-read.xport("data/LLCP15V1.xpt")
+BRFSS_2015_1<-read.xport("data-raw/LLCP15V1.xpt")
 BRFSS_2015_1 <- BRFSS_2015_1 %>%
-  filter(X.STATE %in% cg2015_1) %>%
+  filter(X_STATE %in% cg2015_1) %>%
   mutate(YEAR=2015,
-         CG_WT_RAW=X.LCPWTV1,
+         CG_WT_RAW=X_LCPWTV1,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2015_2<-read.xport("data/LLCP15V2.xpt")
+BRFSS_2015_2<-read.xport("data-raw/LLCP15V2.xpt")
 BRFSS_2015_2 <- BRFSS_2015_2 %>%
-  filter(X.STATE %in% cg2015_2) %>%
+  filter(X_STATE %in% cg2015_2) %>%
   mutate(YEAR=2015,
-         CG_WT_RAW=X.LCPWTV2,
+         CG_WT_RAW=X_LCPWTV2,
          SEQNO=as.integer(SEQNO))
 
 list2015<-list(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2)
@@ -41,32 +40,32 @@ cg2016_1<-c(39,49)
 cg2016_2<-c(4,6,9,48)
 cg2016_3<-c(8,36)
 
-BRFSS_2016_0<-read.xport("data/LLCP2016.XPT")
+BRFSS_2016_0<-read.xport("data-raw/LLCP2016.XPT")
 BRFSS_2016_0 <- BRFSS_2016_0 %>%
-  filter(X.STATE %in% cg2016_0) %>%
+  filter(X_STATE %in% cg2016_0) %>%
   mutate(YEAR=2016,
-         CG_WT_RAW=X.LLCPWT,
+         CG_WT_RAW=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2016_1<-read.xport("data/LLCP16V1.XPT")
+BRFSS_2016_1<-read.xport("data-raw/LLCP16V1.XPT")
 BRFSS_2016_1 <- BRFSS_2016_1 %>%
-  filter(X.STATE %in% cg2016_1) %>%
+  filter(X_STATE %in% cg2016_1) %>%
   mutate(YEAR=2016,
-         CG_WT_RAW=X.LCPWTV1,
+         CG_WT_RAW=X_LCPWTV1,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2016_2<-read.xport("data/LLCP16V2.XPT")
+BRFSS_2016_2<-read.xport("data-raw/LLCP16V2.XPT")
 BRFSS_2016_2 <- BRFSS_2016_2 %>%
-  filter(X.STATE %in% cg2016_2) %>%
+  filter(X_STATE %in% cg2016_2) %>%
   mutate(YEAR=2016,
-         CG_WT_RAW=X.LCPWTV2,
+         CG_WT_RAW=X_LCPWTV2,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2016_3<-read.xport("data/LLCP16V3.XPT")
+BRFSS_2016_3<-read.xport("data-raw/LLCP16V3.XPT")
 BRFSS_2016_3 <- BRFSS_2016_3 %>%
-  filter(X.STATE %in% cg2016_3) %>%
+  filter(X_STATE %in% cg2016_3) %>%
   mutate(YEAR=2016,
-         CG_WT_RAW=X.LCPWTV3,
+         CG_WT_RAW=X_LCPWTV3,
          SEQNO=as.integer(SEQNO))
 
 ### Add datasets together
@@ -83,32 +82,32 @@ cg2017_1<-c(20,26,34)
 cg2017_2<-c(36,40,49)
 cg2017_3<-c(24)
 
-BRFSS_2017_0<-read.xport("data/LLCP2017.XPT")
+BRFSS_2017_0<-read.xport("data-raw/LLCP2017.XPT")
 BRFSS_2017_0 <- BRFSS_2017_0 %>%
-  filter(X.STATE %in% cg2017_0) %>%
+  filter(X_STATE %in% cg2017_0) %>%
   mutate(YEAR=2017,
-         CG_WT_RAW=X.LLCPWT,
+         CG_WT_RAW=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2017_1<-read.xport("data/LLCP16V1.XPT")
+BRFSS_2017_1<-read.xport("data-raw/LLCP17V1.XPT")
 BRFSS_2017_1 <- BRFSS_2017_1 %>%
-  filter(X.STATE %in% cg2017_1) %>%
+  filter(X_STATE %in% cg2017_1) %>%
   mutate(YEAR=2017,
-         CG_WT_RAW=X.LCPWTV1,
+         CG_WT_RAW=X_LCPWTV1,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2017_2<-read.xport("data/LLCP16V2.XPT")
+BRFSS_2017_2<-read.xport("data-raw/LLCP17V2.XPT")
 BRFSS_2017_2 <- BRFSS_2017_2 %>%
-  filter(X.STATE %in% cg2017_2) %>%
+  filter(X_STATE %in% cg2017_2) %>%
   mutate(YEAR=2017,
-         CG_WT_RAW=X.LCPWTV2,
+         CG_WT_RAW=X_LCPWTV2,
          SEQNO=as.integer(SEQNO))
 
-BRFSS_2017_3<-read.xport("data/LLCP16V3.XPT")
+BRFSS_2017_3<-read.xport("data-raw/LLCP17V3.XPT")
 BRFSS_2017_3 <- BRFSS_2017_3 %>%
-  filter(X.STATE %in% cg2017_3) %>%
+  filter(X_STATE %in% cg2017_3) %>%
   mutate(YEAR=2017,
-         CG_WT_RAW=X.LCPWTV3,
+         CG_WT_RAW=X_LCPWTV3,
          SEQNO=as.integer(SEQNO))
 ### Add datasets together
 list2017<-list(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3)
@@ -131,12 +130,12 @@ cgsgmstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DC","FL","GA",
                    "MI","MN","MS","MO","MT","NE","NV","NJ","NM","NY",
                    "ND","OH","OK","OR","PA","RI","SC","SD","TN","TX",
                    "UT","VA","WV","WI","WY","PR")
-brfss_cg$X.STATE<- factor(brfss_cg$X.STATE, levels=cgsgmstates, labels=cgsgmstatelabel)
+brfss_cg$X_STATE<- factor(brfss_cg$X_STATE, levels=cgsgmstates, labels=cgsgmstatelabel)
 
 
 #Sanity check that just those states were included
 NUMSTATES<-brfss_cg %>%
-  count(X.STATE)
+  count(X_STATE)
 
 
 # Data Wrangling: Variables
@@ -161,69 +160,146 @@ NUMSTATES<-brfss_cg %>%
 ## Notes: Relationship codes changed between 2016 and 2017 - unmarried partner (16) was added in 2017
 ##        CG Type / Health Problem changed in 2016, adding two categories that resulted in recoding "other" (13) from 2015
 
+
 brfss_cg <- brfss_cg %>%
-  mutate(cg_d_fct=as.factor(if_else(CAREGIV1==1, "CG",
-                                CAREGIV1==2, "Non-CG", NA)),
-         cg_d_num=as.numeric(if_else(CAREGIV1==1, 1,
-                               CAREGIV1==2, 0, NA)),
-         cg_rel_cat=as.factor(if_else(CRGVREL1 %in% 1:4, "Parent",
-                                  if_else(CRGVREL1==5, "Child",
-                                          if_else(CRGVREL1 %in% c(6:8,16), "Spouse/Partner",
-                                                  if_else(CRGVREL1 %in% 9:10, "Sibling",
-                                                          if_else(CRGVREL1 %in% 11:12, "Grandparent",
-                                                                  if_else(CRGVREL1 %in% 13:14, "Other Fam",
-                                                                          if_else(CRGVREL1==15, "Non-Fam", NA_character_)))))))),
-         cg_nonfam=as.factor(if_else(CRGVREL1==15, "Non-Fam", "Other")),
-         cg_hrs_num=replace(CRGVHRS1,CRGVHRS1>4,NA),
-         cg_hrs_cat=as.factor(if_else(CRGVHRS1==1, "<8hr/wk",
-                                      if_else(CRGVHRS1==2, "9-19hr/wk",
-                                              if_else(CRGVHRS1==3, "20-39hr/wk",
-                                                      if_else(CRGVHRS1==4, "40+hr/wk", NA_character_))))),
-         cg_lngth_num=replace(CRGVLNG1,CRGVLNG1>5,NA),
-         cg_lngth_cat=as.factor(if_else(CRGVLNG1==1, "<1mo",
+    mutate(
+# Caregiver Indicator
+        cg_d_fct=as.factor(if_else(CAREGIV1==1, "CG",
+                           if_else(CAREGIV1==2, "Non-CG", NA_character_))),
+        cg_d_num=as.numeric(if_else(CAREGIV1==1, 1,
+                            if_else(CAREGIV1==2, 0, NA_real_))),
+
+
+# Relationship of Person Receiving Care to Caregiver
+        cg_prb_cat_num=if_else(YEAR==2017,CRGVREL2,CRGVREL1),
+        cg_prb_cat_num=if_else(cg_prb_cat_num %in% c(77,99),NA_real_,cg_prb_cat_num), #Setting DK/Refused to Missing
+
+        cg_rel_cat_6fct=as.factor(if_else(cg_prb_cat_num %in% 1:4, "Parent/Parent-in-law",
+                              if_else(cg_prb_cat_num==5, "Child",
+                              if_else(cg_prb_cat_num %in% c(6:8,16), "Spouse/Partner",
+                              if_else(cg_prb_cat_num %in% 9:10, "Sibling",
+                              if_else(cg_prb_cat_num %in% 11:12, "Grandparent",
+                              if_else(cg_prb_cat_num %in% 13:14, "Other Fam",
+                              if_else(cg_prb_cat_num==15, "Non-Fam", NA_character_)))))))),
+         cg_rel_cat_4fct=as.factor(if_else(cg_prb_cat_num %in% 1:4, "Parent/Parent-in-law",
+                              if_else(cg_prb_cat_num %in% c(6:8,16), "Spouse/Partner",
+                              if_else(cg_prb_cat_num %in% c(5,9:10,11:14), "Other Family",
+                              if_else(cg_prb_cat_num==15, "Non-Fam", NA_character_))))),
+         cg_nonfam_d=as.factor(if_else(cg_prb_cat_num==15, "Non-Fam",
+                               if_else(!is.na(cg_prb_cat_num), "Family",NA_character_))),
+
+
+# Hours of Caregiving per Week
+        cg_hrs_cat_num=as.numeric(if_else(CRGVHRS1 %in% 1:4,CRGVHRS1,NA_real_)),
+        cg_hrs_cat_fct=as.factor(if_else(CRGVHRS1==1, "<8hr/wk",
+                             if_else(CRGVHRS1==2, "9-19hr/wk",
+                             if_else(CRGVHRS1==3, "20-39hr/wk",
+                             if_else(CRGVHRS1==4, "40+hr/wk", NA_character_))))),
+
+# Length of Time as a Caregiver
+        cg_lngth_cat_num=as.numeric(if_else(CRGVLNG1 %in% 1:5,CRGVLNG1,NA_real_)),
+        cg_lngth_cat_fct=as.factor(if_else(CRGVLNG1==1, "<1mo",
                                     if_else(CRGVLNG1==2, "1-6mo",
-                                            if_else(CRGVLNG1==3, "7mo-2yr",
-                                                    if_else(CRGVLNG1==4, "2-5yrs",
-                                                            if_else(CRGVLNG1==5, "5+yrs", NA_character_)))))),
-         cg_type_cat=if_else(YEAR==2015,CRGVPRB1,CRGVPRB2),
-         cg_type_cat=replace(cg_type_cat,CRGVPRB1==77,NA),
-         cg_type_cat=replace(cg_type_cat,CRGVPRB1==99,NA)
+                                    if_else(CRGVLNG1==3, "7mo-2yr",
+                                    if_else(CRGVLNG1==4, "2-5yrs",
+                                    if_else(CRGVLNG1==5, "5+yrs", NA_character_)))))),
+# Health Problem, Illness, Disability - Reason for Care
+         cg_prb_cat_num=if_else(YEAR==2015,CRGVPRB1,CRGVPRB2),
+         cg_prb_cat_fct=as.factor(
+                     if_else(cg_prb_cat_num==1, "Arthritis/Rheumatism",
+                     if_else(cg_prb_cat_num==2, "Asthma",
+                     if_else(cg_prb_cat_num==3, "Cancer",
+                     if_else(cg_prb_cat_num==4, "Chronic Respiratory",
+                     if_else(cg_prb_cat_num==5, "Dementia",
+                     if_else(cg_prb_cat_num==6, "Developmental",
+                     if_else(cg_prb_cat_num==7, "Diabetes",
+                     if_else(cg_prb_cat_num==8, "Cardiovascular",
+                     if_else(cg_prb_cat_num==9, "HIV",
+                     if_else(cg_prb_cat_num==10, "Mental Illness",
+                     if_else(cg_prb_cat_num==11, "Other Organs",
+                     if_else(cg_prb_cat_num==12, "Substance Use",
+                     if_else(cg_prb_cat_num==13, if_else(YEAR==2015, "Other","Injuries"),
+                     if_else(cg_prb_cat_num==14, "Old Age",
+                     if_else(cg_prb_cat_num==15, "Other", NA_character_)))))))))))))))
+                    ),
+        cg_prb_dem_d_fct=as.factor(if_else(cg_prb_cat_num %in% 1:15,
+                                if_else(cg_prb_cat_num==5, "Dementia","Non-Dementia"), NA_character_)),
+        cg_prb_dem_d_num=as.numeric(if_else(cg_prb_cat_num %in% 1:15,
+                                if_else(cg_prb_cat_num==5, 1,0), NA_real_)),
+        cg_prb_hiv_d_fct=as.factor(if_else(cg_prb_cat_num %in% 1:15,
+                            if_else(cg_prb_cat_num==9, "HIV","Non-HIV"), NA_character_)),
+        cg_prb_hiv_d_num=as.numeric(if_else(cg_prb_cat_num %in% 1:15,
+                            if_else(cg_prb_cat_num==9, 1,0), NA_real_)),
+
+# Type of Care Provided
+      cg_type_cat_num=as.numeric(if_else(CRGVHOUS==1 & CRGVPERS==2,1,
+                                 if_else(CRGVHOUS==2 & CRGVPERS==1,2,
+                                 if_else(CRGVHOUS==1 & CRGVPERS==1,3,
+                                 if_else(CRGVHOUS==2 & CRGVPERS==2,4,NA_real_))))),
+      cg_type_cat_fct=as.factor(if_else(cg_type_cat_num==1,"Household only",
+                                if_else(cg_type_cat_num==2,"Personal only",
+                                if_else(cg_type_cat_num==3,"Both",
+                                if_else(cg_type_cat_num==4,"Neither",NA_character_))))),
+
+
+# Most Needed Caregiving Supports
+      cg_most_cat_num=as.numeric(if_else(CRGVMST2 %in% 77:99,NA_real_,CRGVMST2)),
+      cg_most_cat_fct=as.factor(if_else(cg_most_cat_num==1, "Education",
+                      if_else(cg_most_cat_num==2, "Service Referrals",
+                      if_else(cg_most_cat_num==3, "Support Groups",
+                      if_else(cg_most_cat_num==4, "Counseling",
+                      if_else(cg_most_cat_num==5, "Respite Care",
+                      if_else(cg_most_cat_num==6, "None", NA_character_))))))),
+
+# Future Expectations of Caregiving
+      cg_expt_cat_num=as.numeric(if_else(CRGVEXPT==1,1,
+                                if_else(CRGVEXPT==2,0,NA_real_))),
+      cg_expt_cat_fct=as.factor(if_else(cg_expt_cat_num==1, "Yes",
+                      if_else(cg_expt_cat_num==0, "No", NA_character_)))
+
   )
 
-# Dichotomous Caregiving Indicator Variable: Caregiver vs. (reference) Non-Caregiver
-brfss_cg$cg_d<-relevel(factor(brfss_cg$cg_d_fct), ref="Non-CG")
 
-# Caregiving Reason
-careprobcode<- c("Arthritis/Rheumatism", "Asthma", "Cancer",
-                 "Chronic respiratory conditions such as Emphysema or COPD",
-                 "Dementia and other Cognitive Impairment Disorders",
-                 "Developmental Disabilities such as Autism, Down's Syndrome, and Spina Bifida",
-                 "Diabetes", "Heart Disease, Hypertension", "Human Immunodeficiency Virus Infection (HIV)",
-                 "Mental Illnesses, such as Anxiety, Depression, or Schizophrenia",
-                 "Other organ failure or diseases such as kidney or liver problems",
-                 "Substance Abuse or Addiction Disorders", "Other")
-brfss_cg$cg_type_cat <- factor( brfss_cg$cg_type_cat, levels=c(1:13), labels=careprobcode)
 
-# Caregiving Relationship: (reference) Parent
-brfss_cg$cg_rel_cat<-relevel(factor(brfss_cg$cg_rel_cat), "Parent", "Child", "Spouse","Sibling",
-                             "Grandparent", "Other Fam", "Non-Fam", ref="Parent")
 
-# Dichotomous Non-Biological/Given Family CG Indicator Variable: Non-Family vs. (reference) Other
-brfss_cg$cg_nonfam<-relevel(factor(brfss_cg$cg_nonfam), ref="Other")
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 
-# Hours per Week of Caregiving: (reference) <8hrs/week
-brfss_cg$cg_hrs_cat<-relevel(factor(brfss_cg$cg_hrs_cat), "<8hr/wk", "9-19hr/wk", "20-39hr/wk","40+hr/wk", ref="<8hr/wk")
+# NEXT
+##  Select all the variables
+##  Make the datasets
 
-# Duration of Caregiving: (reference) 5+yrs
-brfss_cg$cg_lngth_cat<-relevel(factor(brfss_cg$cg_lngth_cat), "<1mo", "1-6mo", "7mo-2yr","2-5yr", "5+yrs", ref="5+yrs")
+
+#------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
+
+
+
+# Setting Reference Categories
+
+# # Dichotomous Caregiving Indicator Variable: Caregiver vs. (reference) Non-Caregiver
+# brfss_cg$cg_d<-relevel(factor(brfss_cg$cg_d_fct), ref="Non-CG")
+#
+# # Caregiving Relationship: (reference) Parent
+# brfss_cg$cg_rel_cat<-relevel(factor(brfss_cg$cg_rel_cat), "Parent", "Child", "Spouse","Sibling",
+#                              "Grandparent", "Other Fam", "Non-Fam", ref="Parent")
+#
+# # Dichotomous Non-Biological/Given Family CG Indicator Variable: Non-Family vs. (reference) Other
+# brfss_cg$cg_nonfam<-relevel(factor(brfss_cg$cg_nonfam), ref="Other")
+#
+# # Hours per Week of Caregiving: (reference) <8hrs/week
+# brfss_cg$cg_hrs_cat<-relevel(factor(brfss_cg$cg_hrs_cat), "<8hr/wk", "9-19hr/wk", "20-39hr/wk","40+hr/wk", ref="<8hr/wk")
+#
+# # Duration of Caregiving: (reference) <1 month
+# brfss_cg$cg_lngth_cat<-relevel(factor(brfss_cg$cg_lngth_cat), "<1mo", "1-6mo", "7mo-2yr","2-5yr", "5+yrs", ref="<1mo")
 
 
 ## CREATING NEW DATAFRAME OF JUST CAREGIVING VARIABLES FOR ANALYSIS
-cg_data <- brfss_cg %>%
-  select(cg_d_num,cg_d_fct,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
-         X.PSU, X.STSTR, CG_WT_RAW, YEAR
-         )
-rm(brfss_cg)
+# cg_data <- brfss_cg %>%
+#   select(cg_d_num,cg_d_fct,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
+#          X_PSU, X_STSTR, CG_WT_RAW, YEAR
+#          )
+# rm(brfss_cg)
 
 
 
