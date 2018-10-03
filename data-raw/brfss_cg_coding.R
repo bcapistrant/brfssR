@@ -185,7 +185,9 @@ brfss_cg <- brfss_cg %>%
                               if_else(cg_prb_cat_num %in% c(6:8,16), "Spouse/Partner",
                               if_else(cg_prb_cat_num %in% c(5,9:10,11:14), "Other Family",
                               if_else(cg_prb_cat_num==15, "Non-Fam", NA_character_))))),
-         cg_nonfam_d=as.factor(if_else(cg_prb_cat_num==15, "Non-Fam",
+         cg_nonfam_d_num=as.numeric(if_else(cg_prb_cat_num==15, 1,
+                               if_else(!is.na(cg_prb_cat_num), 0,NA_real_))),
+         cg_nonfam_d_fct=as.factor(if_else(cg_prb_cat_num==15, "Non-Fam",
                                if_else(!is.na(cg_prb_cat_num), "Family",NA_character_))),
 
 
@@ -259,9 +261,6 @@ brfss_cg <- brfss_cg %>%
 
   )
 
-
-
-
 #------------------------------------------------------------------------#
 #------------------------------------------------------------------------#
 
@@ -295,13 +294,24 @@ brfss_cg <- brfss_cg %>%
 
 
 ## CREATING NEW DATAFRAME OF JUST CAREGIVING VARIABLES FOR ANALYSIS
-# cg_data <- brfss_cg %>%
-#   select(cg_d_num,cg_d_fct,cg_type_cat, cg_rel_cat, cg_nonfam, cg_hrs_cat, cg_lngth_cat,
-#          X_PSU, X_STSTR, CG_WT_RAW, YEAR
-#          )
-# rm(brfss_cg)
+ cg_data <- brfss_cg %>%
+   mutate(incg=1) %>%
+   select(cg_d_num,cg_d_fct,
+          cg_prb_cat_num,cg_rel_cat_6fct,cg_rel_cat_4fct,
+          cg_nonfam_d_num,cg_nonfam_d_fct,
+          cg_hrs_cat_num,cg_hrs_cat_fct,
+          cg_lngth_cat_num,cg_lngth_cat_fct,
+          cg_prb_cat_num,cg_prb_cat_fct,
+          cg_prb_dem_d_num,cg_prb_dem_d_fct,
+          cg_prb_hiv_d_num,cg_prb_hiv_d_fct,
+          cg_type_cat_num,cg_type_cat_fct,
+          cg_most_cat_num,cg_most_cat_fct,
+          cg_expt_cat_num,cg_expt_cat_fct,
+          X_PSU, X_STSTR, CG_WT_RAW, YEAR, incg
+          )
+ rm(brfss_cg)
 
-
+save(cg_data, file = "data/cg_data.rda", compress = "bzip2")
 
 
 
