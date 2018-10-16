@@ -3,25 +3,6 @@ library(tidyverse)
 ## BRING IN DATA FROM 2013 - 2017
 
 
-
-#---------------------------------------#
-#           FUNCTIONS
-#---------------------------------------#
-binary_d_num<-function(x) {
-  ifelse(x==2,0,
-  ifelse(x==1,1,NA))
-}
-
-binary_d_fct<-function(x) {
-  factor(
-    ifelse(x==2,"No",
-    ifelse(x==1,"Yes",NA))
-  )
-}
-
-rawnames = c("CVDCRHD4","CVDSTRK3","DIABETE3","ASTHMA3","CHCOCNCR","CHCCOPD1","HAVARTH3")
-newnames = c("cvd","strk","diab","asth","cncr","copd","arth")
-lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","copd_d_num","arth_d_num")
 #---------------------------------------#
 #           Demographics
 #   Age, Sex, Race, Marital Status,
@@ -269,38 +250,14 @@ brrfss_covariates<-brrfss_covariates %>%
 
 # Cognitive Function
 
-    ### Memory Loss / Confusion
-    mutate(memloss_d_num=if_else(CIMEMLOS==2,0,
-                          if_else(CIMEMLOS==1,1,NA)),
-          memloss_d_fct=as.factor(if_else(CIMEMLOS==2,"No",
-                          if_else(CIMEMLOS==1,"Yes",NA_character_)))
-      ) %>%
-
-
-    ### Memory Loss - Difficulties with household tasks
-      mutate(memhous_cat_fct=as.factor(if_else(CDHOUSE==1,"Always",
-                                      if_else(CDHOUSE==2,"Usually",
-                                      if_else(CDHOUSE==3,"Sometimes",
-                                      if_else(CDHOUSE==4,"Rarely",
-                                      if_else(CDHOUSE==5,"Never",NA_character_)))))),
-            memhous_d_fct=as.factor(if_else(CDHOUSE %in% 1:3,"Sometimes+",
-                          if_else(CDHOUSE %in% 4:5,"Rarely_Never",NA_character_)))
-            ) %>%
-
 # Chronic Disease (CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,CHCOCNCR,CHCCOPD1,HAVARTH3)
-### These lists - rawnames, newnames, and lastnames - were defined at the top of the file under "functions"
-### This code is to: 1. change the raw BRFSS names into brief, conceptual names; 2. revise the name to include that it's a dichotomous, numeric variable
 
-    rename_at(.vars=vars(rawnames), ~ newnames) %>%
-    rename_at(.vars=vars(newnames),
-            function(z) paste0(z,"_d_num")) %>%
-    mutate_at(.vars=vars(lastnames),
-            .funs = binary_num) %>%
 
 ## Count of Conditions
-    mutate(chron_num = rowSums(.[newnames], na.rm = TRUE)) %>%
+
 ## Any
-    mutate(chron_d_fct = ifelse(chron_num>=1,"Yes","No")) %>%
+
+
 
 # Depressive Disorder
   mutate(dep_d_fct = as.factor(if_else(ADDEPEV2 == 1, "Yes",
