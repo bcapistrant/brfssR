@@ -196,4 +196,6 @@ brfss_COG <- brfss_COG %>%
                                  if_else(CDDISCUS==2, "No", NA_character_))),
          cog_dscs_d_num=as.factor(if_else(CDDISCUS==1, 1,
                                  if_else(CDDISCUS==2, 0, NA_real_)))
-         )
+         ) %>%
+
+  # Need to select the variables
