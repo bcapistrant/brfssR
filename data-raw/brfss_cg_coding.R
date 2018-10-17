@@ -14,6 +14,7 @@ BRFSS_2015_0 <- BRFSS_2015_0 %>%
   filter(X_STATE %in% cg2015_0) %>%
   mutate(YEAR=2015,
          CG_WT_RAW=X_LLCPWT,
+          VERSION_CG="X_LLCPWT",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2015_1<-read.xport("data-raw/LLCP15V1.xpt")
@@ -21,6 +22,7 @@ BRFSS_2015_1 <- BRFSS_2015_1 %>%
   filter(X_STATE %in% cg2015_1) %>%
   mutate(YEAR=2015,
          CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2015_2<-read.xport("data-raw/LLCP15V2.xpt")
@@ -28,11 +30,13 @@ BRFSS_2015_2 <- BRFSS_2015_2 %>%
   filter(X_STATE %in% cg2015_2) %>%
   mutate(YEAR=2015,
          CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
          SEQNO=as.integer(SEQNO))
 
 list2015<-list(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2)
 data_2015<-bind_rows(list2015)
 rm(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2, list2015)
+
 ### 2016
 
 cg2016_0<-c(5,11,13,27,29,30,32,34,38,41,72,46,47)
@@ -45,6 +49,7 @@ BRFSS_2016_0 <- BRFSS_2016_0 %>%
   filter(X_STATE %in% cg2016_0) %>%
   mutate(YEAR=2016,
          CG_WT_RAW=X_LLCPWT,
+         VERSION_CG="X_LLCPWT",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_1<-read.xport("data-raw/LLCP16V1.XPT")
@@ -52,6 +57,7 @@ BRFSS_2016_1 <- BRFSS_2016_1 %>%
   filter(X_STATE %in% cg2016_1) %>%
   mutate(YEAR=2016,
          CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_2<-read.xport("data-raw/LLCP16V2.XPT")
@@ -59,6 +65,7 @@ BRFSS_2016_2 <- BRFSS_2016_2 %>%
   filter(X_STATE %in% cg2016_2) %>%
   mutate(YEAR=2016,
          CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2016_3<-read.xport("data-raw/LLCP16V3.XPT")
@@ -66,6 +73,7 @@ BRFSS_2016_3 <- BRFSS_2016_3 %>%
   filter(X_STATE %in% cg2016_3) %>%
   mutate(YEAR=2016,
          CG_WT_RAW=X_LCPWTV3,
+         VERSION_CG="X_LCPWTV3",
          SEQNO=as.integer(SEQNO))
 
 ### Add datasets together
@@ -87,6 +95,7 @@ BRFSS_2017_0 <- BRFSS_2017_0 %>%
   filter(X_STATE %in% cg2017_0) %>%
   mutate(YEAR=2017,
          CG_WT_RAW=X_LLCPWT,
+         VERSION_CG="X_LLCPWT",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2017_1<-read.xport("data-raw/LLCP17V1.XPT")
@@ -94,6 +103,7 @@ BRFSS_2017_1 <- BRFSS_2017_1 %>%
   filter(X_STATE %in% cg2017_1) %>%
   mutate(YEAR=2017,
          CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2017_2<-read.xport("data-raw/LLCP17V2.XPT")
@@ -101,6 +111,7 @@ BRFSS_2017_2 <- BRFSS_2017_2 %>%
   filter(X_STATE %in% cg2017_2) %>%
   mutate(YEAR=2017,
          CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
          SEQNO=as.integer(SEQNO))
 
 BRFSS_2017_3<-read.xport("data-raw/LLCP17V3.XPT")
@@ -108,6 +119,7 @@ BRFSS_2017_3 <- BRFSS_2017_3 %>%
   filter(X_STATE %in% cg2017_3) %>%
   mutate(YEAR=2017,
          CG_WT_RAW=X_LCPWTV3,
+         VERSION_CG="X_LCPWTV3",
          SEQNO=as.integer(SEQNO))
 ### Add datasets together
 list2017<-list(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3)
@@ -307,7 +319,7 @@ brfss_cg <- brfss_cg %>%
           cg_type_cat_num,cg_type_cat_fct,
           cg_most_cat_num,cg_most_cat_fct,
           cg_expt_cat_num,cg_expt_cat_fct,
-          X_PSU, X_STSTR, CG_WT_RAW, YEAR, incg
+          X_PSU, X_STSTR, CG_WT_RAW, VERSION_CG, YEAR, incg
           )
  rm(brfss_cg)
 

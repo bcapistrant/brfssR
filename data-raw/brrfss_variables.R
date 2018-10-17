@@ -2,6 +2,78 @@ library(tidyverse)
 
 ## BRING IN DATA FROM 2013 - 2017
 
+### 2014
+sgm2014_0<-c(10,15,16,18,19,
+             20,21,22,24,27,
+             30,32,36,39,42,
+             50,51,55,56,66)
+
+SGM_2014_0<-read.xport("data-raw/LLCP2014.XPT")
+data_2014 <- SGM_2014_0 %>%
+  filter(X_STATE %in% sgm2014_0) %>%
+  mutate(YEAR=2014,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT)
+rm(SGM_2014_0)
+
+### 2015
+sgm2015_0<-c(8,9,10,13,15,16,17,
+             18,19,20,24,27,29,32,
+             36,39,42,48,50,54,55)
+sgm2015_1<-19
+
+SGM_2015_0<-read.xport("data-raw/LLCP2015.XPT")
+SGM_2015_0 <- SGM_2015_0 %>%
+  filter(X_STATE %in% sgm2015_0) %>%
+  mutate(YEAR=2015,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT)
+
+SGM_2015_1<-read.xport("data-raw/LLCP15V1.XPT")
+SGM_2015_1 <- SGM_2015_1 %>%
+  filter(X_STATE %in% sgm2015_1) %>%
+  mutate(YEAR=2015,
+         VERSION_SGM="X_LCPWTV1",
+         sgm_wt_raw=X_LCPWTV1)
+
+list2015<-list(SGM_2015_0, SGM_2015_1)
+data_2015<-bind_rows(list2015)
+rm(SGM_2015_0, SGM_2015_1, list2015)
+
+### 2016
+
+sgm2016_0<-c(6,9,10,13,15,
+             16,17,18,19,21,
+             22,25,27,28,29,
+             32,36,39,42,44,
+             48,50,51,53,55,66)
+
+SGM_2016_0<-read.xport("data-raw/LLCP2016.XPT")
+data_2016 <- SGM_2016_0 %>%
+  filter(X_STATE %in% sgm2016_0) %>%
+  mutate(YEAR=2016,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT)
+rm(SGM_2016_0)
+
+### 2017
+
+sgm2017_0<-c(6,9,10,12,13,15,17,
+             18,19,22,25,27,28,30,
+             32,36,37,39,40,42,44,
+             45,48,50,51,53,55,66)
+
+SGM_2017_0<-read.xport("data-raw/LLCP2017.XPT")
+data_2016 <- SGM_2017_0 %>%
+  filter(X_STATE %in% sgm2017_0) %>%
+  mutate(YEAR=2017,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT)
+rm(SGM_2017_0)
+
+### COMBINING 2014-2017
+brfss_sgm<-bind_rows(data_2017,data_2016,data_2015,data_2014)
+
 
 
 #---------------------------------------#
@@ -25,7 +97,8 @@ lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","c
 #---------------------------------------#
 #           Demographics
 #   Age, Sex, Race, Marital Status,
-#   Number of Children, Veterans Status
+#   Number of Children, Veterans Status,
+#   Metropolitan Service Area
 #---------------------------------------#
 
 brrfss_covariates<-brrfss_covariates %>%
@@ -122,10 +195,19 @@ brrfss_covariates<-brrfss_covariates %>%
 # Veteran Status (VETERAN3)
     mutate(vtrn_d_num=if_else(VETERAN3==2,0,
                       if_else(VETERAN3==1,1,NA_real_)),
-          vtrn_d_fct=if_else(VETERAN3==2,"Non-Veteran",
-                      if_else(VETERAN3==1,"Veteran",NA_character_))
+          vtrn_d_fct=as.factor(if_else(VETERAN3==2,"Non-Veteran",
+                      if_else(VETERAN3==1,"Veteran",NA_character_)))
       ) %>%
 
+# Metropolitan Service Area (MSA)
+    mutate(msa_cat_fct=as.factor(if_else(MSCODE==1, "City_Center",
+                                  if_else(MSCODE==2, "City_County",
+                                  if_else(MSCODE==3, "Suburb",
+                                  if_else(MSCODE==5, "Outside MSA",NA_character_))))),
+           msa_d_fct=as.factor(if_else(MSCODE %in% 1:3, "Yes",
+                                  if_else(MSCODE==5, "No",NA_character_)))
+
+      ) %>%
 
 #---------------------------------------#
 #         SOCIOECONOMIC STATUS
@@ -267,26 +349,6 @@ brrfss_covariates<-brrfss_covariates %>%
 #---------------------------------------#
 
 
-# Cognitive Function
-
-    ### Memory Loss / Confusion
-    mutate(memloss_d_num=if_else(CIMEMLOS==2,0,
-                          if_else(CIMEMLOS==1,1,NA)),
-          memloss_d_fct=as.factor(if_else(CIMEMLOS==2,"No",
-                          if_else(CIMEMLOS==1,"Yes",NA_character_)))
-      ) %>%
-
-
-    ### Memory Loss - Difficulties with household tasks
-      mutate(memhous_cat_fct=as.factor(if_else(CDHOUSE==1,"Always",
-                                      if_else(CDHOUSE==2,"Usually",
-                                      if_else(CDHOUSE==3,"Sometimes",
-                                      if_else(CDHOUSE==4,"Rarely",
-                                      if_else(CDHOUSE==5,"Never",NA_character_)))))),
-            memhous_d_fct=as.factor(if_else(CDHOUSE %in% 1:3,"Sometimes+",
-                          if_else(CDHOUSE %in% 4:5,"Rarely_Never",NA_character_)))
-            ) %>%
-
 # Chronic Disease (CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,CHCOCNCR,CHCCOPD1,HAVARTH3)
 ### These lists - rawnames, newnames, and lastnames - were defined at the top of the file under "functions"
 ### This code is to: 1. change the raw BRFSS names into brief, conceptual names; 2. revise the name to include that it's a dichotomous, numeric variable
@@ -309,27 +371,6 @@ brrfss_covariates<-brrfss_covariates %>%
                                if_else(ADDEPEV2 == 2, 0, NA_real_)))
     ) %>%
 
-# Emotional Support
-    mutate(emsup_d_fct=as.factor(if_else(EMTSUPRT %in% 1:3, "Sometimes+",
-                            if_else(EMTSUPRT %in% 4:5, "Rarely/Never", NA_character_))),
-           emsup_cat_fct=as.factor(if_else(EMTSUPRT==1, "Always",
-                            if_else(EMTSUPRT==2, "Usually",
-                            if_else(EMTSUPRT==3, "Sometimes",
-                            if_else(EMTSUPRT==4, "Rarely",
-                            if_else(EMTSUPRT==5, "Never", NA_character_))))))
-    ) %>%
-
-# Life Satisfaction
-
-    mutate(lsat_d_fct=as.factor(if_else(LSATISFY %in% 1:2, "Satisfied",
-                           if_else(LSATISFY %in% 3:4, "Dissatisfied", NA_character_))),
-
-           lsat_cat_fct=as.factor(if_else(LSATISFY==1, "Very Satisfied",
-                            if_else(LSATISFY==2, "Satisfied",
-                            if_else(LSATISFY==3, "Dissatisified",
-                            if_else(LSATISFY==4, "Very Dissatisified",NA_character_)))))
-
-  ) %>%
 
 # Mental Health QOL
     mutate(mentqol_num = as.numeric(if_else(MENTHLTH == 88, 0,
@@ -357,4 +398,37 @@ brrfss_covariates<-brrfss_covariates %>%
                             if_else(GENHLTH==4, "Fair",
                             if_else(GENHLTH==5, "Poor", NA_character_))))))
 
+  )
+
+brrfss_covariates <- brrfss_covariates %>%
+  select(
+    age_num,age_cat,
+    millennial_d_num,millennial_d_fct,
+    agege45_d_num,agege45_d_fct,
+    agege65_d_num,agege65_d_fct,
+    mstat_cat_fct,mstat_cat_fct,
+    chld_num,chld_cat_fct,
+    race_cat_fct,ethn_cat_fct,raceth_cat_fct,
+    sex_d_fct,fem_d_num,
+    vtrn_d_num,vtrn_d_fct,
+    msa_cat_fct,msa_d_fct,
+    drnkbng_d_fct,drnkhvy_d_fct,
+    bmi_cat_fct,
+    hiv_d_num,hiv_d_fct,
+    fluvac_d_fct,fluvac_d_num,fluvac_date_num,
+    ltpa_d_fct,
+    smk_cat_fct,
+    drcost_d_fct,
+    hcplan_d_fct,
+    chckup_cat_fct,
+    dntst_cat_fct,
+    chron_num,chron_d_fct,cvd_d_num,strk_d_num,diab_d_num,asth_d_num,arth_d_num,copd_d_num,cncr_d_num,
+    dep_d_fct,
+    mentqol_num,mentqol14_d_fct,
+    physqol_num,physqol14_d_fct,
+    srh_d_fct,srh_cat_fct,
+    empl_cat_fct,
+    inc_cat_fct,
+    educ_cat_fct,
+    X_STATE,YEAR,SEQNO,sgm_wt_raw,VERSION_SGM
   )
