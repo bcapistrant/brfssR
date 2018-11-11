@@ -22,4 +22,4 @@
 #'   mutate(wave = count(state, year),
 #'        cg_wt_adj = cg_wt_raw/wave
 #'   )
-"cg_data"
+"brfss_cg"

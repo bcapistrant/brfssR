@@ -17,10 +17,14 @@
 #'   \item{genmin_men_d}{indicator, numeric variable of whether respondent was Transgender, Male (genmin_men_d=1) or not (genmin_men_d=0)}
 #'   \item{genmin_gnc_d}{indicator, numeric variable of whether respondent was Gender Non Conforming (genmin_gnc_d=1) or not (genmin_gnc_d=0)}
 #'   \item{genmin_cis_d}{indicator, numeric variable of whether respondent was Cis-Gender (genmin_cis_d=1) or not (genmin_cis_d=0)}
+#'   \item{x_state}{numeric variable of state}
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
 #'   \item{seqno}{identificaiton variable}
-#'   \item{year}{Numeric year, 2014-2017}
-#'   \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2017}
+#'   \item{year}{Numeric year: 2014-2017}
+#'   \item{x_psu}{Primary Sampling Unit Variable}
+#'   \item{x_ststr}{Sampling Strata Variable}
+#'   \item{sgm_wt_raw}{Original,raw sampling weight: 2014-2017}
+#'   \item{version_sgm}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 #' @examples
@@ -32,4 +36,4 @@
 #'   mutate(wave = count(state, year),
 #'        sgm_wt_adj = sgm_wt_raw/wave
 #'   )
-"sgm_data"
+"brfss_sgm"
