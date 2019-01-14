@@ -6,6 +6,8 @@
 #' @format A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
 #' \describe{
 #'   \item{sgm_d}{indicator, numeric variable of whether respondent was SGM (sgm_d=1) or not (sgm_d=0)}
+#'   \item{sgm_sex_cat}{categorical, factor variable of respondent's SGM and gender identity: Cis, Hetero, Male, etc.}
+#'   \item{sgm_sex_cat2}{copy of sgm_sex_cat with all transgender identified individuals (TFM, MTF, GNC) collapsed into one "Transgender" category}
 #'   \item{lgb_cat}{categorical, factor variable of respondent's sexual orientation: Lesbian; Gay; Bisexual; or Heterosexual}
 #'   \item{lgb_d}{indicator, numeric variable of whether respondent was lesbian, gay, or bisexual (lgb_d=1) or Heterosexual (lgb_d=0)}
 #'   \item{lgb_het_d}{indicator, numeric variable of whether respondent was Heterosexual (lgb_het_d=1) or not (lgb_het_d=0)}

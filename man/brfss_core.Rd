@@ -4,7 +4,7 @@
 \name{brfss_core}
 \alias{brfss_core}
 \title{BRFSS Demographic, Socioeconomic, Health Care, Status and Behaviors Data}
-\format{A "long" data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:
+\format{A long data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:
 \describe{
   \item{age_num}{numeric, quantiative	18-99}
   \item{age_cat}{factor, categorical	5-year age categories (18-24, 25-29,…95-99)}
@@ -50,6 +50,18 @@
   \item{arth_d_num}{numeric, dichotomous	0/1 (No/Yes)}
   \item{copd_d_num}{numeric, dichotomous	0/1 (No/Yes)}
   \item{cncr_d_num}{numeric, dichotomous	0/1 (No/Yes)}
+  \item{dep_d_fct}{factor, dichotomous	No/Yes}
+  \item{mentqol_num}{numeric, quantitative, 0-30}
+  \item{mentqol14_d_num}{numeric, dichotomous	0/1 (No/Yes)}
+  \item{mentqol14_d_fct}{factor, dichotomous	No/Yes}
+  \item{physqol_num}{numeric, quantitative, 0-30}
+  \item{physqol14_d_num}{numeric, dichotomous	0/1 (No/Yes)}
+  \item{physqol14_d_fct}{factor, dichotomous	No/Yes}
+  \item{srh_d_fct}{factor, dichotomous: Good+ vs. Fair/Poor}
+  \item{srh_cat_fct}{factor, categorical: Excellent, Very Good, Good, Fair, Poor}
+  \item{empl_cat_fct}{factor, categorical: Out of work, Employed for wages, Self-employed,A homemaker, A student, Retired, Unable to work}
+  \item{inc_cat_fct}{factor, categorical: <$10,000, $10,000-$14,999, $15,000-19,999, $20,000-$24,999,$25,000-34,999, $35,000-$49,999,$50,000-74,999, $75,000+,Don't know or refused}
+  \item{educ_cat_fct}{factor, categorical:<High School,High School,Some College,College or More}
   \item{x_state}{numeric variable of state}
   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
   \item{seqno}{identificaiton variable}

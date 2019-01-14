@@ -361,16 +361,18 @@ brrfss_covariates<-brfss_VAR %>%
 # Mental Health QOL
     mutate(mentqol_num = as.numeric(if_else(MENTHLTH == 88, 0,
                                    if_else(MENTHLTH %in% 77:99, NA_real_, MENTHLTH)))) %>%
-
-    mutate(mentqol14_d_fct = as.factor(if_else(mentqol_num %in% 0:14 , "No",
+    mutate(mentqol14_d_num = as.numeric(if_else(mentqol_num %in% 0:14, 0,
+                                     if_else(mentqol_num %in% 14:30, 1, NA_real_))),
+          mentqol14_d_fct = as.factor(if_else(mentqol_num %in% 0:14 , "No",
                                      if_else(mentqol_num %in% 14:30, "Yes", NA_character_)))
       ) %>%
 
 # Physical Health QOL
     mutate(physqol_num = as.numeric(if_else(PHYSHLTH == 88, 0,
                                    if_else(PHYSHLTH %in% 77:99, NA_real_, MENTHLTH)))) %>%
-
-    mutate(physqol14_d_fct = as.factor(if_else(physqol_num %in% 0:14, "No",
+    mutate(physqol14_d_num = as.numeric(if_else(physqol_num %in% 0:14, 0,
+                                     if_else(physqol_num %in% 14:30, 1, NA_real_))),
+           physqol14_d_fct = as.factor(if_else(physqol_num %in% 0:14, "No",
                                      if_else(physqol_num %in% 14:30, "Yes", NA_character_)))
       ) %>%
 
@@ -411,8 +413,8 @@ brfss_core <- brrfss_covariates %>%
     dntst_cat_fct,
     chron_num,chron_d_fct,cvd_d_num,strk_d_num,diab_d_num,asth_d_num,arth_d_num,copd_d_num,cncr_d_num,
     dep_d_fct,
-    mentqol_num,mentqol14_d_fct,
-    physqol_num,physqol14_d_fct,
+    mentqol_num,mentqol14_d_num,mentqol14_d_fct,
+    physqol_num,physqol14_d_num,physqol14_d_fct,
     srh_d_fct,srh_cat_fct,
     empl_cat_fct,
     inc_cat_fct,
@@ -421,4 +423,4 @@ brfss_core <- brrfss_covariates %>%
     var_wt_raw,version_var
   )
 rm(brrfss_covariates)
-save(brfss_core, file = "data/brrfss_core.rda", compress = "bzip2")
+save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2")

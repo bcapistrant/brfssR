@@ -93,7 +93,7 @@ sgmstatelabel<-c("CA","CO","CT","DE","FL","GA","HI",
                  "MD","MA","MN","MS","MO","MT","NV",
                  "NY","NC","OH","OK","PA","RI","SC",
                  "TX","VT","VA","WA","WV","WI","WY","GU")
-brfss_sgm$state<- factor(brfss_sgm$X_STATE, levels=sgmstates, labels=sgmstatelabel)
+brfss_sgm$state<-factor(brfss_sgm$X_STATE, levels=sgmstates, labels=sgmstatelabel)
 
 #------------------------------------------------------------------------------------#
 # Cleaning Variables
@@ -134,12 +134,29 @@ brfss_sgm <- brfss_sgm %>%
                           if_else(TRNSGNDR==4, "Cis-Gender", NA_character_))))),
     #Sexual / Gender Minority - Either LGB or Trans/GNC vs. Cis-gendered Heterosexuals
         sgm_d=if_else(lgb_d==1 | genmin_d==1, 1,
-              if_else(lgb_d==0 & genmin_d==0, 0, NA_real_))
+              if_else(lgb_d==0 & genmin_d==0, 0, NA_real_)),
+                sgm_sex_cat=as.factor(if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==1, "Cis_Het_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==2, "Cis_Gay_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==3, "Cis_Bi_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==1, "Cis_Het_Female",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==2, "Cis_Gay_Female",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==3, "Cis_Bi_Female",
+                                  if_else(TRNSGNDR==1, "Trans_Female",
+                                  if_else(TRNSGNDR==2, "Trans_Male",
+                                  if_else(TRNSGNDR==3, "Trans_GNC",NA_character_)))))))))),
+            sgm_sex_cat2=as.factor(if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==1, "Cis_Het_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==2, "Cis_Gay_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 1 & SXORIENT==3, "Cis_Bi_Male",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==1, "Cis_Het_Female",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==2, "Cis_Gay_Female",
+                                  if_else(TRNSGNDR==4 & SEX == 2 & SXORIENT==3, "Cis_Bi_Female",
+                                  if_else(TRNSGNDR %in% 1:3, "Transgender",NA_character_))))))))
   ) %>%
   rename_all(tolower) %>%
-  select(sgm_d,
+  select(sgm_d,sgm_sex_cat,sgm_sex_cat2,
          lgb_d, lgb_het_d, lgb_gayles_d,lgb_bi_d, lgb_cat,
-         genmin_d, genmin_fem_d, genmin_men_d,genmin_cis_d,genmin_gnc_d,genmin_only_cat,genmin_cat, x_state,state,year,seqno,x_psu,x_ststr,sgm_wt_raw,version_sgm)
+         genmin_d, genmin_fem_d, genmin_men_d,genmin_cis_d,genmin_gnc_d,genmin_only_cat,genmin_cat,
+        x_state,state,year,seqno,x_psu,x_ststr,sgm_wt_raw,version_sgm)
 
 # Setting Reference Groups: LGB vs. (reference) Heterosexual
 brfss_sgm$lgb_cat<-relevel(factor(brfss_sgm$lgb_cat), ref="Heterosexual")
