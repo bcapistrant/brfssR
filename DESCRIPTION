@@ -1,7 +1,7 @@
 Package: brfssR
 Type: Package
 Title: Behavioral Risk Factor Surveillance Survey (BRFSS) Data
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(
     person("Benjamin D.", "Capistrant", email = "bcapistrant@smith.edu", role = c("aut", "cre")))
 Description: This package pools U.S. Centers for Disease Control and Prevention 
@@ -13,7 +13,7 @@ License: CCO
 Encoding: UTF-8
 LazyData: true
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.4.0)
 Suggests: 
     knitr,
     rmarkdown,
