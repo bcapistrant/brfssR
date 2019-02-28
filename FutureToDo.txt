@@ -1,4 +1,0 @@
-Make a map of the states and years with data
-  - States - any
-  - States - # of years
-  - States and which specific years
