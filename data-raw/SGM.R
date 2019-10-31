@@ -162,4 +162,4 @@ brfss_sgm <- brfss_sgm %>%
 brfss_sgm$lgb_cat<-relevel(factor(brfss_sgm$lgb_cat), ref="Heterosexual")
 brfss_sgm$genmin_cat<-relevel(factor(brfss_sgm$genmin_cat), ref="Cis-Gender")
 
-save(brfss_sgm, file = "data/brfss_sgm.rda", compress = "bzip2")
+save(brfss_sgm, file = "data/brfss_sgm.rda", compress = "bzip2", version=2)
