@@ -221,4 +221,4 @@ brfss_cog <- brfss_COG %>%
           cog_wt_raw,version_cog,incog
           )
 rm(brfss_COG)
-save(brfss_cog, file = "data/brfss_cog.rda", compress = "bzip2")
+save(brfss_cog, file = "data/brfss_cog.rda", compress = "bzip2", version=2)
