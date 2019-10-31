@@ -119,5 +119,5 @@ brfss_emspt$emsup_cat_fct<-relevel(factor(brfss_emspt$emsup_cat_fct), ref="Alway
 brfss_emspt$lsat_d_fct<-relevel(factor(brfss_emspt$lsat_d_fct), ref="Satisfied")
 brfss_emspt$lsat_cat_fct<-relevel(factor(brfss_emspt$lsat_cat_fct), ref="Very Satisfied")
 
-save(brfss_emspt, file = "data/brfss_emspt.rda", compress = "bzip2")
+save(brfss_emspt, file = "data/brfss_emspt.rda", compress = "bzip2", version=2)
 
