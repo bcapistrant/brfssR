@@ -423,4 +423,4 @@ brfss_core <- brrfss_covariates %>%
     var_wt_raw,version_var
   )
 rm(brrfss_covariates)
-save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2")
+save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
