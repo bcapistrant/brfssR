@@ -324,7 +324,7 @@ brfss_cg <- brfss_cg %>%
           cg_wt_raw,version_cg,incg
           )
 
-save(brfss_cg, file = "data/brfss_cg.rda", compress = "bzip2")
+save(brfss_cg, file = "data/brfss_cg.rda", compress = "bzip2", version=2)
 
 
 
