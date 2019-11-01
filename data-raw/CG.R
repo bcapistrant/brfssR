@@ -1,7 +1,9 @@
 # libraries needed
-library(magrittr)
-library(foreign)
 library(tidyverse)
+library(lubridate)
+library(foreign)
+library(usethis)
+library(devtools)
 
 # pulling in the datasets
 ### 2015
@@ -324,7 +326,8 @@ brfss_cg <- brfss_cg %>%
           cg_wt_raw,version_cg,incg
           )
 
-save(brfss_cg, file = "data/brfss_cg.rda", compress = "bzip2", version=2)
+#save(brfss_cg, file = "data/brfss_cg.rda", compress = "bzip2", version=2)
+use_data(brfss_cg, overwrite = TRUE,compress = "bzip2")
 
 
 

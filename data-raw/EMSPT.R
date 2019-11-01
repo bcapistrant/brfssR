@@ -1,6 +1,8 @@
+library(tidyverse)
+library(lubridate)
 library(foreign)
-library(dplyr)
-library(magrittr)
+library(usethis)
+library(devtools)
 
 #------------------------------------------------------------------------------------#
 #  Bringing in Data
@@ -119,5 +121,5 @@ brfss_emspt$emsup_cat_fct<-relevel(factor(brfss_emspt$emsup_cat_fct), ref="Alway
 brfss_emspt$lsat_d_fct<-relevel(factor(brfss_emspt$lsat_d_fct), ref="Satisfied")
 brfss_emspt$lsat_cat_fct<-relevel(factor(brfss_emspt$lsat_cat_fct), ref="Very Satisfied")
 
-save(brfss_emspt, file = "data/brfss_emspt.rda", compress = "bzip2", version=2)
-
+#save(brfss_emspt, file = "data/brfss_emspt.rda", compress = "bzip2", version=2)
+use_data(brfss_emspt, overwrite = TRUE,compress = "bzip2")

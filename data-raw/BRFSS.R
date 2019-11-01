@@ -1,6 +1,8 @@
 library(tidyverse)
 library(lubridate)
 library(foreign)
+library(usethis)
+library(devtools)
 ## BRING IN DATA FROM 2014 - 2017
 
 ### 2014
@@ -423,4 +425,5 @@ brfss_core <- brrfss_covariates %>%
     var_wt_raw,version_var
   )
 rm(brrfss_covariates)
-save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
+#save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
+use_data(brfss_core, overwrite = TRUE,compress = "bzip2")

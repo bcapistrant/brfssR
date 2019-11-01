@@ -1,6 +1,8 @@
+library(tidyverse)
+library(lubridate)
 library(foreign)
-library(dplyr)
-library(magrittr)
+library(usethis)
+library(devtools)
 
 ### 2015
 
@@ -221,4 +223,5 @@ brfss_cog <- brfss_COG %>%
           cog_wt_raw,version_cog,incog
           )
 rm(brfss_COG)
-save(brfss_cog, file = "data/brfss_cog.rda", compress = "bzip2", version=2)
+#save(brfss_cog, file = "data/brfss_cog.rda", compress = "bzip2", version=2)
+use_data(brfss_cog, overwrite = TRUE,compress = "bzip2")
