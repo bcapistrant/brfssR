@@ -30,12 +30,19 @@
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 #' @examples
-#' # To adjust the sampling weight (sgm_wt_adj) by dividing the sampling weight by the number of instances a state is in the data, run:
-#' library(dplyr)
-#' library(tidyr)
-#' sgm_data_stateyears <- sgm_data %>%
-#'   filter(year %in% 2016:2017) %>%
-#'   mutate(wave = count(state, year),
-#'        sgm_wt_adj = sgm_wt_raw/wave
-#'   )
+#' # To adjust the sampling weight (sgm_wt_adj) by dividing the
+#' # sampling weight by the number of instances a state is in the data, run:
+#' library(tidyverse)
+#' data(brfss_sgm)
+#' waves<-brfss_sgm %>%
+#'   filter(year %in% 2016:2017) %>% #keeping only 2016-2017 for illustration
+#'   group_by(year,state) %>%
+#'   slice(1) %>% #keeping the first observation of each state + year
+#'   ungroup() %>%
+#'   group_by(state) %>% #grouping by state
+#'   count() %>% #counting how many years the state was included
+#'   rename(wave=n) #renaming as wave
+
+#' brfss_sgm<-full_join(brfss_sgm,waves,by="state") %>%
+#'   mutate(sgm_wt_adj = sgm_wt_raw/wave) #adjusting the weight by number of waves
 "brfss_sgm"
