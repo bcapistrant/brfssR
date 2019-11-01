@@ -9,9 +9,9 @@ Description: This package pools U.S. Centers for Disease Control and Prevention
     from optional state modules on caregiving, cogntive decline, 
     emotional support, and sexual/gender minorities. There are also cleaned 
     demographic, socioeconomic, and health variables.
-License: MIT
 Encoding: UTF-8
-Lazyload: true
+LazyData: true
+RoxygenNote: 6.1.1
 Depends:
     R (>= 3.4.0)
 Suggests: 
@@ -20,4 +20,3 @@ Suggests:
     foreign,
     tidyverse
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
