@@ -81,19 +81,54 @@ data_2017<- SGM_2017_0 %>%
          SEQNO=as.integer(SEQNO))
 rm(SGM_2017_0)
 
-### COMBINING 2014-2017
-brfss_sgm<-bind_rows(data_2017,data_2016,data_2015,data_2014)
+### 2018
+
+# states administered SOGI Module in 2018: Arizona(V2), Connecticut, Delaware, Florida, Guam, Hawaii,
+### Idaho, Illinois, Kansas, Louisiana, Maryland, Minnesota, Mississippi, Missouri, Montana,
+### Nevada, New York, North Carolina, Ohio, Oklahoma, Pennsylvania, Rhode Island, South Carolina,
+### Tennessee, Texas, Vermont, Virginia, Washington, West Virginia, Wisconsin
+
+sgm2018_0 <- c(9, 10, 12, 66, 15, 16,
+               17, 20, 22, 24, 27, 28,
+               29, 30, 32, 36, 37, 39,
+               40, 42, 44, 45, 47, 48,
+               50, 51, 53, 54, 55)
+
+sgm2018_2 <- c(4)
+
+SGM_2018_0 <- read.xport("data-raw/LLCP2018.XPT")
+SGM_2018_2 <- read.xport("data-raw/LLCP18V2.XPT")
+
+data_2018_0<- SGM_2018_0 %>%
+  filter(X_STATE %in% sgm2018_0) %>%
+  mutate(YEAR=2018,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+rm(SGM_2018_0)
+data_2018_2<- SGM_2018_2 %>%
+  filter(X_STATE %in% sgm2018_2) %>%
+  mutate(YEAR=2018,
+         VERSION_SGM="X_LLCPWT2",
+         sgm_wt_raw=X_LLCPWT2,
+         SEQNO=as.integer(SEQNO))
+rm(SGM_2018_2)
+
+data_2018 <- bind_rows(data_2018_0, data_2018_2)
+
+### COMBINING 2014-2018
+brfss_sgm<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
 
 ### Labeling State indicators
-sgmstates<-c(6,8,9,10,12,13,15,
+sgmstates<-c(4,6,8,9,10,12,13,15,
              16,17,18,19,20,21,22,
              24,25,27,28,29,30,32,
-             36,37,39,40,42,44,45,
+             36,37,39,40,42,44,45,47,
              48,50,51,53,54,55,56,66)
-sgmstatelabel<-c("CA","CO","CT","DE","FL","GA","HI",
+sgmstatelabel<-c("AZ","CA","CO","CT","DE","FL","GA","HI",
                  "ID","IL","IN","IA","KS","KY","LA",
                  "MD","MA","MN","MS","MO","MT","NV",
-                 "NY","NC","OH","OK","PA","RI","SC",
+                 "NY","NC","OH","OK","PA","RI","SC", "TN",
                  "TX","VT","VA","WA","WV","WI","WY","GU")
 brfss_sgm$state<-factor(brfss_sgm$X_STATE, levels=sgmstates, labels=sgmstatelabel)
 
