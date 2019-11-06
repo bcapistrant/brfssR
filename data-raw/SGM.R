@@ -1,6 +1,7 @@
 library(tidyverse)
 library(lubridate)
 library(foreign)
+library(labelled)
 library(usethis)
 library(devtools)
 
@@ -115,6 +116,16 @@ data_2018_2<- SGM_2018_2 %>%
 rm(SGM_2018_2)
 
 data_2018 <- bind_rows(data_2018_0, data_2018_2)
+
+# recode 2018 sexual orientation vars (delivered seperately for men and women)
+## NOTE: coded to match 2017 levels
+### in 2018, SXORIENT is two variables, SOMALE and SOFEMALE
+### in 2017, 1 is straight and 2 is gay, opposite in 2018
+
+data_2018 <- data_2018 %>%
+  mutate(SXORIENT = ifelse(is.na(SOMALE) == FALSE, SOMALE, SOFEMALE)) %>%
+  mutate(SXORIENT = ifelse(SXORIENT == 1, 2,
+                           ifelse(SXORIENT == 2, 1, SXORIENT)))
 
 ### COMBINING 2014-2018
 brfss_sgm<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
