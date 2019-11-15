@@ -42,9 +42,19 @@ data_2017 <- VAR_2017_0 %>%
          SEQNO=as.integer(SEQNO))
 rm(VAR_2017_0)
 
-### COMBINING 2014-2017
-brfss_VAR<-bind_rows(data_2017,data_2016,data_2015,data_2014)
-rm(data_2017,data_2016,data_2015,data_2014)
+### 2018
+
+VAR_2018_0<-read.xport("data-raw/LLCP2018.XPT")
+data_2018 <- VAR_2018_0 %>%
+  mutate(YEAR=2017,
+         VERSION_VAR="X_LLCPWT",
+         VAR_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+rm(VAR_2018_0)
+
+### COMBINING 2014-2018
+brfss_VAR<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
+rm(data_2018,data_2017,data_2016,data_2015,data_2014)
 
 varstates<-c(1,2,4,5,6,8,9,10,
               11,12,13,15,16,17,18,19,20,

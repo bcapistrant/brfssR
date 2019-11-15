@@ -129,6 +129,8 @@ list2017<-list(COG_2017_0, COG_2017_2,COG_2017_3)
 data_2017<-bind_rows(list2017)
 rm(COG_2017_0,COG_2017_2,COG_2017_3, list2017)
 
+## No States including this Module in 2018
+
 ### COMBINING 2015-2017
 brfss_COG<-bind_rows(data_2017,data_2016,data_2015)
 rm(data_2017,data_2016,data_2015)

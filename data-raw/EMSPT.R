@@ -84,6 +84,8 @@ rm(emspt_1017_0, emspt_1017_1, list2017)
 ### COMBINING 2014-2017
 brfss_emspt<-bind_rows(data_2017,data_2016,data_2015,data_2014)
 
+### Note - there were no states with this module in 2018
+
 ### Labeling State indicators
 emsptstates<-c(22,27,39,40,44,55)
 emsptstatelabel<-c("LA","MN","OH","OK","RI","WI")
