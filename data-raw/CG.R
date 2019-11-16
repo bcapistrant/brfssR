@@ -123,16 +123,53 @@ BRFSS_2017_3 <- BRFSS_2017_3 %>%
          CG_WT_RAW=X_LCPWTV3,
          VERSION_CG="X_LCPWTV3",
          SEQNO=as.integer(SEQNO))
+
+
 ### Add datasets together
 list2017<-list(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3)
 data_2017<-bind_rows(list2017)
 data_2017$SEQNO<-as.integer(data_2017$SEQNO)
 rm(BRFSS_2017_0, BRFSS_2017_1, BRFSS_2017_2, BRFSS_2017_3,list2017)
 
+### 2018
 
-### COMBINING 2015 AND 2016
-brfss_cg<-bind_rows(data_2017,data_2016,data_2015)
-rm(data_2017,data_2016,data_2015)
+cg2018_0<-c(13,34,41)
+cg2018_1<-c(39)
+cg2018_2<-c(36)
+
+BRFSS_2018_0 <- read.xport("data-raw/LLCP2018.XPT")
+BRFSS_2018_0 <- BRFSS_2018_0 %>%
+  filter(X_STATE %in% cg2018_0) %>%
+  mutate(YEAR=2018,
+         CG_WT_RAW=X_LLCPWT,
+         VERSION_CG="X_LLCPWT",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2018_1<-read.xport("data-raw/LLCP18V1.XPT")
+BRFSS_2018_1 <- BRFSS_2018_1 %>%
+  filter(X_STATE %in% cg2018_1) %>%
+  mutate(YEAR=2018,
+         CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2018_2<-read.xport("data-raw/LLCP18V2.XPT")
+BRFSS_2018_2 <- BRFSS_2018_2 %>%
+  filter(X_STATE %in% cg2018_2) %>%
+  mutate(YEAR=2018,
+         CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
+         SEQNO=as.integer(SEQNO))
+
+### Adding data sets together
+list2018<-list(BRFSS_2018_0, BRFSS_2018_1, BRFSS_2018_2)
+
+data_2018<-bind_rows(list2018)
+rm(BRFSS_2018_0, BRFSS_2018_1, BRFSS_2018_2, list2018)
+
+### COMBINING 2015-2018
+brfss_cg<-bind_rows(data_2018, data_2017,data_2016,data_2015)
+rm(data_2018, data_2017,data_2016,data_2015)
 
 cgsgmstates<-c(1,2,4,5,6,8,9,11,12,13,
                15,16,17,18,19,20,21,22,23,24,
