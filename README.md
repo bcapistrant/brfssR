@@ -24,3 +24,8 @@ It also includes core variables from each BRFSS year 2014-2017:
 # Install the development version from GitHub
 devtools::install_github("bencapistrant/brfssR")
 ```
+
+## How the raw data files are stored
+The raw data files (`.XPT`) are stored via Git Large File System (LFS) (https://git-lfs.github.com/). LFS is a way to circumvent Github's limitation on large files. It replaces a file with a pointer to its storage space in a LFS cache (source: https://www.atlassian.com/git/tutorials/git-lfs). The `.rda` files should not be stored via LFS as the package will not be installable via `devtools::install_github()` and the `.rda` files will not be loadable; you will instead get the pointers if you try to open the `.rda` files.
+
+Read more about Git LFS: https://help.github.com/en/github/managing-large-files/versioning-large-files
