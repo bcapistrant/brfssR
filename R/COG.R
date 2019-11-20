@@ -1,6 +1,6 @@
 #' BRFSS Cognitive Decline Module Data
 #'
-#' BRFSS Cognitive Decline Module Questions asked from 2015-2017
+#' BRFSS Cognitive Decline Module Questions asked from 2015-2017 (no states included this module in 2018)
 #' \url{https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf}.
 
 #' @format A "long" data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:

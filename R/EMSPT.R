@@ -1,5 +1,7 @@
 #' BRFSS Emotional Support (EmSpt) and Life Satisfaction Data
 #'
+#'BRFSS Emotional Support (EmSpt) and Life Satisfaction Module Questions asked from 2015-2017 (no states included this module in 2018)
+#'
 #' @format A "long" data frame with rows of individual BRFSS respondents in a given state and year and YY column variables:
 #' \describe{
 #'   \item{emsup_d_fct}{factor, dichotomous	Sometimes+, Rarely/Never}

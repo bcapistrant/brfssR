@@ -26,7 +26,7 @@ BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.
 brfss_emspt
 }
 \description{
-BRFSS Emotional Support (EmSpt) and Life Satisfaction Data
+BRFSS Emotional Support (EmSpt) and Life Satisfaction Module Questions asked from 2015-2017 (no states included this module in 2018)
 }
 \examples{
 # To adjust the sampling weight (emspt_wt_raw) by dividing the

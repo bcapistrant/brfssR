@@ -61,10 +61,10 @@
 #'   \item{x_state}{numeric variable of state}
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
 #'   \item{seqno}{identificaiton variable}
-#'   \item{year}{Numeric year: 2014-2017}
+#'   \item{year}{Numeric year: 2014-2018}
 #'   \item{x_psu}{Primary Sampling Unit Variable}
 #'   \item{x_ststr}{Sampling Strata Variable}
-#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2017}
+#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2018}
 #'   \item{version_var}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
@@ -75,7 +75,7 @@
 #' library(tidyverse)
 #' data(brfss_core)
 #' waves<-brfss_core %>%
-#'   filter(year %in% 2016:2017) %>% #keeping only 2016-2017 for illustration
+#'   filter(year %in% 2016:2018) %>% #keeping only 2016-2018 for illustration
 #'   group_by(year,state) %>%
 #'   slice(1) %>% #keeping the first observation of each state + year
 #'   ungroup() %>%

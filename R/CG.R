@@ -1,6 +1,6 @@
 #' BRFSS Caregiver (CG) Module Data
 #'
-#' BRFSS Caregiving Module Questions asked from 2015-2017
+#' BRFSS Caregiving Module Questions asked from 2015-2018
 #' \url{https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm}.
 #'
 #' @format A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
@@ -9,8 +9,8 @@
 #'   \item{cg_d_fct}{indicator, factor variable of whether respondent was Caregiver (cg_d_fct="CG") or not (cg_d_fct="Non-CG")}
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
 #'   \item{seqno}{identificaiton variable}
-#'   \item{year}{Numeric year, 2014-2017}
-#'   \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2017}
+#'   \item{year}{Numeric year, 2014-2018}
+#'   \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2018}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 #' @examples
@@ -20,7 +20,7 @@
 #' library(tidyverse)
 #' data(brfss_cg)
 #' waves<-brfss_cg %>%
-#'   filter(year %in% 2016:2017) %>% #keeping only 2016-2017 for illustration
+#'   filter(year %in% 2016:2018) %>% #keeping only 2016-2018 for illustration
 #'   group_by(year,state) %>%
 #'   slice(1) %>% #keeping the first observation of each state + year
 #'   ungroup() %>%
