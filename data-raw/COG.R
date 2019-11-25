@@ -131,22 +131,59 @@ rm(COG_2017_0,COG_2017_2,COG_2017_3, list2017)
 
 ## No States including this Module in 2018
 
+# LLCP2018	_LLCPWT	New Jersey, Oregon, Pennsylvania
+# LLCP18V1	_LCPWTV1	Maine
+# LLCP18V2	_LCPWTV2	Michigan, New York
+
+COG2018_0<-c(34,41,42)
+COG2018_1<-c(23)
+COG2018_2<-c(26,36)
+
+COG_2018_0<-read.xport("data-raw/LLCP2018.XPT")
+COG_2018_0 <- COG_2018_0 %>%
+  filter(X_STATE %in% COG2018_0) %>%
+  mutate(YEAR=2018,
+         version_cog="X_LLCPWT",
+         COG_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+
+COG_2018_1<-read.xport("data-raw/LLCP17V1.XPT")
+COG_2018_1 <- COG_2018_1 %>%
+  filter(X_STATE %in% COG2018_1) %>%
+  mutate(YEAR=2018,
+         version_cog="X_LCPWTV1",
+         COG_wt_raw=X_LCPWTV1,
+         SEQNO=as.integer(SEQNO))
+
+COG_2018_2<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2018_2 <- COG_2018_2 %>%
+  filter(X_STATE %in% COG2018_2) %>%
+  mutate(YEAR=2018,
+         version_cog="X_LCPWTV2",
+         COG_wt_raw=X_LCPWTV2,
+         SEQNO=as.integer(SEQNO))
+
+list2018<-list(COG_2018_0, COG_2018_1,COG_2018_2)
+data_2018<-bind_rows(list2018)
+rm(COG_2018_0,COG_2018_1,COG_2018_2, list2018)
+
+
 ### COMBINING 2015-2017
-brfss_COG<-bind_rows(data_2017,data_2016,data_2015)
-rm(data_2017,data_2016,data_2015)
+brfss_COG<-bind_rows(data_2018, data_2017,data_2016,data_2015)
+rm(data_2018,data_2017,data_2016,data_2015)
 
 ### Labeling State indicators
 COGstates<- c(1,2,4,5,6,8,9,10,
               11,12,13,15,16,17,18,19,
               20,21,22,23,24,25,26,27,28,29,
               30,31,32,33,34,35,36,37,38,39,
-              40,41,44,45,46,47,48,49,
+              40,41,42,44,45,46,47,48,49,
               50,51,53,54,55,56,72)
 COGstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
                  "DC","FL","GA","HI","ID","IL","IN","IA",
                  "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO",
                  "MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH",
-                 "OK","OR","RI","SC","SD","TN","TX","UT",
+                 "OK","OR","PA","RI","SC","SD","TN","TX","UT",
                  "VT","VA","WA","WV","WI","WY","PR")
 brfss_COG$state<- factor(brfss_COG$X_STATE, levels=COGstates, labels=COGstatelabel)
 
