@@ -222,7 +222,7 @@ brfss_cg <- brfss_cg %>%
 
 
 # Relationship of Person Receiving Care to Caregiver
-        cg_prb_cat_num=if_else(YEAR==2017,CRGVREL2,CRGVREL1),
+        cg_prb_cat_num=if_else(YEAR %in% 2017:2018,CRGVREL2,CRGVREL1),
         cg_prb_cat_num=if_else(cg_prb_cat_num %in% c(77,99),NA_real_,cg_prb_cat_num), #Setting DK/Refused to Missing
 
         cg_rel_cat_6fct=as.factor(if_else(cg_prb_cat_num %in% 1:4, "Parent/Parent-in-law",
