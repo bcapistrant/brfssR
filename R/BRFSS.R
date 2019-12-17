@@ -23,6 +23,8 @@
 #'   \item{vtrn_d_fct}{factor, dichotomous	Non-Veteran, Veteran}
 #'   \item{msa_cat_fct}{factor, categorical	City_Center, City_County, Suburb, Outside MSA}
 #'   \item{msa_d_fct}{factor, dichotomous	Yes/No}
+#'   \item{metro_d_fct}{factor, dichotomous	Yes/No: 2018 only (raw BRFSS variable: _METSTAT)}
+#'   \item{urban_d_fct}{factor, dichotomous	Yes/No: 2018 only (raw BRFSS variable: _URBSTAT)}
 #'   \item{drnkbng_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{drnkhvy_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{bmi_cat_fct}{factor, categorical	Underweight, Normal Weight, Overweight, Obese, Unkown}

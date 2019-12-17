@@ -71,8 +71,7 @@ varstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
 brfss_VAR$state<- factor(brfss_VAR$X_STATE, levels=varstates, labels=varstatelabel)
 
 brfss_VAR<-brfss_VAR%>%
-select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,ADDEPEV2,MENTHLTH,PHYSHLTH,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,
-X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,ADDEPEV2,MENTHLTH,PHYSHLTH,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
 #---------------------------------------#
 #           FUNCTIONS
@@ -92,6 +91,8 @@ binary_d_fct<-function(x) {
 rawnames = c("CVDCRHD4","CVDSTRK3","DIABETE3","ASTHMA3","CHCOCNCR","CHCCOPD1","HAVARTH3")
 newnames = c("cvd","strk","diab","asth","cncr","copd","arth")
 lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","copd_d_num","arth_d_num")
+
+
 
 
 brrfss_covariates<-brfss_VAR %>%
@@ -209,6 +210,13 @@ brrfss_covariates<-brfss_VAR %>%
                                   if_else(MSCODE==5, "Outside MSA",NA_character_))))),
            msa_d_fct=as.factor(if_else(MSCODE %in% 1:3, "Yes",
                                   if_else(MSCODE==5, "No",NA_character_)))
+
+      ) %>%
+      # Urban and Metropolitcan Counties (only in 2018 data)
+      mutate(metro_d_fct=as.factor(if_else(X_METSTAT==1, "Yes",
+                                   if_else(X_METSTAT==2, "No", NA_character_))),
+             urban_d_fct=as.factor(if_else(X_URBSTAT==1, "Yes",
+                                   if_else(X_URBSTAT==2, "No", NA_character_)))
 
       ) %>%
 #---------------------------------------#
@@ -413,6 +421,7 @@ brfss_core <- brrfss_covariates %>%
     sex_d_fct,fem_d_num,
     vtrn_d_num,vtrn_d_fct,
     msa_cat_fct,msa_d_fct,
+    metro_d_fct,urban_d_fct,
     drnkbng_d_fct,drnkhvy_d_fct,
     bmi_cat_fct,
     hiv_d_num,hiv_d_fct,
