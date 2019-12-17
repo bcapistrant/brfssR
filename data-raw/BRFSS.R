@@ -46,7 +46,7 @@ rm(VAR_2017_0)
 
 VAR_2018_0<-read.xport("data-raw/LLCP2018.XPT")
 data_2018 <- VAR_2018_0 %>%
-  mutate(YEAR=2017,
+  mutate(YEAR=2018,
          VERSION_VAR="X_LLCPWT",
          VAR_wt_raw=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
