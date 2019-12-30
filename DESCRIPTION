@@ -1,7 +1,7 @@
 Package: brfssR
 Type: Package
 Title: Behavioral Risk Factor Surveillance Survey (BRFSS) Data
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: c(
     person("Benjamin D.", "Capistrant", email = "bcapistrant@smith.edu", role = c("aut", "cre")),
     person("Kelly", "Pien", email = "kpien@smith.edu", role = "ctb"),
@@ -11,8 +11,8 @@ Authors@R: c(
 Description: This package pools U.S. Centers for Disease Control and Prevention 
     BRFSS study data from 2014-2018. In particular, the package cleans data 
     from optional state modules on caregiving, cogntive decline, 
-    emotional support, and sexual/gender minorities. There are also cleaned 
-    demographic, socioeconomic, and health variables.
+    emotional support, sexual/gender minorities, and influenza vaccine place.
+    There are also cleaned demographic, socioeconomic, and health variables.
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.0

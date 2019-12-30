@@ -13,6 +13,8 @@ This package contains five datasets provided by the Centers for Disease Control 
 
 * `brfss_emspt`: The variables from the BRFSS optional state module on emptional support and life satisfaction, 2014-2017
 
+* `brfss_flu`: The variables from the BRFSS optional state module on place of influenza vaccination, 2016-2017
+
 It also includes core variables from each BRFSS year 2014-2018:
 
 * `brfss_core`: demographic, socioeconomic, health care, health behavior, and health status variables
