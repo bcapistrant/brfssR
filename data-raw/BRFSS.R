@@ -71,7 +71,11 @@ varstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
 brfss_VAR$state<- factor(brfss_VAR$X_STATE, levels=varstates, labels=varstatelabel)
 
 brfss_VAR<-brfss_VAR%>%
-select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,ADDEPEV2,MENTHLTH,PHYSHLTH,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,X_BMI5,
+       HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
+       CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
+       ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
+       X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
 #---------------------------------------#
 #           FUNCTIONS
@@ -88,14 +92,14 @@ binary_d_fct<-function(x) {
   )
 }
 
-rawnames = c("CVDCRHD4","CVDSTRK3","DIABETE3","ASTHMA3","CHCOCNCR","CHCCOPD1","HAVARTH3")
-newnames = c("cvd","strk","diab","asth","cncr","copd","arth")
-lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","copd_d_num","arth_d_num")
+rawnames = c("CVDCRHD4","CVDSTRK3","DIABETE3","ASTHMA3","CHCOCNCR","CHCCOPD1","HAVARTH3","CHCKDNY1")
+newnames = c("cvd","strk","diab","asth","cncr","copd","arth","kidn")
+lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","copd_d_num","arth_d_num","kidn_d_num")
 
 
 
 
-brrfss_covariates<-brfss_VAR %>%
+brfss_covariates<-brfss_VAR %>%
 
 #---------------------------------------#
 #           Demographics
@@ -103,6 +107,7 @@ brrfss_covariates<-brfss_VAR %>%
 #   Number of Children, Veterans Status,
 #   Metropolitan Service Area
 #---------------------------------------#
+
 
 # Age
 ## Quantitative / Numeric
@@ -126,6 +131,14 @@ brrfss_covariates<-brfss_VAR %>%
                              if_else(X_AGE80 >= 90 & X_AGE80 < 95, "90-95",
                              if_else(X_AGE80 >= 95 & X_AGE80 < 100, "95-99",NA_character_)))))))))))))))))
          ) %>%
+
+## Categorical - 10 year categories
+  mutate(age_10ycat_fct=as.factor(if_else(age_num %in% 18:24, "18-25",
+                                 if_else(age_num %in% 25:34, "25-34",
+                                 if_else(age_num %in% 35:44, "35-44",
+                                 if_else(age_num %in% 45:54, "45-54",
+                                 if_else(age_num %in% 55:64, "55-64",
+                                 if_else(age_num >=65, "65+",NA_character_)))))))) %>%
 
 ## Dichotomous/Binary: Millennial (18-35 vs. 36+); 45+ vs 18-44; 65+ vs 18-64
   mutate(millennial_d_num=as.numeric(if_else(YEAR==2013, if_else(age_num %in% 18:32,1,0),
@@ -164,7 +177,10 @@ brrfss_covariates<-brfss_VAR %>%
             labels = c("White only", "Black or African American only",
                        "American Indian or Alaskan Native only", "Asian only",
                        "Native Hawaiian or other Pacific Islander only", "Other race only",
-                       "Multiracial")) ) %>%
+                       "Multiracial")),
+           reth_imp_cat_fct=factor(X_IMPRACE, levels=c(1:6),
+                                   labels=c("White, Non-Hispanic", "Black, Non-Hispanic", "Asian, Non-Hispanic",
+                                   "Native, Non-Hispanic", "Hispanic", "Other, Non-Hispanic"))) %>%
 
     mutate(raceth_cat_fct = as.factor(ifelse(X_RACEGR3 == 1, "White, Non-Hispanic",
                                       ifelse(X_RACEGR3 == 2, "Black, Non-Hispanic",
@@ -186,7 +202,10 @@ brrfss_covariates<-brfss_VAR %>%
                             if_else(MARITAL==5, "Never Married",
                             if_else(MARITAL==6, "Coupled",NA_character_))))))),
       mstat_d_fct=as.factor(if_else(MARITAL==1, "Married",
-                            if_else(MARITAL %in% 2:6, "Non-Married",NA_character_)))
+                            if_else(MARITAL %in% 2:6, "Non-Married",NA_character_))) ) %>%
+
+     mutate(married_d_fct=as.factor(if_else(mstat_cat_fct %in% c("Married", "Coupled"), "Married",
+                          if_else(mstat_cat_fct %in% c("Divorced", "Never Married", "Separated", "Widowed"), "Not Married", NA_character_))),
       ) %>%
 
 # Number of Children (CHILDREN)
@@ -194,7 +213,10 @@ brrfss_covariates<-brfss_VAR %>%
                                   ifelse(CHILDREN == 88, 0, NA_real_))),
             chld_cat_fct = as.factor(if_else(X_CHLDCNT==1, "None",
                                  if_else(X_CHLDCNT==2, "One",
-                                 if_else(X_CHLDCNT %in% 3:6, "Two or More", NA_character_ ))))
+                                 if_else(X_CHLDCNT %in% 3:6, "Two or More", NA_character_ ))))) %>%
+
+     mutate(kids_d_fct = as.factor(if_else(chld_cat_fct=="None", "No",
+                            if_else(chld_cat_fct %in% c("One", "Two or More"), "Yes", NA_character_)))
        ) %>%
 # Veteran Status (VETERAN3)
     mutate(vtrn_d_num=if_else(VETERAN3==2,0,
@@ -208,8 +230,8 @@ brrfss_covariates<-brfss_VAR %>%
                                   if_else(MSCODE==2, "City_County",
                                   if_else(MSCODE==3, "Suburb",
                                   if_else(MSCODE==5, "Outside MSA",NA_character_))))),
-           msa_d_fct=as.factor(if_else(MSCODE %in% 1:3, "Yes",
-                                  if_else(MSCODE==5, "No",NA_character_)))
+           msa_d_fct=as.factor(if_else(MSCODE %in% 1:3, "Inside MSA",
+                                  if_else(MSCODE==5, "Outside MSA",NA_character_)))
 
       ) %>%
       # Urban and Metropolitcan Counties (only in 2018 data)
@@ -230,7 +252,10 @@ brrfss_covariates<-brfss_VAR %>%
                       ifelse(EMPLOY1 == 9, NA_real_, EMPLOY1))) %>%
      mutate(empl_cat_fct = factor(EMPLOY2, levels = c(0,1,2,5,6,7,8),
                              labels = c("Out of work", "Employed for wages", "Self-employed",
-                                        "A homemaker", "A student", "Retired", "Unable to work"))
+                                        "A homemaker", "A student", "Retired", "Unable to work"))) %>%
+
+     mutate(employed_d_fct=as.factor(if_else(empl_cat_fct %in% c("Employed for wages","Self-employed"), "Yes",
+                                if_else(empl_cat_fct %in% c("Out of work", "A homemaker", "A student","Retired"), "No", NA_character_)))
        ) %>%
 
 
@@ -241,7 +266,12 @@ brrfss_covariates<-brfss_VAR %>%
             "$15,000-19,999", "$20,000-$24,999",
             "$25,000-34,999", "$35,000-$49,999",
             "$50,000-74,999", "$75,000+",
-            "Don't know or refused"))
+            "Don't know or refused")) ) %>%
+    mutate(income_4cats_fct=as.factor(if_else(inc_cat_fct %in% c("<$10,000","$10,000-$14,999","$15,000-19,999"), "<$20,000",
+                        if_else(inc_cat_fct %in% c("$20,000-$24,999","$25,000-34,999"), "$20,000-34,999",
+                        if_else(inc_cat_fct %in% c("$35,000-$49,999","$50,000-74,999"), "$35,000-74,999",
+                        if_else(inc_cat_fct=="$75,000+", "$75,000+",
+                        if_else(inc_cat_fct=="Don't know or refused", "Missing", NA_character_))))))
 
       ) %>%
 
@@ -249,7 +279,10 @@ brrfss_covariates<-brfss_VAR %>%
     mutate(educ_cat_fct = as.factor(if_else(X_EDUCAG==1, "<High School",
                                     if_else(X_EDUCAG==2, "High School",
                                     if_else(X_EDUCAG==3, "Some College",
-                                    if_else(X_EDUCAG==4, "College or More",NA_character_)))))
+                                    if_else(X_EDUCAG==4, "College or More",NA_character_)))))) %>%
+
+    mutate(college_d_fct=as.factor(if_else(educ_cat_fct=="College or More", "College",
+                            if_else(educ_cat_fct %in% c("<High School", "High School", "Some College"), "<College", NA_character_)))
       ) %>%
 #---------------------------------------#
 #           HEALTH BEHAVIORS
@@ -269,17 +302,32 @@ brrfss_covariates<-brfss_VAR %>%
          ) %>%
 
 #BMI
+  ## Numeric
+  mutate(bmi_num = as.numeric(if_else(X_BMI5 %in% 1:999, X_BMI5/100, NA_real_))
+  ) %>%
+
+  ## Categories
   mutate(bmi_cat_fct = as.factor(if_else(X_BMI5CAT == 1, "Underweight",
                         if_else(X_BMI5CAT == 2, "Normal Weight",
                         if_else(X_BMI5CAT == 3, "Overweight",
                         if_else(X_BMI5CAT == 4, "Obese",
-                        if_else(is.na(X_BMI5CAT), "Unknown", NA_character_))))))
+                        if_else(is.na(X_BMI5CAT), "Unknown", NA_character_)))))),
+
+         bmi_40d_fct = as.factor(if_else(bmi_num %in% 0:40, "<40",
+                        if_else(bmi_num>=40, ">=40", NA_character_)))) %>%
+
+  mutate(obese_d_fct=as.factor(if_else(bmi_cat_fct=="Obese", "Yes",
+                           if_else(bmi_cat_fct %in% c("Normal Weight", "Overweight", "Underweight"), "No", NA_character_
+          )))
   ) %>%
 
 #Smoking
   mutate(smk_cat_fct = as.factor(if_else(X_SMOKER3 %in% 1:2, "Current smoker",
                           if_else(X_SMOKER3==3, "Former smoker",
-                          if_else(X_SMOKER3==4, "Never smoker",NA_character_ ))))
+                          if_else(X_SMOKER3==4, "Never smoker",NA_character_ )))),
+         smoker_d_fct=as.factor(if_else(smk_cat_fct=="Current smoker", "Smoker",
+                               if_else(smk_cat_fct %in% c("Never smoker", "Former smoker"), "Non-Smoker", NA_character_
+          )))
         ) %>%
 
 
@@ -336,7 +384,10 @@ brrfss_covariates<-brfss_VAR %>%
                                     if_else(CHECKUP1 == 2, "1-2 years",
                                     if_else(CHECKUP1 == 3, "2-5 years",
                                     if_else(CHECKUP1 == 4, "5+ years",
-                                    if_else(CHECKUP1 == 8, "Never",NA_character_))))))
+                                    if_else(CHECKUP1 == 8, "Never",NA_character_)))))),
+        drlastyr_d_fct=as.factor(if_else(chckup_cat_fct=="<1 year", "Yes",
+                               if_else(chckup_cat_fct %in% c("1-2 years", "2-5 years", "5+ years", "Never"), "No", NA_character_
+          )))
   ) %>%
 
 # Time since last dentist visit
@@ -344,7 +395,10 @@ brrfss_covariates<-brfss_VAR %>%
                                    if_else(LASTDEN3 == 2, "1-2 years",
                                    if_else(LASTDEN3 == 3, "2-5 years",
                                    if_else(LASTDEN3 == 4, "5+ years",
-                                   if_else(LASTDEN3 == 8, "Never",NA_character_))))))
+                                   if_else(LASTDEN3 == 8, "Never",NA_character_)))))),
+         dentlastyr_d_fct=as.factor(if_else(dntst_cat_fct=="<1 year", "Yes",
+                               if_else(dntst_cat_fct %in% c("1-2 years", "2-5 years", "5+ years", "Never"), "No", NA_character_
+          )))
   ) %>%
 #---------------------------------------#
 #           HEALTH STATUS
@@ -352,6 +406,7 @@ brrfss_covariates<-brfss_VAR %>%
 #   Depressive Disorder,
 #   Mental & Physcial Health HRQOL,
 #   Self-Rated Health
+#   Pregnant
 #---------------------------------------#
 
 
@@ -405,44 +460,53 @@ brrfss_covariates<-brfss_VAR %>%
                             if_else(GENHLTH==3, "Good",
                             if_else(GENHLTH==4, "Fair",
                             if_else(GENHLTH==5, "Poor", NA_character_))))))
+           ) %>%
 
-  ) %>%
-  rename_all(tolower)
+# Pregnant
+    mutate(preg_d_fct=as.factor(if_else(PREGNANT==1, "Yes",
+                           if_else(PREGNANT==2, "No", NA_character_)))
 
-brfss_core <- brrfss_covariates %>%
+  )
+
+
+brfss_core <- brfss_covariates %>%
+    rename_all(tolower)
+
+brfss_core <-brfss_core %>%
   select(
-    age_num,age_cat,
+    age_num,age_cat,age_10ycat_fct,
     millennial_d_num,millennial_d_fct,
     agege45_d_num,agege45_d_fct,
     agege65_d_num,agege65_d_fct,
-    mstat_cat_fct,mstat_cat_fct,
-    chld_num,chld_cat_fct,
-    race_cat_fct,ethn_cat_fct,raceth_cat_fct,
+    mstat_cat_fct,mstat_cat_fct,married_d_fct,
+    chld_num,chld_cat_fct,kids_d_fct,
+    race_cat_fct,ethn_cat_fct,raceth_cat_fct,reth_imp_cat_fct,
     sex_d_fct,fem_d_num,
     vtrn_d_num,vtrn_d_fct,
     msa_cat_fct,msa_d_fct,
     metro_d_fct,urban_d_fct,
     drnkbng_d_fct,drnkhvy_d_fct,
-    bmi_cat_fct,
+    bmi_cat_fct, bmi_40d_fct, bmi_num,obese_d_fct,
     hiv_d_num,hiv_d_fct,
     fluvac_d_fct,fluvac_d_num,fluvac_date_num,
     ltpa_d_fct,
-    smk_cat_fct,
+    smk_cat_fct,smoker_d_fct,
     drcost_d_fct,
     hcplan_d_fct,
-    chckup_cat_fct,
-    dntst_cat_fct,
-    chron_num,chron_d_fct,cvd_d_num,strk_d_num,diab_d_num,asth_d_num,arth_d_num,copd_d_num,cncr_d_num,
+    chckup_cat_fct,drlastyr_d_fct,
+    dntst_cat_fct,dentlastyr_d_fct,
+    chron_num,chron_d_fct,cvd_d_num,strk_d_num,diab_d_num,asth_d_num,arth_d_num,copd_d_num,cncr_d_num,kidn_d_num,
     dep_d_fct,
     mentqol_num,mentqol14_d_num,mentqol14_d_fct,
     physqol_num,physqol14_d_num,physqol14_d_fct,
     srh_d_fct,srh_cat_fct,
-    empl_cat_fct,
-    inc_cat_fct,
-    educ_cat_fct,
+    preg_d_fct,
+    empl_cat_fct,employed_d_fct,
+    inc_cat_fct,income_4cats_fct,
+    educ_cat_fct,college_d_fct,
     x_state,state,year,seqno,x_psu,x_ststr,
     var_wt_raw,version_var
   )
-rm(brrfss_covariates)
+rm(brfss_covariates, brfss_VAR)
 #save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
 use_data(brfss_core, overwrite = TRUE,compress = "bzip2")
