@@ -54,7 +54,7 @@ rm(VAR_2018_0)
 
 ### COMBINING 2014-2018
 brfss_VAR<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
-rm(data_2018,data_2017,data_2016,data_2015,data_2014)
+
 
 varstates<-c(1,2,4,5,6,8,9,10,
               11,12,13,15,16,17,18,19,20,
@@ -70,13 +70,14 @@ varstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
                  "VA","WA","WV","WI","WY","GU","PR","VI")
 brfss_VAR$state<- factor(brfss_VAR$X_STATE, levels=varstates, labels=varstatelabel)
 
-brfss_VAR<-brfss_VAR%>%
+brfss_VAR1<-brfss_VAR%>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,X_BMI5,
        HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
        X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
+rm(data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
 #---------------------------------------#
 #           FUNCTIONS
 #---------------------------------------#
@@ -99,7 +100,7 @@ lastnames = c("cvd_d_num","strk_d_num","diab_d_num","asth_d_num","cncr_d_num","c
 
 
 
-brfss_covariates<-brfss_VAR %>%
+brfss_covariates<-brfss_VAR1 %>%
 
 #---------------------------------------#
 #           Demographics
@@ -348,7 +349,7 @@ brfss_covariates<-brfss_VAR %>%
 # Influenza Vaccine: Any Vaccine, When, and Where the vaccine happened
     mutate(fluvac_d_fct = as.factor(if_else(FLUSHOT6==1, "Yes",
                                   if_else(FLUSHOT6==2, "No",NA_character_))),
-          fluvac_d_num = as.factor(if_else(FLUSHOT6==1, 1,
+          fluvac_d_num = as.numeric(if_else(FLUSHOT6==1, 1,
                                   if_else(FLUSHOT6==2, 0, NA_real_))),
 
           FLSHTMY3=if_else(FLSHTMY2 %in% 777777:999999, NA_real_, FLSHTMY2),
@@ -466,13 +467,10 @@ brfss_covariates<-brfss_VAR %>%
     mutate(preg_d_fct=as.factor(if_else(PREGNANT==1, "Yes",
                            if_else(PREGNANT==2, "No", NA_character_)))
 
-  )
-
-
-brfss_core <- brfss_covariates %>%
+  ) %>%
     rename_all(tolower)
 
-brfss_core <-brfss_core %>%
+brfss_core<-brfss_covariates %>%
   select(
     age_num,age_cat,age_10ycat_fct,
     millennial_d_num,millennial_d_fct,
@@ -507,6 +505,9 @@ brfss_core <-brfss_core %>%
     x_state,state,year,seqno,x_psu,x_ststr,
     var_wt_raw,version_var
   )
-rm(brfss_covariates, brfss_VAR)
+
+rm(brfss_covariates,brfss_VAR1)
+
+
 #save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
 use_data(brfss_core, overwrite = TRUE,compress = "bzip2")
