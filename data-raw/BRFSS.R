@@ -71,11 +71,12 @@ varstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
 brfss_VAR$state<- factor(brfss_VAR$X_STATE, levels=varstates, labels=varstatelabel)
 
 brfss_VAR1<-brfss_VAR%>%
+mutate(fips=X_STATE) %>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX,VETERAN3,MSCODE,X_RFBING5,X_RFDRHV5,X_BMI5CAT,X_BMI5,
        HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
-       X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
+       fips,X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
 rm(data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
 #---------------------------------------#
@@ -502,7 +503,7 @@ brfss_core<-brfss_covariates %>%
     empl_cat_fct,employed_d_fct,
     inc_cat_fct,income_4cats_fct,
     educ_cat_fct,college_d_fct,
-    x_state,state,year,seqno,x_psu,x_ststr,
+    x_state,state,fips,year,seqno,x_psu,x_ststr,
     var_wt_raw,version_var
   )
 

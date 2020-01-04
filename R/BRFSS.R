@@ -74,6 +74,7 @@
 #'   \item{college_d_fct}{factor, categorical: College or More Yes/No}
 #'   \item{x_state}{numeric variable of state}
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
+#'   \item{fips}{state FIPS code, numeric}
 #'   \item{seqno}{identificaiton variable}
 #'   \item{year}{Numeric year: 2014-2018}
 #'   \item{x_psu}{Primary Sampling Unit Variable}
