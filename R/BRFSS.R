@@ -34,12 +34,11 @@
 #'   \item{bmi_cat_fct}{factor, categorical	Underweight, Normal Weight, Overweight, Obese, Unkown}
 #'   \item{bmi_num}{numeric, quantitative value of BMI}
 #'   \item{bmi_40d_fct}{BMI>=40: factor, dichotomous (No/Yes)}
-#'   \item{obese_d}{BMI>=30: factor, dichotomous (No/Yes)}
+#'   \item{obese_d_fct}{BMI>=30: factor, dichotomous (No/Yes)}
 #'   \item{hiv_d_num}{numeric, dichotomous	0/1 (No/Yes)}
 #'   \item{hiv_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{fluvac_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{fluvac_d_num}{numeric, dichotomous	0/1 (No/Yes)}
-#'   \item{fluvac_date_num}{numeric, date	12-20-15 - 12-20-16}
 #'   \item{ltpa_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{smk_cat_fct}{factor, categorical	Current smoker, Former smoker, Never smoker}
 #'   \item{smoker_d_fct}{factor, categorical: Current smoker vs. Former/Never Yes/No}

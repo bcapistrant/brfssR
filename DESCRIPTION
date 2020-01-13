@@ -1,7 +1,7 @@
 Package: brfssR
 Type: Package
 Title: Behavioral Risk Factor Surveillance Survey (BRFSS) Data
-Version: 0.1.9
+Version: 0.1.10
 Authors@R: c(
     person("Benjamin D.", "Capistrant", email = "bcapistrant@smith.edu", role = c("aut", "cre")),
     person("Kelly", "Pien", email = "kpien@smith.edu", role = "ctb"),
