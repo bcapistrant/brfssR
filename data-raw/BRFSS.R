@@ -199,14 +199,11 @@ brfss_covariates<-brfss_VAR1 %>%
                              if_else(X_AGE80 >= 65 & X_AGE80 < 70, "65-69",
                              if_else(X_AGE80 >= 70 & X_AGE80 < 75, "70-74",
                              if_else(X_AGE80 >= 75 & X_AGE80 < 80, "75-79",
-                             if_else(X_AGE80 >= 80 & X_AGE80 < 85, "80-84",
-                             if_else(X_AGE80 >= 85 & X_AGE80 < 90, "85-89",
-                             if_else(X_AGE80 >= 90 & X_AGE80 < 95, "90-95",
-                             if_else(X_AGE80 >= 95 & X_AGE80 < 100, "95-99",NA_character_)))))))))))))))))
+                             if_else(X_AGE80 >= 80 & X_AGE80 < 85, "80+", NA_character_))))))))))))))
          ) %>%
 
 ## Categorical - 10 year categories
-  mutate(age_10ycat_fct=as.factor(if_else(age_num %in% 18:24, "18-25",
+  mutate(age_10ycat_fct=as.factor(if_else(age_num %in% 18:24, "18-24",
                                  if_else(age_num %in% 25:34, "25-34",
                                  if_else(age_num %in% 35:44, "35-44",
                                  if_else(age_num %in% 45:54, "45-54",
@@ -331,8 +328,7 @@ brfss_covariates<-brfss_VAR1 %>%
                       ifelse(EMPLOY1==7, "Retired",
                       ifelse(EMPLOY1== 8, "Unable", NA_character_ ))))))))) %>%
 
-     mutate(employed_d_fct=as.factor(if_else(empl_cat_fct %in% c("Employed for wages","Self-employed"), "Yes",
-                                if_else(empl_cat_fct %in% c("Out of work", "Homemaker", "Student","Retired","Unable"), "No", NA_character_)))
+     mutate(employed_d_fct=as.factor(if_else(empl_cat_fct %in% c("Employed for wages","Self-employed"), "Yes", "No/Missing"))
        ) %>%
 
 
@@ -555,6 +551,12 @@ brfss_covariates<-brfss_VAR1 %>%
   ) %>%
     rename_all(tolower)
 
+
+#table(brfss_covariates$sex,useNA = c("always"))
+#table(brfss_covariates$fem_d_num,useNA = c("always"))
+#table(brfss_covariates$sex_d_fct,useNA = c("always"))
+
+
 brfss_core<-brfss_covariates %>%
   select(
     age_num,age_cat,age_10ycat_fct,
@@ -590,8 +592,11 @@ brfss_core<-brfss_covariates %>%
     var_wt_raw,version_var
   )
 
-rm(brfss_covariates,brfss_VAR1)
+    rm(brfss_covariates,brfss_VAR1)
 rm(brfss_covariates2)
 
+table(brfss_core$employed_d_fct,useNA = c("always"))
+
+
 #save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
-use_data(brfss_core, overwrite = TRUE,compress = "bzip2")
+  use_data(brfss_core, overwrite = TRUE,compress = "bzip2")

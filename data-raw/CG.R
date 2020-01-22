@@ -36,9 +36,11 @@ BRFSS_2015_2 <- BRFSS_2015_2 %>%
          SEQNO=as.integer(SEQNO))
 
 list2015<-list(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2)
-data_2015<-bind_rows(list2015)
+data_2015<-bind_rows(list2015) %>%
+  filter(!is.na(CAREGIV1))
 rm(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2, list2015)
 
+table(data_2015$CAREGIV1, useNA = "always")
 ### 2016
 
 cg2016_0<-c(5,11,13,27,29,30,32,34,38,41,72,46,47)
@@ -80,8 +82,9 @@ BRFSS_2016_3 <- BRFSS_2016_3 %>%
 
 ### Add datasets together
 list2016<-list(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3)
-data_2016<-bind_rows(list2016)
-data_2016$SEQNO<-as.integer(data_2016$SEQNO)
+data_2016<-bind_rows(list2016) %>%
+  filter(!is.na(CAREGIV1)) %>%
+  mutate(SEQNO<-as.integer(SEQNO))
 rm(BRFSS_2016_0, BRFSS_2016_1, BRFSS_2016_2, BRFSS_2016_3,list2016)
 
 
@@ -219,6 +222,7 @@ brfss_cg <- brfss_cg %>%
                            if_else(CAREGIV1==2, "Non-CG", NA_character_))),
         cg_d_num=as.numeric(if_else(CAREGIV1==1, 1,
                             if_else(CAREGIV1==2, 0, NA_real_))),
+      \
 
 
 # Relationship of Person Receiving Care to Caregiver
