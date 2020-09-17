@@ -129,8 +129,6 @@ list2017<-list(COG_2017_0, COG_2017_2,COG_2017_3)
 data_2017<-bind_rows(list2017)
 rm(COG_2017_0,COG_2017_2,COG_2017_3, list2017)
 
-## No States including this Module in 2018
-
 # LLCP2018	_LLCPWT	New Jersey, Oregon, Pennsylvania
 # LLCP18V1	_LCPWTV1	Maine
 # LLCP18V2	_LCPWTV2	Michigan, New York
@@ -168,9 +166,55 @@ data_2018<-bind_rows(list2018)
 rm(COG_2018_0,COG_2018_1,COG_2018_2, list2018)
 
 
+# LLCP2019	_LLCPWT	New Jersey, Oregon, Pennsylvania
+# LLCP19V1	_LCPWTV1	Maine
+# LLCP19V2	_LCPWTV2	Michigan, New York
+
+COG2019_0<-c(1,9,11,12,13,18,19,22,27,28,29,32,35,38,41,42,44,45,46,47,48,51,54,55)
+COG2019_1<-c(26,32,39,49)
+COG2019_2<-c(20,36,40)
+COG2019_3<-c(24)
+
+COG_2019_0<-read.xport("data-raw/LLCP2019.XPT")
+COG_2019_0 <- COG_2019_0 %>%
+  filter(X_STATE %in% COG2019_0) %>%
+  mutate(YEAR=2019,
+         version_cog="X_LLCPWT",
+         COG_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+
+COG_2019_1<-read.xport("data-raw/LLCP17V1.XPT")
+COG_2019_1 <- COG_2019_1 %>%
+  filter(X_STATE %in% COG2019_1) %>%
+  mutate(YEAR=2019,
+         version_cog="X_LCPWTV1",
+         COG_wt_raw=X_LCPWTV1,
+         SEQNO=as.integer(SEQNO))
+
+COG_2019_2<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2019_2 <- COG_2019_2 %>%
+  filter(X_STATE %in% COG2019_2) %>%
+  mutate(YEAR=2019,
+         version_cog="X_LCPWTV2",
+         COG_wt_raw=X_LCPWTV2,
+         SEQNO=as.integer(SEQNO))
+
+COG_2019_3<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2019_3 <- COG_2019_3 %>%
+  filter(X_STATE %in% COG2019_3) %>%
+  mutate(YEAR=2019,
+         version_cog="X_LCPWTV3",
+         COG_wt_raw=X_LCPWTV3,
+         SEQNO=as.integer(SEQNO))
+
+list2019<-list(COG_2019_0, COG_2019_1,COG_2019_2)
+data_2019<-bind_rows(list2019)
+rm(COG_2019_0,COG_2019_1,COG_2019_2, COG_2019_3, list2019)
+
+
 ### COMBINING 2015-2017
-brfss_COG<-bind_rows(data_2018, data_2017,data_2016,data_2015)
-rm(data_2018,data_2017,data_2016,data_2015)
+brfss_COG<-bind_rows(data_2019,data_2018, data_2017,data_2016,data_2015)
+rm(data_2019,data_2018,data_2017,data_2016,data_2015)
 
 ### Labeling State indicators
 COGstates<- c(1,2,4,5,6,8,9,10,
@@ -178,13 +222,13 @@ COGstates<- c(1,2,4,5,6,8,9,10,
               20,21,22,23,24,25,26,27,28,29,
               30,31,32,33,34,35,36,37,38,39,
               40,41,42,44,45,46,47,48,49,
-              50,51,53,54,55,56,72)
+              50,51,53,54,55,56,66,72)
 COGstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
                  "DC","FL","GA","HI","ID","IL","IN","IA",
                  "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO",
                  "MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH",
                  "OK","OR","PA","RI","SC","SD","TN","TX","UT",
-                 "VT","VA","WA","WV","WI","WY","PR")
+                 "VT","VA","WA","WV","WI","WY","GU","PR")
 brfss_COG$state<- factor(brfss_COG$X_STATE, levels=COGstates, labels=COGstatelabel)
 
 

@@ -4,7 +4,8 @@
 \name{brfss_cog}
 \alias{brfss_cog}
 \title{BRFSS Cognitive Decline Module Data}
-\format{A "long" data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:
+\format{
+A "long" data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:
 \describe{
   \item{cog_mem_d_fct}{Dichotomous, Factor: 0/1 (No/Yes) for raw variable CIMEMLOS: During the past 12 months, have you experienced confusion or memory loss that is happening more often or is getting worse? No/Yes}
   \item{cog_mem_d_num}{Dichotomous, Numeric: 0/1 for raw variable CIMEMLOS: During the past 12 months, have you experienced confusion or memory loss that is happening more often or is getting worse?}
@@ -23,12 +24,13 @@
   \item{x_state}{numeric variable of state}
   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
   \item{seqno}{identificaiton variable}
-  \item{year}{Numeric year: 2014-2018}
+  \item{year}{Numeric year: 2014-2019}
   \item{x_psu}{Primary Sampling Unit Variable}
   \item{x_ststr}{Sampling Strata Variable}
-  \item{cog_wt_raw}{Original,raw sampling weight: 2014-2018}
+  \item{cog_wt_raw}{Original,raw sampling weight: 2014-2019}
   \item{version_cog}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
-}}
+}
+}
 \source{
 BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 }
@@ -36,7 +38,7 @@ BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.
 brfss_cog
 }
 \description{
-BRFSS Cognitive Decline Module Questions asked from 2015-2018
+BRFSS Cognitive Decline Module Questions asked from 2015-2019
 \url{https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf}.
 }
 \examples{

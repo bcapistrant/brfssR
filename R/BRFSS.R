@@ -27,8 +27,8 @@
 #'   \item{vtrn_d_fct}{factor, dichotomous	Non-Veteran, Veteran}
 #'   \item{msa_cat_fct}{factor, categorical	City_Center, City_County, Suburb, Outside MSA}
 #'   \item{msa_d_fct}{factor, dichotomous	Yes/No}
-#'   \item{metro_d_fct}{factor, dichotomous	Yes/No: 2018 only (raw BRFSS variable: _METSTAT)}
-#'   \item{urban_d_fct}{factor, dichotomous	Yes/No: 2018 only (raw BRFSS variable: _URBSTAT)}
+#'   \item{metro_d_fct}{factor, dichotomous	Yes/No: 2018-2019 only (raw BRFSS variable: _METSTAT)}
+#'   \item{urban_d_fct}{factor, dichotomous	Yes/No: 2018-2019 only (raw BRFSS variable: _URBSTAT)}
 #'   \item{drnkbng_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{drnkhvy_d_fct}{factor, dichotomous	Yes/No}
 #'   \item{bmi_cat_fct}{factor, categorical	Underweight, Normal Weight, Overweight, Obese, Unkown}
@@ -75,10 +75,10 @@
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
 #'   \item{fips}{state FIPS code, numeric}
 #'   \item{seqno}{identificaiton variable}
-#'   \item{year}{Numeric year: 2014-2018}
+#'   \item{year}{Numeric year: 2014-2019}
 #'   \item{x_psu}{Primary Sampling Unit Variable}
 #'   \item{x_ststr}{Sampling Strata Variable}
-#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2018}
+#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2019}
 #'   \item{version_var}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.

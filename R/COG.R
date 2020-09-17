@@ -1,6 +1,6 @@
 #' BRFSS Cognitive Decline Module Data
 #'
-#' BRFSS Cognitive Decline Module Questions asked from 2015-2018
+#' BRFSS Cognitive Decline Module Questions asked from 2015-2019
 #' \url{https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf}.
 
 #' @format A "long" data frame with rows of individual BRFSS respondents in a given state and year and the following column variables:
@@ -22,10 +22,10 @@
 #'   \item{x_state}{numeric variable of state}
 #'   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
 #'   \item{seqno}{identificaiton variable}
-#'   \item{year}{Numeric year: 2014-2018}
+#'   \item{year}{Numeric year: 2014-2019}
 #'   \item{x_psu}{Primary Sampling Unit Variable}
 #'   \item{x_ststr}{Sampling Strata Variable}
-#'   \item{cog_wt_raw}{Original,raw sampling weight: 2014-2018}
+#'   \item{cog_wt_raw}{Original,raw sampling weight: 2014-2019}
 #'   \item{version_cog}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.

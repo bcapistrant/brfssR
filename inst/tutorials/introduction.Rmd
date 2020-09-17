@@ -1,0 +1,381 @@
+---
+title: "`brfssR package tutorial"
+author: "Ben Capistrant"
+date: "2020-09-04"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: "Data Visualizations, Merging Data Frames, and Survey Analyses"
+---
+
+```{r setup, include=FALSE}
+#The setup chunk is critical. You need to call all packages and bring in (and wrangle) any data that you want the user to have for *any* example or activity, unless you want to add later example/exercise-specific chunks to bring in additional data. 
+library(learnr)
+library(tidyverse)
+library(brfssR)
+library(survey)
+data("brfss_core")
+data("brfss_cg")
+```
+
+## 1. Introduction
+
+This interactive tutorial introduces key features of and how to analyze data from  the `brfssR` package.
+
+Specifically, the tutorial focuses on the following information and tasks:
+
+- What the data in this package are
+- Loading data and conducting exploratory data analysis 
+- Merging dataframes from the package
+- Setting the survey parameters to account for the multistage, complex sampling design.
+
+## 2. The Data
+
+### What is BRFSS?
+
+The Behavioral Risk Factor Surveillance System (BRFSS) is an annual, telephone based survey that is coordinated by the U.S. Centers for Disease Control and Prevention (CDC) and implemented in each state, D.C., and three territories by their respective state department of health. [From the CDC:](https://www.cdc.gov/brfss/about/index.htm)
+
+> The Behavioral Risk Factor Surveillance System (BRFSS) is the nation’s premier system of health-related telephone surveys that collect state data about U.S. residents regarding their health-related risk behaviors, chronic health conditions, and use of preventive services. Established in 1984 with 15 states, BRFSS now collects data in all 50 states as well as the District of Columbia and three U.S. territories. BRFSS completes more than 400,000 adult interviews each year, making it the largest continuously conducted health survey system in the world.
+
+BRFSS includes a core set of questions, coordinated by CDC, that all states ask. This includes things like:
+
+- basic demographics (age, gender, race/ethnicity, marital status), 
+- socioeconomic status (education, income), 
+- health behaviors (alcohol use, tobacco use, etc.), 
+- health care use / access (insurance status, last time at the doctor), and 
+- health status (self-rated health, quality of life).
+
+In addition to these core questions, CDC includes ~30 optional modules each year that states can choose to add on to the core questions. These questions include more specific information on certain topics that a state may be interested in, and offer timely ways to capture new data as the state's needs arise. For example, optional modules have included questions on:
+
+- indoor tanning
+- cancer survivorship & screening
+- industry and occupation
+- cognitive decline
+- marijuana use
+- sexual orientation and gender identity
+- sugar sweetened beverages
+
+These optional modules are one of the important structures of BRFSS that this package focuses on and ideally facilitates analysts to use. Because these modules are optional, tracking which states use them over time is burdensome: states may include one of them only once and never again; every year when possible; a combination of certain modules in one year but not in others; modules in different versions of the data, etc. This package has cleaned these data, put the individual modules together over time so that the data are easily available from whichever states included them.
+
+### What is `brfssR`?
+
+This package (`brfssR`) has cleaned, documented, and harmonized the much of the data from the core BRFSS questions as well as from selected optional modules between 2014 - 2019. Specifically, it has individual dataframes within the package that can be merged easily to connect a BRFSS respondent's core data (e.g., demographics) and with more specific, subject-matter from the optional modules. 
+
+```{r calculating sample sizes}
+core_n <- prettyNum(nrow(brfssR::brfss_core))
+cg_n <- prettyNum(nrow(brfssR::brfss_cg))
+cog_n <- prettyNum(nrow(brfssR::brfss_cog))
+sgm_n <- prettyNum(nrow(brfssR::brfss_sgm))
+emspt_n <- prettyNum(nrow(brfssR::brfss_emspt))
+flu_n <- prettyNum(nrow(brfssR::brfss_flu))
+dep_n <- prettyNum(nrow(brfssR::brfss_dep))
+```
+
+| Data Frame Name | What the data frame includes | Years | Total Sample Size | 
+|--------------|--------------------------------------|------------------|
+| `brfss_core` | demographic, socioeconomic, health care, health behavior, and health status variables | 2014-2019 | `r core_n` |
+| `brfss_cog` | variables from [the cognitive function module](https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf) | 2015-2019 | `r cog_n` |
+| `brfss_cg` | variables from [the family caregiving module](https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf) | 2015-2019 | `r cg_n` |
+| `brfss_sgm` | variables on [sexual orientation and gender identity (SOGI) module](https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/) | 2014 - 2019 | `r sgm_n` |
+| `brfss_emspt` | variables from module on emotional support and life satisfaction | 2014-2017 | `r emspt_n` |
+| `brfss_flu` | variables on place of influenza vaccination | 2016-2017 | `r flu_n` |
+| `brfss_dep` | variables from the PHQ-4 depression and anxiety screening tool | 2018 | `r dep_n` |
+| `brfss_medexp` | whether Medicaid expanded and in what year per state [from Kaiser Family Foundation](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/) | 2020 | 50 |
+
+Information on which individual variables are included in each dataframe are included in the documentation for each dataframe. You can use the help function and look this information
+
+```{r docummentation practice, exercise=TRUE}
+?brfss_cog
+```
+
+
+## 3. Exploratory Data Analysis
+
+The main goal of exploratory data analysis is to understand nuances of the variables in the dataset. Typically, this exploration is visual more than numeric, as the visual can help illustrate features like unusual values, the shapes of distributions, and beginning to explore the magnitude of associations between two variables or the size of the differences in one variable between groups. While this kind of data analysis rarely gets reported directly in empirical papers, this behind-the-scenes work more commonly is done to enhance the data analyst's understanding of the data. 
+
+### Visualizing distributions and frequencies
+
+First, let's start by visualizing one variable at a time. 
+
+For continuous variables, we are usually interested in the distribution of the data, particularly:
+
+- the shape of the distribution (symmetrical or skewed, one peak in the distribution or two), 
+- the spread of the data (spread out or tight around the center), 
+- what the midpoint is of the distribution, and 
+- whether there are unusual values.
+
+For categorical variables, we are usually interested in the frequencies of the data, particularly:
+
+- how many people are in each category,
+- what percent of the total sample is in a given category,
+- whether there are enough people in each category to support hypothesis testing (i.e., enough statistical power to testing group differences).
+
+#### Ex. 3.A: Visualizing Which States Fave Which Data
+
+Since the states can opt into the different modules, an initial question is typically, "Which states have include the module I'm interested in?" While [CDC documents these for each given year](https://www.cdc.gov/brfss/questionnaires/index.htm), it is a little more painstaking to track this across multiple years. The `brfssR` package simplifies that by having brought all of the data together such that an useful first step is to look at thow much data there are, and/or from which states.
+
+The code below works for the caregiving module, which has up since 2015, so a range of 0-5. You could run the following code to get a map of which states included the module more times.
+
+```{r map, error=FALSE, message=FALSE, warning=FALSE, exercise=TRUE}
+library(usmap)
+
+# Count the number of years of data each state gathered
+states <- brfss_cg %>%
+  group_by(state) %>%
+  summarize(count = as.factor(n_distinct(year)))
+View(states)
+
+# Plot map by colors reflecting how many years of data were gathered
+plot_usmap(regions=c("state"), data = states, values = "count", color = "grey10") + 
+  scale_fill_discrete(labels = c("1", "2", "3", "4", "5", "None"), 
+                                 name = "Years of Caregiving Data") + 
+  theme(legend.position = "top") + guides(fill=guide_legend(nrow=1,byrow=TRUE))
+```
+
+```{r map_check, echo=FALSE}
+quiz(caption = "Exercise 3.A.2 Check-In",
+  question("Which states included this module 5 times?",
+    answer("Washington"),
+    answer("Oregon", correct = TRUE),
+    answer("Utah"),
+    answer("New York", correct = TRUE)
+  ),
+  question("Which states never included the caregiving module?",
+    answer("Massachusetts", correct = TRUE),
+    answer("North Carolina", correct = TRUE),
+    answer("South Carolina"),
+    answer("Idaho")
+  )
+)
+```
+
+You may consider substituting another module -- maybe the cognitive module, since they have the same number of years -- for the caregiving module and re-run the code.
+
+#### Ex. 3.B: Exploratory Data Analysis - Visualizations
+
+We may want to consider basic distributions of the variables in the modules as another step to explore the data. In general, there is nothing particular about these data to consider -- your standard approach data visualizations and descriptive statistics should work fine. One thing to note is that many variables have both a factor and a numeric version: for instance, a binary variable indicating whether something was reported or not would have a factor variable with "yes" and "no" as the answer options and the corresponding numeric version of the variable would use 1 for yes and 0 for no. The latter variable type facilitates regression modeling (a numeric binary dependent variable) and, in some cases, easier calculations of means.
+
+
+```{r age-labeled, error=FALSE, message=FALSE, exercise=TRUE}
+brfss_cog %>%
+  group_by(state) %>%
+  count(cog_mem_d_fct) %>%
+  filter(!is.na(cog_mem_d_fct)) %>%
+  mutate(total = sum(n) ) %>%
+  filter(cog_mem_d_fct=="Yes") %>%
+  mutate(Percent = (n/total)*100) %>%
+  ungroup() %>%
+  #Reordering the states factor in descenging rather than alphabetical order
+  mutate(State_Abbreviation = fct_reorder(state, desc(Percent))) %>%
+  #plotting
+  ggplot(aes(y=Percent, x=State_Abbreviation)) + geom_bar(stat="identity") + 
+     theme(text = element_text(size=8),
+           axis.text.x  = element_text(angle=45, hjust = 1))
+```
+
+For exploratory analyses, the `ggplot2` and `dplyr` packages for this kind of summarization and visualizing means and frequencies. The complex sampling design of the data collection or repeats of some states (5 years of data from NY but 1 from PA) may not matter much at this point. Once you get to bivariate associations, you will likely need to consider these issues for hypothesis testing as they will need to be factored into the standard error estimation and sampling weighting, respectively.
+
+
+## 4. Survey Adjusted Data Analysis
+
+Like most large surveys, BRFSS is not a random sample, and thus requires some adjustment to the way standard errors are estimated to account for the clustering in the sampling. 
+
+Similarly, BRFSS calculates sampling weights that, when applied, yield estimates that reflect the state's population of community-dwelling adults aged 18+ in that given year. Since there are multiple years of data for some states, these weights need to be adjusted so that, for example, New York's population does not appear that it's 5 times larger than it is simply because it has 5 years of data included. Instead, a simple adjustment of dividing each individual observation's weight by the number of years of data for their state would account for this potential over-inflation in the weights.
+
+Again, neither of these issues is particular to BRFSS per se, so if you are familiar with survey methods from either other statistical software or from other analyses in R, you should be clear on the concepts. Anyone wanting more discussion of these concepts and their implementation in R should consider reading the documentation for the `survey` package developed by Thomas Lumley or [his book on the same material and package.](https://www.wiley.com/en-us/Complex+Surveys%3A+A+Guide+to+Analysis+Using+R-p-9780470284308)
+
+### Establishing Survey Settings
+
+Like most other survey statistical software, the `survey` package needs three pieces of information:
+
+- the *Primary Sampling Unit *variable
+- the sampling *Stratification* variable
+- the *Sampling Weight*
+
+Again, I am assuming that you're familiar with these terms and have linked to additional resources at the end of this tutorial if you want a refresher or to learn more.
+
+We define each of these variables within the `svydesign()` function and name this design something akin to naming a dataset.
+
+```{r, echo = FALSE}
+data("brfss_cog")
+library(survey)
+brfssR_svydesign <- (svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_raw, data = brfss_cog, nest = TRUE))
+```
+
+Two notes on these variables and their names:
+
+- In the BRFSS documentation, you may notice that \_PSU and \_STSTR are only preceded by an underscore ("\_"), a variable convention that `R` doesn't allow so it has added an "x" to the beginning.
+- `cog_wt_raw` is the `brfssR` cleaned weighting variable that streamlines the different weight names from each of the different versions of the data collection / data. Each brfssR dataset comes with this kind of weighting variable: `cog_wt_raw` for the cognitive data; `cg_wt_raw` for the caregiving variable, and so on.
+
+
+#### Sampling Weights - Adjusting for multiple years of data
+
+As we saw before, some states included these data 5 times while other states included the module only once. Since the sampling weight will result in population averages and totals that are representative of the state's adult population *in that year*, simply including the sampling weight for each year will return weighted estimates that are 5 times larger than the true population of that state, since the population total for all of NY state is calculated for each year between 2015 - 2019. 
+
+To illustrate this point, let's calculate the total number of people who report experiencing memory loss or confusion in NY. To do that, we will:
+
+- define the survey parameters as above
+- use the [`svytotal()` function](https://r-survey.r-forge.r-project.org/survey/html/surveysummary.html) from the survey package to calculate the total number of people (aged 45+, since that's who was included in the cognitive module) who reported memory loss and confusion in the last year
+
+Since we're only interested in NY, let's also create a subsample of the survey design (rather than just filtering...) to make estimates just about New York.
+
+```{r, echo = FALSE, exercise = TRUE}
+data("brfss_cog")
+library(survey)
+cog_brfssRdesign <- svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_raw, data = brfss_cog, nest = TRUE)
+NYcog_brfssRdesign<-subset(cog_brfssRdesign,state=="NY")
+svytotal(~cog_mem_d_fct, design = NYcog_brfssRdesign, na.rm=TRUE)
+```
+
+We can see from this result that there are 25,529,956 people in New York who reported not having memory loss or confusion and 3,155,851 who reported having memory loss or confusion.
+
+But there are only [19 million people who live in New York](https://www.health.ny.gov/statistics/vital_statistics/2010/table01.htm), and [7.8 million who are aged 45+](https://www.health.ny.gov/statistics/vital_statistics/2010/table01.htm), so how could this number be true?
+
+It makes more sense if you think about how these numbers are inflated by a factor of 5 (the number of times this module is included between 2015 and 2019). From a quick, mental math calculation, these numbers make much more sense given what we know about New York's population size if you divide these numbers by 5: about 5 million aged 45+ without cognitive impairment and 600,000 who have some impairment. 
+
+(*Note*: the numbers don't exactly add to the population size of 7.8 million, but there are other factors, like how many people aged 45+ are civilian and community dwelling in that 7.8 million, who is missing data, the amount of variance in and [how BRFSS calculates the weight](https://www.cdc.gov/brfss/annual_data/2018/pdf/weighting-2018-508.pdf), etc. Nor will the estimates after we adjust the weight be a simple division of these estimates by 5 -- the adjusted weights will result in similar, but not identical, numbers)
+
+So the question is: how do we adjust this weight?
+
+##### Making the adjusted weight
+
+First, we need to calculate the number of years a state included this module, and then divide the raw sampling weight by this number of instances of the module. Conceptually, we are dividing a state's sampling weight that was inflated by a factor of 5 (or how ever many years the module was included). This way, the resulting estimates reflect the average population of that state over those 5 years, and not just 5 times as many people.
+
+```{r}
+waves<-brfss_cog %>%
+  group_by(year,state) %>%
+  slice(1) %>% #keeping the first observation of each state + year
+  ungroup() %>%
+  group_by(state) %>% #grouping by state
+  count() %>% #counting how many years the state was included
+  rename(wave=n) #renaming as wave
+
+brfss_cog_2<-full_join(brfss_cog,waves,by="state") %>%
+  mutate(cog_wt_adj = cog_wt_raw/wave) #adjusting the weight by number of waves
+```
+
+
+Every time you define a new variable or make a change to the dataframe, you have to redefine the survey design -- it doesn't automatically update from the dataframe. Moreover, you have to redefine the survey design because we changed the weight we want it to use -- this adjusted weight variable we just created.
+
+```{r}
+cog_brfssRdesign_adj <- svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_adj, data = brfss_cog_2, nest = TRUE)
+NYcog_brfssRdesign_adj<-subset(cog_brfssRdesign_adj,state=="NY")
+svytotal(~cog_mem_d_fct, design = NYcog_brfssRdesign_adj, na.rm=TRUE)
+```
+
+These results seem much more plausible given what we know about the size and age distribution of New York's population.
+
+### Summary of Survey Data Analysis
+
+We just worked on [survey data analysis](https://r-survey.r-forge.r-project.org/survey/), an important feature to be able to make accurate calculations and estimates of the BRFSS data. In particular, we:
+
+- defined the survey design parameters, including the PSU, Strata, and sampling weight
+- illustrated how raw sampling weights may result in artificially large population estimates, and
+- adjusted the sampling weight based on how many years of data that particular state had used the module.
+
+## 4. Merging `brfssR` datasets together 
+
+It is unlikely that the information within one of the modules is all you need for a data analysis. Most modules need to be combined with (at least) the core data for information about the respondent like demographics, socioeconomic status, and health behaviors/status.  In some cases, you may want to combine two modules (likely the core module as well) to investigate a research question like whether and to what extent are there disparities in cognitive function by sexual orientation and gender identity.
+
+Like above with the `survey` modules, how you merge two datasets from this data package is not not particular to the package -- you can use whichever approach makes sense for you. Instead, the point here is simply to illustrate the key variables by which you do such a merge, and some specifics for the survey design you will want to anticipate.
+
+### Merging to core data
+
+When merging the module to core data, you likely want an inner join so that you keep only those individuals who were included in the module and in the core data. Morover, when merging multiple modules together, an inner join makes more sense so that you're left with just those who responded to both modules.
+
+The primary key between the different components is the `seqno` variable, which is essentially each respondent's unique ID variable. Since these ID variables are generated annually, there is a possibility that it is not unique over time, so I include the state and year as additional merge variables. 
+
+
+```{r innerjoin, exercise=TRUE}}
+core_cog_df<-inner_join(brfss_core,brfss_cog,by = c("x_state", "year", "seqno"))
+```
+
+We can check that worked by seeing that the same number of individuals from the cognitive module are included in the new dataset (this is the principle of the inner join). 
+
+```{r innerjoin_check, exercise=TRUE}
+nrow(brfss_core)
+nrow(brfss_cog)
+nrow(core_cog_df)
+```
+
+The second two numbers should be the same (give or take...).
+
+Something that is possible -- even likely -- to happen is that the two datasets each has a variable by the same name (like x_state) that does not merge perfectly such that you have `x_state.x` from the core data and `x_state.y` from the cognitive data. These variables tend to be in all datasets: x_state, state, seqno, year, x_psu, and x_ststr. This will be helpful to consider when creating the survey design statement.
+
+### Analyzing merged data
+
+Now that we have the core data attached, we know much more about each of those individuals beyond just their cognitive information. Let's see whether the prevalence of self-reported memory loss / confusion is similar for men and women within each 5 year category of age.  
+
+First, we need to define the survey design characteristics because we have changed the dataset. Remember the different pieces we need:
+
+- adjusted weights
+- the PSU
+- the strata variable
+- the dataset name
+
+Practice this syntax we've seen before to define the survey design parameters, and call this design `cogcore_svy`.  We've seen (nearly*) all this code before already, but you may want to go through line by line and think through what each piece is doing.
+
+*Note: Sometimes there may be only one PSU within a given stratum, which makes estimating variance difficult (there ... isn't variance in 1). To account for this, we include `options(survey.lonely.psu="adjust")` which centers the variance for single-PSUs in strata to the grand mean. You can also remove it, or choose to do other things, too. For more details, see [here](https://r-survey.r-forge.r-project.org/survey/exmample-lonely.html).
+
+```{r surveydefine_check, exercise=TRUE}
+
+# Adjusting the Weights
+waves<-core_cog_df %>%
+  group_by(year,x_state) %>%
+  slice(1) %>% #keeping the first observation of each state + year
+  ungroup() %>%
+  group_by(x_state) %>% #grouping by state
+  count() %>% #counting how many years the state was included
+  rename(wave=n) #renaming as wave
+
+core_cog_df_2<-full_join(core_cog_df,waves,by="x_state") %>%
+  mutate(cog_wt_adj = cog_wt_raw/wave) #adjusting the weight by number of waves
+
+options(survey.lonely.psu="adjust")
+cogcore_svy <- svydesign(id = ~x_psu.x, strata = ~x_ststr.x, weight = ~cog_wt_adj, data = core_cog_df_2, nest = TRUE)
+
+
+```
+
+Then we can use other survey procedures -- `svyby()` and `svymean()` -- to stratify the analysis by age and gender and to calculate the survey adjusted mean values of people who reported having memory loss and confusion within each strata.  Since we're calculating means, it might be easiest to use the numeric version of the variable (`cog_mem_d_num`) rather than the factor version that we used before (`cog_mem_d_fct`). The package often includes both versions of variables for this kind of thing -- in some cases (e.g., logistic regression), it's easier to have a numeric dependent variable rather than to work with factor variables.
+
+The following code takes a considerable time to execute, so it's easier not to include this interactively and use all your memory. Instead, you might consider the code below and what it is trying to achieve.
+
+```{r ex4_a, eval=FALSE, echo=TRUE}
+svyby(~cog_mem_d_num, ~age_cat + sex_d_fct, cogcore_svy, svymean, keep.var=TRUE)
+```
+
+
+### Review of merging and working with multiple datasets
+
+Combining the data from individual module and core datasets from the BRFSS package is a common initial step for data analysis, and relatively straightforward to do. In this section, we worked on the necessary steps to combine and then analyze these data, namely:
+
+- merged the module and core data with an inner_join on the year, state, and individual's sequence number (seqno)
+- calculated the adjusted sampling weight
+- defined the survey design parameters
+- used the `svyby()` function to estimate survey adjusted means (`svymeans()`) or the proportion of individuals with memory loss / confusion by age and gender
+
+## 5. Tutorial Summary
+
+In this tutorial, we:
+
+- introduced the `brfssR` package and the structure of BRFSS survey
+- calculated and visualized what states have included the optional modules included in the package and how many times they have included them, 
+- defined the necessary components to account for the BRFSS complex sampling design
+- merged two datasets together to be able to analyze the module data with demographic data from the core data
+
+
+
+## 6. Supplemental Reading
+
+Want to learn more about (A) survey data analysis generally or (B) the R survey package specifically? Below are some excellent supplemental readings. Both get quickly into the details of the coding such that they are [probably more (A)dvanced, and so we have marked each reading appropriately. 
+
+1. $^A$ U.S. CDC/National Center for Health Statistics. [Continuous NHANES Tutorials.](https://wwwn.cdc.gov/nchs/nhanes/tutorials/default.aspx) Viewed on September 1, 2020.
+
+2. $^A$ Croft, T.N., Marshall, A.M.J., Allen, C.K., et al. (2018.) [*Analyzing DHS Data*](https://dhsprogram.com/data/Guide-to-DHS-Statistics/index.htm#t=Analyzing_DHS_Data.htm) in Guide to DHS Statistics. Rockville, Maryland, USA: ICF.
+
+3. $^B$Lumley, T. (2011). Complex surveys: a guide to analysis using R (Vol. 565). John Wiley & Sons.
+
+4. $^B$ Lumley, T. (2004). Analysis of complex survey samples. J Stat Softw, 9(1), 1-19.

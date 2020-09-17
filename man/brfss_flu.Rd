@@ -4,7 +4,8 @@
 \name{brfss_flu}
 \alias{brfss_flu}
 \title{BRFSS Place of Influenza Vaccine Data}
-\format{A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
+\format{
+A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
 \describe{
   \item{fluvac_plcat_num}{a numeric variable from the raw BRFSS variable IMFVPLAC}
   \item{fluvac_plcat_fct}{categorical, factor variable of the raw BRFSS variable IMFVPLAC: "Dr. Office","Health Department", "Health Center", "Community Center","Store", "Hospital", "Emergency Room","Workplace", "Other Place", "Other Country","School", "DK/Refused"}
@@ -18,7 +19,8 @@
   \item{x_ststr}{Sampling Strata Variable}
   \item{flu_wt_raw}{Original,raw sampling weight: 2016-2017}
   \item{version_flu}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), or V2(X_LCPWTV2)}
-}}
+}
+}
 \source{
 BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 }

@@ -1,0 +1,54 @@
+﻿FIPS,Abbrev,State,Adoption Status,Year Implemented,Full Date Implemented
+1,AL,Alabama,Not Adopted,,
+2,AK,Alaska,Adopted,2015,9/1/15
+4,AZ,Arizona,Adopted,2014,1/1/14
+5,AR,Arkansas,Adopted,2014,1/1/14
+6,CA,California,Adopted,2014,1/1/14
+8,CO,Colorado,Adopted,2014,1/1/14
+9,CT,Connecticut,Adopted,2014,1/1/14
+10,DE,Delaware,Adopted,2014,1/1/14
+11,DC,DistrictofColumbia,Adopted,2014,1/1/14
+12,FL,Florida,Not Adopted,,
+13,GA,Georgia,Not Adopted,,
+15,HI,Hawaii,Adopted,2014,1/1/14
+16,ID,Idaho,Adopted,2020,1/1/20
+17,IL,Illinois,Adopted,2014,1/1/14
+18,IN,Indiana,Adopted,2015,2/1/15
+19,IA,Iowa,Adopted,2014,1/1/14
+20,KS,Kansas,Not Adopted,,
+21,KY,Kentucky,Adopted,2014,1/1/14
+22,LA,Louisiana,Adopted,2016,7/1/16
+23,ME,Maine,Adopted,2019,1/10/19
+24,MD,Maryland,Adopted,2014,1/1/14
+25,MA,Massachusetts,Adopted,2014,1/1/14
+26,MI,Michigan,Adopted,2014,4/1/14
+27,MN,Minnesota,Adopted,2014,1/1/14
+28,MS,Mississippi,Not Adopted,,
+29,MO,Missouri,"Adopted, Not Implemented",,
+30,MT,Montana,Adopted,2016,1/1/16
+31,NE,Nebraska,"Adopted, Not Implemented",,
+32,NV,Nevada,Adopted,2014,1/1/14
+33,NH,NewHampshire,Adopted,2014,8/15/14
+34,NJ,NewJersey,Adopted,2014,1/1/14
+35,NM,NewMexico,Adopted,2014,1/1/14
+36,NY,NewYork,Adopted,2014,1/1/14
+37,NC,NorthCarolina,Not Adopted,,
+38,ND,NorthDakota,Adopted,2014,1/1/14
+39,OH,Ohio,Adopted,2014,1/1/14
+40,OK,Oklahoma,"Adopted, Not Implemented",,
+41,OR,Oregon,Adopted,2014,1/1/14
+42,PA,Pennsylvania,Adopted,2015,1/1/15
+44,RI,RhodeIsland,Adopted,2014,1/1/14
+45,SC,SouthCarolina,Not Adopted,,
+46,SD,SouthDakota,Not Adopted,,
+47,TN,Tennessee,Not Adopted,,
+48,TX,Texas,Not Adopted,,
+49,UT,Utah,Adopted,2020,1/1/20
+50,VT,Vermont,Adopted,2014,1/1/14
+51,VA,Virginia,Adopted,2019,1/1/19
+53,WA,Washington,Adopted,2014,1/1/14
+54,WV,WestVirginia,Adopted,2014,1/1/14
+55,WI,Wisconsin,Not Adopted,,
+56,WY,Wyoming,Not Adopted,,
+66,GU,Guam,,,
+72,PR,Puerto Rico,,,

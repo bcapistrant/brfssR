@@ -4,15 +4,17 @@
 \name{brfss_cg}
 \alias{brfss_cg}
 \title{BRFSS Caregiver (CG) Module Data}
-\format{A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
+\format{
+A "long" data frame with XX rows of individual BRFSS respondents in a given state and year and YY column variables:
 \describe{
   \item{cg_d_num}{indicator, numeric variable of whether respondent was Caregiver (cg_d_num=1) or not (cg_d_num=0)}
   \item{cg_d_fct}{indicator, factor variable of whether respondent was Caregiver (cg_d_fct="CG") or not (cg_d_fct="Non-CG")}
   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
   \item{seqno}{identificaiton variable}
-  \item{year}{Numeric year, 2014-2018}
-  \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2018}
-}}
+  \item{year}{Numeric year, 2014-2019}
+  \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2019}
+}
+}
 \source{
 BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 }
@@ -20,7 +22,7 @@ BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.
 brfss_cg
 }
 \description{
-BRFSS Caregiving Module Questions asked from 2015-2018
+BRFSS Caregiving Module Questions asked from 2015-2019
 \url{https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm}.
 }
 \examples{

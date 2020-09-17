@@ -4,7 +4,8 @@
 \name{brfss_emspt}
 \alias{brfss_emspt}
 \title{BRFSS Emotional Support (EmSpt) and Life Satisfaction Data}
-\format{A "long" data frame with rows of individual BRFSS respondents in a given state and year and YY column variables:
+\format{
+A "long" data frame with rows of individual BRFSS respondents in a given state and year and YY column variables:
 \describe{
   \item{emsup_d_fct}{factor, dichotomous	Sometimes+, Rarely/Never}
   \item{emsup_cat_fct}{factor, categorical	Always, Usually, Sometimes, Rarely, Never}
@@ -18,7 +19,8 @@
   \item{x_ststr}{Sampling Strata Variable}
   \item{emspt_wt_raw}{Original,raw sampling weight: 2014-2017}
   \item{version_emspt}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
-}}
+}
+}
 \source{
 BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
 }

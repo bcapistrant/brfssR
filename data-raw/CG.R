@@ -7,9 +7,9 @@ library(devtools)
 
 # pulling in the datasets
 ### 2015
-cg2015_0<-c(1,15,16,17,18,19,21,22,28,42,45,51,54,55,56)
-cg2015_1<-c(23,24,31,39)
-cg2015_2<-c(12,36,40)
+cg2015_0<-c(1,15,16,17,18,19,21,22,28,34,41,42,45,47,51,54,55,56)
+cg2015_1<-c(23,24,31)
+cg2015_2<-c(12,36,49)
 
 BRFSS_2015_0<-read.xport("data-raw/LLCP2015.XPT")
 BRFSS_2015_0 <- BRFSS_2015_0 %>%
@@ -43,7 +43,7 @@ rm(BRFSS_2015_0, BRFSS_2015_1, BRFSS_2015_2, list2015)
 table(data_2015$CAREGIV1, useNA = "always")
 ### 2016
 
-cg2016_0<-c(5,11,13,27,29,30,32,34,38,41,72,46,47)
+cg2016_0<-c(5,11,13,27,29,30,32,34,38,41,46,47,72)
 cg2016_1<-c(39,49)
 cg2016_2<-c(4,6,9,48)
 cg2016_3<-c(8,36)
@@ -170,9 +170,55 @@ list2018<-list(BRFSS_2018_0, BRFSS_2018_1, BRFSS_2018_2)
 data_2018<-bind_rows(list2018)
 rm(BRFSS_2018_0, BRFSS_2018_1, BRFSS_2018_2, list2018)
 
+
+### 2019
+
+cg2019_0<-c(15,41,47,48,51)
+cg2019_1<-c(23,49)
+cg2019_2<-c(36)
+cg2019_3<-c(24,39)
+
+BRFSS_2019_0 <- read.xport("data-raw/LLCP2019.XPT")
+BRFSS_2019_0 <- BRFSS_2019_0 %>%
+  filter(X_STATE %in% cg2019_0) %>%
+  mutate(YEAR=2019,
+         CG_WT_RAW=X_LLCPWT,
+         VERSION_CG="X_LLCPWT",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2019_1<-read.xport("data-raw/LLCP19V1.XPT")
+BRFSS_2019_1 <- BRFSS_2019_1 %>%
+  filter(X_STATE %in% cg2019_1) %>%
+  mutate(YEAR=2019,
+         CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2019_2<-read.xport("data-raw/LLCP19V2.XPT")
+BRFSS_2019_2 <- BRFSS_2019_2 %>%
+  filter(X_STATE %in% cg2019_2) %>%
+  mutate(YEAR=2019,
+         CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2019_3<-read.xport("data-raw/LLCP19V3.XPT")
+BRFSS_2019_3 <- BRFSS_2019_3 %>%
+  filter(X_STATE %in% cg2019_3) %>%
+  mutate(YEAR=2019,
+         CG_WT_RAW=X_LCPWTV3,
+         VERSION_CG="X_LCPWTV3",
+         SEQNO=as.integer(SEQNO))
+
+### Adding data sets together
+list2019<-list(BRFSS_2019_0, BRFSS_2019_1, BRFSS_2019_2, BRFSS_2019_3)
+
+data_2019<-bind_rows(list2019)
+rm(BRFSS_2019_0, BRFSS_2019_1, BRFSS_2019_2, BRFSS_2019_3, list2019)
+
 ### COMBINING 2015-2018
-brfss_cg<-bind_rows(data_2018, data_2017,data_2016,data_2015)
-rm(data_2018, data_2017,data_2016,data_2015)
+brfss_cg<-bind_rows(data_2019,data_2018, data_2017,data_2016,data_2015)
+rm(data_2019,data_2018, data_2017,data_2016,data_2015)
 
 cgsgmstates<-c(1,2,4,5,6,8,9,11,12,13,
                15,16,17,18,19,20,21,22,23,24,
@@ -222,7 +268,7 @@ brfss_cg <- brfss_cg %>%
                            if_else(CAREGIV1==2, "Non-CG", NA_character_))),
         cg_d_num=as.numeric(if_else(CAREGIV1==1, 1,
                             if_else(CAREGIV1==2, 0, NA_real_))),
-      \
+
 
 
 # Relationship of Person Receiving Care to Caregiver

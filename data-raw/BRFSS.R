@@ -113,6 +113,24 @@ table(data_2018$HVYDRNK,useNA = c("always"))
 ### Sex renamed from SEX1 (now includes "Sex assigned at birth")
 ### Heavy Drinking Changed and renamed
 
+### 2019
+
+VAR_2019_0<-read.xport("data-raw/LLCP2018.XPT")
+data_2019 <- VAR_2019_0 %>%
+  mutate(YEAR=2019,
+         VERSION_VAR="X_LLCPWT",
+         VAR_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO)) %>%
+  mutate_if(is.double, as.integer) %>%
+  mutate_if(is.factor, as.character) %>%
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX=SEX1,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV6,X_BMI5CAT,X_BMI5,
+       HIVRISK=HIVRISK5,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
+       ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
+       X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
+rm(VAR_2019_0)
+table(data_2019$HVYDRNK,useNA = c("always"))
+
 #----------------------------------------------------------------------------------#
 
 table(data_2014$SEX,useNA = c("always"))
@@ -120,9 +138,10 @@ table(data_2015$SEX,useNA = c("always"))
 table(data_2016$SEX,useNA = c("always"))
 table(data_2017$SEX,useNA = c("always"))
 table(data_2018$SEX,useNA = c("always"))
+table(data_2019$SEX,useNA = c("always"))
 
 ### COMBINING 2014-2018
-brfss_VAR<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
+brfss_VAR<-bind_rows(data_2019,data_2018,data_2017,data_2016,data_2015,data_2014)
 
 table(brfss_VAR$SEX,useNA = c("always"))
 table(data_2018$HVYDRNK,useNA = c("always"))
@@ -149,7 +168,7 @@ select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,VETER
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
        fips,X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
-rm(data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
+rm(data_2019,data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
 #---------------------------------------#
 #           FUNCTIONS
 #---------------------------------------#
