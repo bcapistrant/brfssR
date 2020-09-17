@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Ben Capistrant" />
+
+<meta name="date" content="2020-09-04" />
+
+<meta name="progressive" content="true" />
+<meta name="allow-skip" content="true" />
+
+<title>`brfssR package tutorial</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<div id="section-introduction" class="section level2">
+<h2>1. Introduction</h2>
+<p>This interactive tutorial introduces key features of and how to analyze data from the <code>brfssR</code> package.</p>
+<p>Specifically, the tutorial focuses on the following information and tasks:</p>
+<ul>
+<li>What the data in this package are</li>
+<li>Loading data and conducting exploratory data analysis</li>
+<li>Merging dataframes from the package</li>
+<li>Setting the survey parameters to account for the multistage, complex sampling design.</li>
+</ul>
+</div>
+<div id="section-the-data" class="section level2">
+<h2>2. The Data</h2>
+<div id="section-what-is-brfss" class="section level3">
+<h3>What is BRFSS?</h3>
+<p>The Behavioral Risk Factor Surveillance System (BRFSS) is an annual, telephone based survey that is coordinated by the U.S. Centers for Disease Control and Prevention (CDC) and implemented in each state, D.C., and three territories by their respective state department of health. <a href="https://www.cdc.gov/brfss/about/index.htm">From the CDC:</a></p>
+<blockquote>
+<p>The Behavioral Risk Factor Surveillance System (BRFSS) is the nation’s premier system of health-related telephone surveys that collect state data about U.S. residents regarding their health-related risk behaviors, chronic health conditions, and use of preventive services. Established in 1984 with 15 states, BRFSS now collects data in all 50 states as well as the District of Columbia and three U.S. territories. BRFSS completes more than 400,000 adult interviews each year, making it the largest continuously conducted health survey system in the world.</p>
+</blockquote>
+<p>BRFSS includes a core set of questions, coordinated by CDC, that all states ask. This includes things like:</p>
+<ul>
+<li>basic demographics (age, gender, race/ethnicity, marital status),</li>
+<li>socioeconomic status (education, income),</li>
+<li>health behaviors (alcohol use, tobacco use, etc.),</li>
+<li>health care use / access (insurance status, last time at the doctor), and</li>
+<li>health status (self-rated health, quality of life).</li>
+</ul>
+<p>In addition to these core questions, CDC includes ~30 optional modules each year that states can choose to add on to the core questions. These questions include more specific information on certain topics that a state may be interested in, and offer timely ways to capture new data as the state’s needs arise. For example, optional modules have included questions on:</p>
+<ul>
+<li>indoor tanning</li>
+<li>cancer survivorship &amp; screening</li>
+<li>industry and occupation</li>
+<li>cognitive decline</li>
+<li>marijuana use</li>
+<li>sexual orientation and gender identity</li>
+<li>sugar sweetened beverages</li>
+</ul>
+<p>These optional modules are one of the important structures of BRFSS that this package focuses on and ideally facilitates analysts to use. Because these modules are optional, tracking which states use them over time is burdensome: states may include one of them only once and never again; every year when possible; a combination of certain modules in one year but not in others; modules in different versions of the data, etc. This package has cleaned these data, put the individual modules together over time so that the data are easily available from whichever states included them.</p>
+</div>
+<div id="section-what-is-brfssr" class="section level3">
+<h3>What is <code>brfssR</code>?</h3>
+<p>This package (<code>brfssR</code>) has cleaned, documented, and harmonized the much of the data from the core BRFSS questions as well as from selected optional modules between 2014 - 2019. Specifically, it has individual dataframes within the package that can be merged easily to connect a BRFSS respondent’s core data (e.g., demographics) and with more specific, subject-matter from the optional modules.</p>
+<pre class="r"><code>core_n &lt;- prettyNum(nrow(brfssR::brfss_core))
+cg_n &lt;- prettyNum(nrow(brfssR::brfss_cg))
+cog_n &lt;- prettyNum(nrow(brfssR::brfss_cog))
+sgm_n &lt;- prettyNum(nrow(brfssR::brfss_sgm))
+emspt_n &lt;- prettyNum(nrow(brfssR::brfss_emspt))
+flu_n &lt;- prettyNum(nrow(brfssR::brfss_flu))
+dep_n &lt;- prettyNum(nrow(brfssR::brfss_dep))</code></pre>
+<table>
+<colgroup>
+<col width="20%" />
+<col width="54%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data Frame Name</th>
+<th>What the data frame includes</th>
+<th>Years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>brfss_core</code></td>
+<td>demographic, socioeconomic, health care, health behavior, and health status variables</td>
+<td>2014-2019</td>
+</tr>
+<tr class="even">
+<td><code>brfss_cog</code></td>
+<td>variables from <a href="https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf">the cognitive function module</a></td>
+<td>2015-2019</td>
+</tr>
+<tr class="odd">
+<td><code>brfss_cg</code></td>
+<td>variables from <a href="https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf">the family caregiving module</a></td>
+<td>2015-2019</td>
+</tr>
+<tr class="even">
+<td><code>brfss_sgm</code></td>
+<td>variables on <a href="https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/">sexual orientation and gender identity (SOGI) module</a></td>
+<td>2014 - 2019</td>
+</tr>
+<tr class="odd">
+<td><code>brfss_emspt</code></td>
+<td>variables from module on emotional support and life satisfaction</td>
+<td>2014-2017</td>
+</tr>
+<tr class="even">
+<td><code>brfss_flu</code></td>
+<td>variables on place of influenza vaccination</td>
+<td>2016-2017</td>
+</tr>
+<tr class="odd">
+<td><code>brfss_dep</code></td>
+<td>variables from the PHQ-4 depression and anxiety screening tool</td>
+<td>2018</td>
+</tr>
+<tr class="even">
+<td><code>brfss_medexp</code></td>
+<td>whether Medicaid expanded and in what year per state <a href="https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/">from Kaiser Family Foundation</a></td>
+<td>2020</td>
+</tr>
+</tbody>
+</table>
+<p>Information on which individual variables are included in each dataframe are included in the documentation for each dataframe. You can use the help function and look this information</p>
+<div class="tutorial-exercise" data-label="docummentation_practice" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>?brfss_cog</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-exploratory-data-analysis" class="section level2">
+<h2>3. Exploratory Data Analysis</h2>
+<p>The main goal of exploratory data analysis is to understand nuances of the variables in the dataset. Typically, this exploration is visual more than numeric, as the visual can help illustrate features like unusual values, the shapes of distributions, and beginning to explore the magnitude of associations between two variables or the size of the differences in one variable between groups. While this kind of data analysis rarely gets reported directly in empirical papers, this behind-the-scenes work more commonly is done to enhance the data analyst’s understanding of the data.</p>
+<div id="section-visualizing-distributions-and-frequencies" class="section level3">
+<h3>Visualizing distributions and frequencies</h3>
+<p>First, let’s start by visualizing one variable at a time.</p>
+<p>For continuous variables, we are usually interested in the distribution of the data, particularly:</p>
+<ul>
+<li>the shape of the distribution (symmetrical or skewed, one peak in the distribution or two),</li>
+<li>the spread of the data (spread out or tight around the center),</li>
+<li>what the midpoint is of the distribution, and</li>
+<li>whether there are unusual values.</li>
+</ul>
+<p>For categorical variables, we are usually interested in the frequencies of the data, particularly:</p>
+<ul>
+<li>how many people are in each category,</li>
+<li>what percent of the total sample is in a given category,</li>
+<li>whether there are enough people in each category to support hypothesis testing (i.e., enough statistical power to testing group differences).</li>
+</ul>
+<div id="section-ex.-3.a-visualizing-which-states-fave-which-data" class="section level4">
+<h4>Ex. 3.A: Visualizing Which States Fave Which Data</h4>
+<p>Since the states can opt into the different modules, an initial question is typically, “Which states have include the module I’m interested in?” While <a href="https://www.cdc.gov/brfss/questionnaires/index.htm">CDC documents these for each given year</a>, it is a little more painstaking to track this across multiple years. The <code>brfssR</code> package simplifies that by having brought all of the data together such that an useful first step is to look at thow much data there are, and/or from which states.</p>
+<p>The code below works for the caregiving module, which has up since 2015, so a range of 0-5. You could run the following code to get a map of which states included the module more times.</p>
+<div class="tutorial-exercise" data-label="map" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>library(usmap)
+
+# Count the number of years of data each state gathered
+states &lt;- brfss_cg %&gt;%
+  group_by(state) %&gt;%
+  summarize(count = as.factor(n_distinct(year)))
+View(states)
+
+# Plot map by colors reflecting how many years of data were gathered
+plot_usmap(regions=c(&quot;state&quot;), data = states, values = &quot;count&quot;, color = &quot;grey10&quot;) + 
+  scale_fill_discrete(labels = c(&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;None&quot;), 
+                                 name = &quot;Years of Caregiving Data&quot;) + 
+  theme(legend.position = &quot;top&quot;) + guides(fill=guide_legend(nrow=1,byrow=TRUE))</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p><div class="panel-heading tutorial-quiz-title">Exercise 3.A.2 Check-In</div><div class="panel panel-default">
+<div data-label="map_check-1" class="tutorial-question panel-body">
+<div id="map_check-1-answer_container" class="shiny-html-output"></div>
+<div id="map_check-1-message_container" class="shiny-html-output"></div>
+<div id="map_check-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="map_check-2" class="tutorial-question panel-body">
+<div id="map_check-2-answer_container" class="shiny-html-output"></div>
+<div id="map_check-2-message_container" class="shiny-html-output"></div>
+<div id="map_check-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div></p>
+<p>You may consider substituting another module – maybe the cognitive module, since they have the same number of years – for the caregiving module and re-run the code.</p>
+</div>
+<div id="section-ex.-3.b-exploratory-data-analysis---visualizations" class="section level4">
+<h4>Ex. 3.B: Exploratory Data Analysis - Visualizations</h4>
+<p>We may want to consider basic distributions of the variables in the modules as another step to explore the data. In general, there is nothing particular about these data to consider – your standard approach data visualizations and descriptive statistics should work fine. One thing to note is that many variables have both a factor and a numeric version: for instance, a binary variable indicating whether something was reported or not would have a factor variable with “yes” and “no” as the answer options and the corresponding numeric version of the variable would use 1 for yes and 0 for no. The latter variable type facilitates regression modeling (a numeric binary dependent variable) and, in some cases, easier calculations of means.</p>
+<div class="tutorial-exercise" data-label="age_labeled" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>brfss_cog %&gt;%
+  group_by(state) %&gt;%
+  count(cog_mem_d_fct) %&gt;%
+  filter(!is.na(cog_mem_d_fct)) %&gt;%
+  mutate(total = sum(n) ) %&gt;%
+  filter(cog_mem_d_fct==&quot;Yes&quot;) %&gt;%
+  mutate(Percent = (n/total)*100) %&gt;%
+  ungroup() %&gt;%
+  #Reordering the states factor in descenging rather than alphabetical order
+  mutate(State_Abbreviation = fct_reorder(state, desc(Percent))) %&gt;%
+  #plotting
+  ggplot(aes(y=Percent, x=State_Abbreviation)) + geom_bar(stat=&quot;identity&quot;) + 
+     theme(text = element_text(size=8),
+           axis.text.x  = element_text(angle=45, hjust = 1))</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>For exploratory analyses, the <code>ggplot2</code> and <code>dplyr</code> packages for this kind of summarization and visualizing means and frequencies. The complex sampling design of the data collection or repeats of some states (5 years of data from NY but 1 from PA) may not matter much at this point. Once you get to bivariate associations, you will likely need to consider these issues for hypothesis testing as they will need to be factored into the standard error estimation and sampling weighting, respectively.</p>
+</div>
+</div>
+</div>
+<div id="section-survey-adjusted-data-analysis" class="section level2">
+<h2>4. Survey Adjusted Data Analysis</h2>
+<p>Like most large surveys, BRFSS is not a random sample, and thus requires some adjustment to the way standard errors are estimated to account for the clustering in the sampling.</p>
+<p>Similarly, BRFSS calculates sampling weights that, when applied, yield estimates that reflect the state’s population of community-dwelling adults aged 18+ in that given year. Since there are multiple years of data for some states, these weights need to be adjusted so that, for example, New York’s population does not appear that it’s 5 times larger than it is simply because it has 5 years of data included. Instead, a simple adjustment of dividing each individual observation’s weight by the number of years of data for their state would account for this potential over-inflation in the weights.</p>
+<p>Again, neither of these issues is particular to BRFSS per se, so if you are familiar with survey methods from either other statistical software or from other analyses in R, you should be clear on the concepts. Anyone wanting more discussion of these concepts and their implementation in R should consider reading the documentation for the <code>survey</code> package developed by Thomas Lumley or <a href="https://www.wiley.com/en-us/Complex+Surveys%3A+A+Guide+to+Analysis+Using+R-p-9780470284308">his book on the same material and package.</a></p>
+<div id="section-establishing-survey-settings" class="section level3">
+<h3>Establishing Survey Settings</h3>
+<p>Like most other survey statistical software, the <code>survey</code> package needs three pieces of information:</p>
+<ul>
+<li>the <em>Primary Sampling Unit </em>variable</li>
+<li>the sampling <em>Stratification</em> variable</li>
+<li>the <em>Sampling Weight</em></li>
+</ul>
+<p>Again, I am assuming that you’re familiar with these terms and have linked to additional resources at the end of this tutorial if you want a refresher or to learn more.</p>
+<p>We define each of these variables within the <code>svydesign()</code> function and name this design something akin to naming a dataset.</p>
+<pre class="r"><code>data(&quot;brfss_cog&quot;)
+library(survey)
+brfssR_svydesign &lt;- (svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_raw, data = brfss_cog, nest = TRUE))</code></pre>
+<p>Two notes on these variables and their names:</p>
+<ul>
+<li>In the BRFSS documentation, you may notice that _PSU and _STSTR are only preceded by an underscore (“_”), a variable convention that <code>R</code> doesn’t allow so it has added an “x” to the beginning.</li>
+<li><code>cog_wt_raw</code> is the <code>brfssR</code> cleaned weighting variable that streamlines the different weight names from each of the different versions of the data collection / data. Each brfssR dataset comes with this kind of weighting variable: <code>cog_wt_raw</code> for the cognitive data; <code>cg_wt_raw</code> for the caregiving variable, and so on.</li>
+</ul>
+<div id="section-sampling-weights---adjusting-for-multiple-years-of-data" class="section level4">
+<h4>Sampling Weights - Adjusting for multiple years of data</h4>
+<p>As we saw before, some states included these data 5 times while other states included the module only once. Since the sampling weight will result in population averages and totals that are representative of the state’s adult population <em>in that year</em>, simply including the sampling weight for each year will return weighted estimates that are 5 times larger than the true population of that state, since the population total for all of NY state is calculated for each year between 2015 - 2019.</p>
+<p>To illustrate this point, let’s calculate the total number of people who report experiencing memory loss or confusion in NY. To do that, we will:</p>
+<ul>
+<li>define the survey parameters as above</li>
+<li>use the <a href="https://r-survey.r-forge.r-project.org/survey/html/surveysummary.html"><code>svytotal()</code> function</a> from the survey package to calculate the total number of people (aged 45+, since that’s who was included in the cognitive module) who reported memory loss and confusion in the last year</li>
+</ul>
+<p>Since we’re only interested in NY, let’s also create a subsample of the survey design (rather than just filtering…) to make estimates just about New York.</p>
+<div class="tutorial-exercise" data-label="svydesign2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>data(&quot;brfss_cog&quot;)
+library(survey)
+cog_brfssRdesign &lt;- svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_raw, data = brfss_cog, nest = TRUE)
+NYcog_brfssRdesign&lt;-subset(cog_brfssRdesign,state==&quot;NY&quot;)
+svytotal(~cog_mem_d_fct, design = NYcog_brfssRdesign, na.rm=TRUE)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>We can see from this result that there are 25,529,956 people in New York who reported not having memory loss or confusion and 3,155,851 who reported having memory loss or confusion.</p>
+<p>But there are only <a href="https://www.health.ny.gov/statistics/vital_statistics/2010/table01.htm">19 million people who live in New York</a>, and <a href="https://www.health.ny.gov/statistics/vital_statistics/2010/table01.htm">7.8 million who are aged 45+</a>, so how could this number be true?</p>
+<p>It makes more sense if you think about how these numbers are inflated by a factor of 5 (the number of times this module is included between 2015 and 2019). From a quick, mental math calculation, these numbers make much more sense given what we know about New York’s population size if you divide these numbers by 5: about 5 million aged 45+ without cognitive impairment and 600,000 who have some impairment.</p>
+<p>(<em>Note</em>: the numbers don’t exactly add to the population size of 7.8 million, but there are other factors, like how many people aged 45+ are civilian and community dwelling in that 7.8 million, who is missing data, the amount of variance in and <a href="https://www.cdc.gov/brfss/annual_data/2018/pdf/weighting-2018-508.pdf">how BRFSS calculates the weight</a>, etc. Nor will the estimates after we adjust the weight be a simple division of these estimates by 5 – the adjusted weights will result in similar, but not identical, numbers)</p>
+<p>So the question is: how do we adjust this weight?</p>
+<div id="section-making-the-adjusted-weight" class="section level5">
+<h5>Making the adjusted weight</h5>
+<p>First, we need to calculate the number of years a state included this module, and then divide the raw sampling weight by this number of instances of the module. Conceptually, we are dividing a state’s sampling weight that was inflated by a factor of 5 (or how ever many years the module was included). This way, the resulting estimates reflect the average population of that state over those 5 years, and not just 5 times as many people.</p>
+<div class="tutorial-exercise" data-label="cog_adjusted_weights" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>waves&lt;-brfss_cog %&gt;%
+  group_by(year,state) %&gt;%
+  slice(1) %&gt;% #keeping the first observation of each state + year
+  ungroup() %&gt;%
+  group_by(state) %&gt;% #grouping by state
+  count() %&gt;% #counting how many years the state was included
+  rename(wave=n) #renaming as wave
+
+brfss_cog_2&lt;-full_join(brfss_cog,waves,by=&quot;state&quot;) %&gt;%
+  mutate(cog_wt_adj = cog_wt_raw/wave) #adjusting the weight by number of waves</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>Every time you define a new variable or make a change to the dataframe, you have to redefine the survey design – it doesn’t automatically update from the dataframe. Moreover, you have to redefine the survey design because we changed the weight we want it to use – this adjusted weight variable we just created.</p>
+<div class="tutorial-exercise" data-label="svytotal_with_adjusted_weights" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>cog_brfssRdesign_adj &lt;- svydesign(id = ~x_psu, strata = ~x_ststr, weight = ~cog_wt_adj, data = brfss_cog_2, nest = TRUE)
+NYcog_brfssRdesign_adj&lt;-subset(cog_brfssRdesign_adj,state==&quot;NY&quot;)
+svytotal(~cog_mem_d_fct, design = NYcog_brfssRdesign_adj, na.rm=TRUE)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>These results seem much more plausible given what we know about the size and age distribution of New York’s population.</p>
+</div>
+</div>
+</div>
+<div id="section-summary-of-survey-data-analysis" class="section level3">
+<h3>Summary of Survey Data Analysis</h3>
+<p>We just worked on <a href="https://r-survey.r-forge.r-project.org/survey/">survey data analysis</a>, an important feature to be able to make accurate calculations and estimates of the BRFSS data. In particular, we:</p>
+<ul>
+<li>defined the survey design parameters, including the PSU, Strata, and sampling weight</li>
+<li>illustrated how raw sampling weights may result in artificially large population estimates, and</li>
+<li>adjusted the sampling weight based on how many years of data that particular state had used the module.</li>
+</ul>
+</div>
+</div>
+<div id="section-merging-brfssr-datasets-together" class="section level2">
+<h2>4. Merging <code>brfssR</code> datasets together</h2>
+<p>It is unlikely that the information within one of the modules is all you need for a data analysis. Most modules need to be combined with (at least) the core data for information about the respondent like demographics, socioeconomic status, and health behaviors/status. In some cases, you may want to combine two modules (likely the core module as well) to investigate a research question like whether and to what extent are there disparities in cognitive function by sexual orientation and gender identity.</p>
+<p>Like above with the <code>survey</code> modules, how you merge two datasets from this data package is not not particular to the package – you can use whichever approach makes sense for you. Instead, the point here is simply to illustrate the key variables by which you do such a merge, and some specifics for the survey design you will want to anticipate.</p>
+<div id="section-merging-to-core-data" class="section level3">
+<h3>Merging to core data</h3>
+<p>When merging the module to core data, you likely want an inner join so that you keep only those individuals who were included in the module and in the core data. Morover, when merging multiple modules together, an inner join makes more sense so that you’re left with just those who responded to both modules.</p>
+<p>The primary key between the different components is the <code>seqno</code> variable, which is essentially each respondent’s unique ID variable. Since these ID variables are generated annually, there is a possibility that it is not unique over time, so I include the state and year as additional merge variables.</p>
+<div class="tutorial-exercise" data-label="innerjoin" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>core_cog_df&lt;-inner_join(brfss_core,brfss_cog,by = c(&quot;x_state&quot;, &quot;year&quot;, &quot;seqno&quot;))</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>We can check that worked by seeing that the same number of individuals from the cognitive module are included in the new dataset (this is the principle of the inner join).</p>
+<div class="tutorial-exercise" data-label="innerjoin_check" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>nrow(brfss_core)
+nrow(brfss_cog)
+nrow(core_cog_df)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>The second two numbers should be the same (give or take…).</p>
+<p>Something that is possible – even likely – to happen is that the two datasets each has a variable by the same name (like x_state) that does not merge perfectly such that you have <code>x_state.x</code> from the core data and <code>x_state.y</code> from the cognitive data. These variables tend to be in all datasets: x_state, state, seqno, year, x_psu, and x_ststr. This will be helpful to consider when creating the survey design statement.</p>
+</div>
+<div id="section-analyzing-merged-data" class="section level3">
+<h3>Analyzing merged data</h3>
+<p>Now that we have the core data attached, we know much more about each of those individuals beyond just their cognitive information. Let’s see whether the prevalence of self-reported memory loss / confusion is similar for men and women within each 5 year category of age.</p>
+<p>First, we need to define the survey design characteristics because we have changed the dataset. Remember the different pieces we need:</p>
+<ul>
+<li>adjusted weights</li>
+<li>the PSU</li>
+<li>the strata variable</li>
+<li>the dataset name</li>
+</ul>
+<p>Practice this syntax we’ve seen before to define the survey design parameters, and call this design <code>cogcore_svy</code>. We’ve seen (nearly*) all this code before already, but you may want to go through line by line and think through what each piece is doing.</p>
+<p>*Note: Sometimes there may be only one PSU within a given stratum, which makes estimating variance difficult (there … isn’t variance in 1). To account for this, we include <code>options(survey.lonely.psu="adjust")</code> which centers the variance for single-PSUs in strata to the grand mean. You can also remove it, or choose to do other things, too. For more details, see <a href="https://r-survey.r-forge.r-project.org/survey/exmample-lonely.html">here</a>.</p>
+<div class="tutorial-exercise" data-label="surveydefine_check" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Adjusting the Weights
+waves&lt;-core_cog_df %&gt;%
+  group_by(year,x_state) %&gt;%
+  slice(1) %&gt;% #keeping the first observation of each state + year
+  ungroup() %&gt;%
+  group_by(x_state) %&gt;% #grouping by state
+  count() %&gt;% #counting how many years the state was included
+  rename(wave=n) #renaming as wave
+
+core_cog_df_2&lt;-full_join(core_cog_df,waves,by=&quot;x_state&quot;) %&gt;%
+  mutate(cog_wt_adj = cog_wt_raw/wave) #adjusting the weight by number of waves
+
+options(survey.lonely.psu=&quot;adjust&quot;)
+cogcore_svy &lt;- svydesign(id = ~x_psu.x, strata = ~x_ststr.x, weight = ~cog_wt_adj, data = core_cog_df_2, nest = TRUE)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>Then we can use other survey procedures – <code>svyby()</code> and <code>svymean()</code> – to stratify the analysis by age and gender and to calculate the survey adjusted mean values of people who reported having memory loss and confusion within each strata. Since we’re calculating means, it might be easiest to use the numeric version of the variable (<code>cog_mem_d_num</code>) rather than the factor version that we used before (<code>cog_mem_d_fct</code>). The package often includes both versions of variables for this kind of thing – in some cases (e.g., logistic regression), it’s easier to have a numeric dependent variable rather than to work with factor variables.</p>
+<p>The following code takes a considerable time to execute, so it’s easier not to include this interactively and use all your memory. Instead, you might consider the code below and what it is trying to achieve.</p>
+<pre class="r"><code>svyby(~cog_mem_d_num, ~age_cat + sex_d_fct, cogcore_svy, svymean, keep.var=TRUE)</code></pre>
+</div>
+<div id="section-review-of-merging-and-working-with-multiple-datasets" class="section level3">
+<h3>Review of merging and working with multiple datasets</h3>
+<p>Combining the data from individual module and core datasets from the BRFSS package is a common initial step for data analysis, and relatively straightforward to do. In this section, we worked on the necessary steps to combine and then analyze these data, namely:</p>
+<ul>
+<li>merged the module and core data with an inner_join on the year, state, and individual’s sequence number (seqno)</li>
+<li>calculated the adjusted sampling weight</li>
+<li>defined the survey design parameters</li>
+<li>used the <code>svyby()</code> function to estimate survey adjusted means (<code>svymeans()</code>) or the proportion of individuals with memory loss / confusion by age and gender</li>
+</ul>
+</div>
+</div>
+<div id="section-tutorial-summary" class="section level2">
+<h2>5. Tutorial Summary</h2>
+<p>In this tutorial, we:</p>
+<ul>
+<li>introduced the <code>brfssR</code> package and the structure of BRFSS survey</li>
+<li>calculated and visualized what states have included the optional modules included in the package and how many times they have included them,</li>
+<li>defined the necessary components to account for the BRFSS complex sampling design</li>
+<li>merged two datasets together to be able to analyze the module data with demographic data from the core data</li>
+</ul>
+</div>
+<div id="section-supplemental-reading" class="section level2">
+<h2>6. Supplemental Reading</h2>
+<p>Want to learn more about (A) survey data analysis generally or (B) the R survey package specifically? Below are some excellent supplemental readings. Both get quickly into the details of the coding such that they are [probably more (A)dvanced, and so we have marked each reading appropriately.</p>
+<ol style="list-style-type: decimal">
+<li><p><span class="math inline">\(^A\)</span> U.S. CDC/National Center for Health Statistics. <a href="https://wwwn.cdc.gov/nchs/nhanes/tutorials/default.aspx">Continuous NHANES Tutorials.</a> Viewed on September 1, 2020.</p></li>
+<li><p><span class="math inline">\(^A\)</span> Croft, T.N., Marshall, A.M.J., Allen, C.K., et al. (2018.) <a href="https://dhsprogram.com/data/Guide-to-DHS-Statistics/index.htm#t=Analyzing_DHS_Data.htm"><em>Analyzing DHS Data</em></a> in Guide to DHS Statistics. Rockville, Maryland, USA: ICF.</p></li>
+<li><p><span class="math inline">\(^B\)</span>Lumley, T. (2011). Complex surveys: a guide to analysis using R (Vol. 565). John Wiley &amp; Sons.</p></li>
+<li><p><span class="math inline">\(^B\)</span> Lumley, T. (2004). Analysis of complex survey samples. J Stat Softw, 9(1), 1-19. 
+<script type="application/shiny-prerendered" data-context="server-start">
+#The setup chunk is critical. You need to call all packages and bring in (and wrangle) any data that you want the user to have for *any* example or activity, unless you want to add later example/exercise-specific chunks to bring in additional data. 
+library(learnr)
+library(tidyverse)
+library(brfssR)
+library(survey)
+data("brfss_core")
+data("brfss_cg")
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-docummentation_practice-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-docummentation_practice-code-editor`)), session)
+output$`tutorial-exercise-docummentation_practice-output` <- renderUI({
+  `tutorial-exercise-docummentation_practice-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-map-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-map-code-editor`)), session)
+output$`tutorial-exercise-map-output` <- renderUI({
+  `tutorial-exercise-map-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "map_check-1",     question = structure("Which states included this module 5 times?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_5a7276a",         option = "Washington", value = "Washington", label = structure("Washington", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_70a2867",         option = "Oregon", value = "Oregon", label = structure("Oregon", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_c08af28",         option = "Utah", value = "Utah", label = structure("Utah", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_1d1001",         option = "New York", value = "New York", label = structure("New York", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "map_check-1-answer", question = "map_check-1"),     loading = structure("<strong>Loading:<\u002fstrong> \nWhich states included this module 5 times?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 250589408.88331, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "map_check-2",     question = structure("Which states never included the caregiving module?", html = TRUE, class = c("html",     "character")), answers = list(structure(list(id = "lnr_ans_83c1809",         option = "Massachusetts", value = "Massachusetts", label = structure("Massachusetts", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2d46575",         option = "North Carolina", value = "North Carolina",         label = structure("North Carolina", html = TRUE, class = c("html",         "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_db948de",         option = "South Carolina", value = "South Carolina",         label = structure("South Carolina", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5e70c85",         option = "Idaho", value = "Idaho", label = structure("Idaho", html = TRUE, class = c("html",         "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer",     "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html",     "character")), try_again = structure("Try Again", html = TRUE, class = c("html",     "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html",     "character")), try_again = structure("Incorrect", html = TRUE, class = c("html",     "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html",     "character")), message = NULL, post_message = NULL), ids = list(        answer = "map_check-2-answer", question = "map_check-2"),     loading = structure("<strong>Loading:<\u002fstrong> \nWhich states never included the caregiving module?\n<br/><br/><br/>", html = TRUE, class = c("html",     "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1287398515.40051, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-age_labeled-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-age_labeled-code-editor`)), session)
+output$`tutorial-exercise-age_labeled-output` <- renderUI({
+  `tutorial-exercise-age_labeled-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-svydesign2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-svydesign2-code-editor`)), session)
+output$`tutorial-exercise-svydesign2-output` <- renderUI({
+  `tutorial-exercise-svydesign2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-cog_adjusted_weights-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-cog_adjusted_weights-code-editor`)), session)
+output$`tutorial-exercise-cog_adjusted_weights-output` <- renderUI({
+  `tutorial-exercise-cog_adjusted_weights-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-svytotal_with_adjusted_weights-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-svytotal_with_adjusted_weights-code-editor`)), session)
+output$`tutorial-exercise-svytotal_with_adjusted_weights-output` <- renderUI({
+  `tutorial-exercise-svytotal_with_adjusted_weights-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-innerjoin-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-innerjoin-code-editor`)), session)
+output$`tutorial-exercise-innerjoin-output` <- renderUI({
+  `tutorial-exercise-innerjoin-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-innerjoin_check-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-innerjoin_check-code-editor`)), session)
+output$`tutorial-exercise-innerjoin_check-output` <- renderUI({
+  `tutorial-exercise-innerjoin_check-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-surveydefine_check-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-surveydefine_check-code-editor`)), session)
+output$`tutorial-exercise-surveydefine_check-output` <- renderUI({
+  `tutorial-exercise-surveydefine_check-result`()
+})
+</script>
+ <!--html_preserve--></p>
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","blob","brfssR","broom","cellranger","checkmate","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jsonlite","knitr","later","lattice","learnr","lifecycle","lubridate","magrittr","markdown","Matrix","methods","mime","mitools","modelr","munsell","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","splines","stats","stringi","stringr","survey","survival","tibble","tidyr","tidyselect","tidyverse","tools","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.1.9","4.0.2","1.2.1","0.2.0","0.7.0","1.1.0","2.0.0","2.0.2","1.4-1","4.0.2","1.3.4","4.0.2","1.1.0","1.4.4","0.6.25","1.0.2","0.3.1","0.14","0.4.1","1.0.1","0.5.0","1.5.0","0.0.2","3.3.2","1.4.2","4.0.2","4.0.2","4.0.2","0.3.0","2.3.1","0.5.3","0.5.0","1.5.1","1.5.4","1.4.2","1.7.0","1.29","1.1.0.1","0.20-41","0.10.1","0.2.0","1.7.9","1.5","1.1","1.2-18","4.0.2","0.9","2.4","0.1.8","0.5.0","1.4.6","2.0.3","1.1.1","0.3.4","2.4.1","1.0.5","1.3.1","1.3.1","0.3.0","0.4.7","2.3","1.3-2","0.11","0.3.6","1.1.1","1.5.0","4.0.2","4.0.2","1.4.6","1.4.0","4.0","3.1-12","3.0.3","1.1.2","1.1.0","1.3.0","4.0.2","4.0.2","0.3.4","2.2.0","0.16","1.3.2","1.8-4","2.2.1"]}]}]}
+</script>
+<!--/html_preserve--></li>
+</ol>
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">`brfssR package tutorial</h2>
+<h4 class="author"><em>Ben Capistrant</em></h4>
+<h4 class="date"><em>2020-09-04</em></h4>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>
