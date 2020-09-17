@@ -5,7 +5,27 @@
 \alias{brfss_dep}
 \title{BRFSS Depression / Psychological Distress Module Data}
 \format{
-
+A "long" data frame with XX rows of individual BRFSS respondents in a given state (Ohio, Oregon, Tennessee, and Guam) in 2018 and YY column variables
+\describe{
+  \item{phq_dep_pls_num}{numeric variable of how often have you been bothered by having little interest or pleasure in doing things}
+  \item{phq_dep_pls_fct}{indicator, factor variable of how often have you been bothered by having little interest or pleasure in doing things}
+  \item{phq_dep_dwn_num}{numeric variable of hhow often have you been bothered by feeling down, depressed or hopeless}
+  \item{phq_dep_dwn_fct}{indicator, factor variable of how often have you been bothered by feeling down, depressed or hopeless}
+  \item{phq_anx_nrv_num}{numeric variable of how often have you been bothered by feeling nervous, anxious or on edge}
+  \item{phq_anx_nrv_fct}{indicator, factor variable of how often have you been bothered by feeling nervous, anxious or on edge}
+  \item{phq_anx_wry_num}{numeric variable of how often have you been bothered by not being able to stop or control worrying}
+  \item{phq_anx_wry_fct}{indicator, factor variable of how often have you been bothered by not being able to stop or control worrying}
+  \item{phq_dep_scale_num}{numeric variable of anxiety subscale = sum of items phq_dep_pls_num & phq_dep_dwn_num	(score range, 0 to 6)}
+  \item{phq_dep_scale_fct_d}{dichotomous, factor variable of depression subscale subscale, indicating a score of 3 or greater is considered positive for screening purposes}
+  \item{phq_anx_scale_num}{numeric variable of anxiety subscale = sum of items phq_anx_nrv_num & phq_anx_wry_num	(score range, 0 to 6)}
+  \item{phq_anx_scale_fct_d}{dichotomous, factor variable of anxiety subscale subscale, indicating a score of 3 or greater is considered positive for screening purposes}
+  \item{phq_tot_scale_num}{numeric scores of PHQ-4 total psychological score, ranges from 0 to 12}
+  \item{phq_tot_scale_cat}{factor variable of Pyschological Distress categories: None, scores of 0-2; Mild, scores of 3-5; Moderate, scores of 6-8; Severe, scores of 9-12}
+  \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
+  \item{seqno}{identificaiton variable}
+  \item{year}{Numeric year, 2014-2019}
+  \item{dep_wt_raw}{Original, raw sampling weight, 2018}
+}
 }
 \source{
 BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.

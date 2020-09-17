@@ -11,6 +11,10 @@ This package contains five datasets provided by the Centers for Disease Control 
 * `brfss_sgm`: The variables from the BRFSS optional state module on sexual orientation and gender identity, 2014-2019
   (Reference: https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/)
 
+* `brfss_dep`: The PHQ-2 optional module included in 2018.
+
+* `brfss_medexp`: A dataframe that lists the status of Medicaid expansion (expanded / not; year of implementation) for each state.
+  
 * `brfss_emspt`: The variables from the BRFSS optional state module on emptional support and life satisfaction, 2014-2017
 
 * `brfss_flu`: The variables from the BRFSS optional state module on place of influenza vaccination, 2016-2017
