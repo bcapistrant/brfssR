@@ -4,7 +4,4 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-<<<<<<< HEAD
 ^\.github$
-=======
->>>>>>> af18228ffa59da5cbd97b338b749ac65dc7c4a17
