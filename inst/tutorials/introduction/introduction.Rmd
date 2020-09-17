@@ -1,5 +1,5 @@
 ---
-title: "`brfssR` package tutorial"
+title: "brfssR package tutorial"
 author: "Ben Capistrant"
 date: "2020-09-04"
 output: 
@@ -22,7 +22,7 @@ data("brfss_cg")
 
 ## 1. Introduction
 
-This interactive tutorial introduces key features of and how to analyze data from  the `brfssR` package.
+This interactive tutorial introduces key features of and how to analyze data from the `brfssR` package.
 
 Specifically, the tutorial focuses on the following information and tasks:
 
