@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="BRFSS Caregiver (CG) Module Data — brfss_cg" />
-<meta property="og:description" content="BRFSS Caregiving Module Questions asked from 2015-2019
+<meta property="og:description" content="BRFSS Caregiving Module Questions asked from 2015-2020
 https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm." />
 
 
@@ -73,7 +73,7 @@ https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brfssR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -110,11 +110,11 @@ https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm." />
     </div>
 
     <div class="ref-description">
-    <p>BRFSS Caregiving Module Questions asked from 2015-2019
+    <p>BRFSS Caregiving Module Questions asked from 2015-2020
 <a href='https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm'>https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm</a>.</p>
     </div>
 
-    <pre class="usage"><span class='kw'>brfss_cg</span></pre>
+    <pre class="usage"><span class='va'>brfss_cg</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -124,8 +124,8 @@ https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm." />
   <dt>cg_d_fct</dt><dd><p>indicator, factor variable of whether respondent was Caregiver (cg_d_fct="CG") or not (cg_d_fct="Non-CG")</p></dd>
   <dt>state</dt><dd><p>state FIPS code, labeled with state alphabetic abbreviation</p></dd>
   <dt>seqno</dt><dd><p>identificaiton variable</p></dd>
-  <dt>year</dt><dd><p>Numeric year, 2014-2019</p></dd>
-  <dt>sgm_wt_raw</dt><dd><p>Original, raw sampling weight: 2014-2019</p></dd>
+  <dt>year</dt><dd><p>Numeric year, 2014-2020</p></dd>
+  <dt>sgm_wt_raw</dt><dd><p>Original, raw sampling weight: 2014-2020</p></dd>
 
 </dl>
 
@@ -137,23 +137,23 @@ https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm." />
     <pre class="examples"><div class='input'><span class='co'># To adjust the sampling weight (cg_wt_adj) by dividing the</span>
 <span class='co'># sampling weight (cg_wt_raw) by the number of instances</span>
 <span class='co'># a state is in the data, run:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span>)
-</div><div class='output co'>#&gt; <span class='message'>── <span style='font-weight: bold;'>Attaching packages</span><span> ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>ggplot2</span><span> 3.3.2     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>purrr  </span><span> 0.3.4</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>── <span style='font-weight: bold;'>Attaching packages</span><span> ──────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</span></div><div class='output co'>#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>ggplot2</span><span> 3.3.2     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>purrr  </span><span> 0.3.4</span>
 #&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>tibble </span><span> 3.0.3     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>dplyr  </span><span> 1.0.2</span>
 #&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>tidyr  </span><span> 1.1.2     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>stringr</span><span> 1.4.0</span>
-#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>readr  </span><span> 1.3.1     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>forcats</span><span> 0.5.0</span></div><div class='output co'>#&gt; <span class='message'>── </span><span style='font-weight: bold;'>Conflicts</span><span> ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──</span>
+#&gt; <span class='message'></span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>readr  </span><span> 1.4.0     </span><span style='color: #00BB00;'>✓</span><span> </span><span style='color: #0000BB;'>forcats</span><span> 0.5.0</span></div><div class='output co'>#&gt; <span class='message'>── </span><span style='font-weight: bold;'>Conflicts</span><span> ─────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──</span>
 #&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> </span><span style='color: #0000BB;'>dplyr</span><span>::</span><span style='color: #00BB00;'>filter()</span><span> masks </span><span style='color: #0000BB;'>stats</span><span>::filter()</span>
-#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> </span><span style='color: #0000BB;'>dplyr</span><span>::</span><span style='color: #00BB00;'>lag()</span><span>    masks </span><span style='color: #0000BB;'>stats</span><span>::lag()</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>brfss_cg</span>)
-<span class='kw'>waves</span><span class='op'>&lt;-</span><span class='kw'>brfss_cg</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='kw'>year</span> <span class='op'>%in%</span> <span class='fl'>2016</span><span class='op'>:</span><span class='fl'>2018</span>) <span class='op'>%&gt;%</span> <span class='co'>#keeping only 2016-2018 for illustration</span>
-  <span class='fu'>group_by</span>(<span class='kw'>year</span>,<span class='kw'>state</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'>slice</span>(<span class='fl'>1</span>) <span class='op'>%&gt;%</span> <span class='co'>#keeping the first observation of each state + year</span>
-  <span class='fu'>ungroup</span>() <span class='op'>%&gt;%</span>
-  <span class='fu'>group_by</span>(<span class='kw'>state</span>) <span class='op'>%&gt;%</span> <span class='co'>#grouping by state</span>
-  <span class='fu'>count</span>() <span class='op'>%&gt;%</span> <span class='co'>#counting how many years the state was included</span>
-  <span class='fu'>rename</span>(wave=<span class='kw'>n</span>) <span class='co'>#renaming as wave</span>
-<span class='kw'>brfss_cg</span><span class='op'>&lt;-</span><span class='fu'>full_join</span>(<span class='kw'>brfss_cg</span>,<span class='kw'>waves</span>,by=<span class='st'>"state"</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span>(cg_wt_adj = <span class='kw'>cg_wt_raw</span><span class='op'>/</span><span class='kw'>wave</span>) <span class='co'>#adjusting the weight by number of waves</span>
+#&gt; <span class='message'></span><span style='color: #BB0000;'>x</span><span> </span><span style='color: #0000BB;'>dplyr</span><span>::</span><span style='color: #00BB00;'>lag()</span><span>    masks </span><span style='color: #0000BB;'>stats</span><span>::lag()</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>brfss_cg</span><span class='op'>)</span>
+<span class='va'>waves</span><span class='op'>&lt;-</span><span class='va'>brfss_cg</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>%in%</span> <span class='fl'>2016</span><span class='op'>:</span><span class='fl'>2018</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#keeping only 2016-2018 for illustration</span>
+  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>year</span>,<span class='va'>state</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>slice</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#keeping the first observation of each state + year</span>
+  <span class='fu'>ungroup</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>state</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#grouping by state</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#counting how many years the state was included</span>
+  <span class='fu'>rename</span><span class='op'>(</span>wave<span class='op'>=</span><span class='va'>n</span><span class='op'>)</span> <span class='co'>#renaming as wave</span>
+<span class='va'>brfss_cg</span><span class='op'>&lt;-</span><span class='fu'>full_join</span><span class='op'>(</span><span class='va'>brfss_cg</span>,<span class='va'>waves</span>,by<span class='op'>=</span><span class='st'>"state"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>cg_wt_adj <span class='op'>=</span> <span class='va'>cg_wt_raw</span><span class='op'>/</span><span class='va'>wave</span><span class='op'>)</span> <span class='co'>#adjusting the weight by number of waves</span>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

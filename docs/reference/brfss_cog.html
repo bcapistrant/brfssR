@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="BRFSS Cognitive Decline Module Data — brfss_cog" />
-<meta property="og:description" content="BRFSS Cognitive Decline Module Questions asked from 2015-2019
+<meta property="og:description" content="BRFSS Cognitive Decline Module Questions asked from 2015-2020
 https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf." />
 
 
@@ -73,7 +73,7 @@ https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">brfssR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -110,11 +110,11 @@ https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf." />
     </div>
 
     <div class="ref-description">
-    <p>BRFSS Cognitive Decline Module Questions asked from 2015-2019
+    <p>BRFSS Cognitive Decline Module Questions asked from 2015-2020
 <a href='https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf'>https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf</a>.</p>
     </div>
 
-    <pre class="usage"><span class='kw'>brfss_cog</span></pre>
+    <pre class="usage"><span class='va'>brfss_cog</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -137,10 +137,10 @@ https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf." />
   <dt>x_state</dt><dd><p>numeric variable of state</p></dd>
   <dt>state</dt><dd><p>state FIPS code, labeled with state alphabetic abbreviation</p></dd>
   <dt>seqno</dt><dd><p>identificaiton variable</p></dd>
-  <dt>year</dt><dd><p>Numeric year: 2014-2019</p></dd>
+  <dt>year</dt><dd><p>Numeric year: 2014-2020</p></dd>
   <dt>x_psu</dt><dd><p>Primary Sampling Unit Variable</p></dd>
   <dt>x_ststr</dt><dd><p>Sampling Strata Variable</p></dd>
-  <dt>cog_wt_raw</dt><dd><p>Original,raw sampling weight: 2014-2019</p></dd>
+  <dt>cog_wt_raw</dt><dd><p>Original,raw sampling weight: 2014-2020</p></dd>
   <dt>version_cog</dt><dd><p>Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)</p></dd>
 
 </dl>
@@ -153,18 +153,18 @@ https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf." />
     <pre class="examples"><div class='input'><span class='co'># To adjust the sampling weight (cog_wt_raw) by dividing</span>
 <span class='co'># the sampling weight by the number of instances a state</span>
 <span class='co'># is in the data, run:</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='kw'>brfss_cog</span>)
-<span class='kw'>waves</span><span class='op'>&lt;-</span><span class='kw'>brfss_cog</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span>(<span class='kw'>year</span> <span class='op'>%in%</span> <span class='fl'>2016</span><span class='op'>:</span><span class='fl'>2017</span>) <span class='op'>%&gt;%</span> <span class='co'>#keeping only 2016-2017 for illustration</span>
-  <span class='fu'>group_by</span>(<span class='kw'>year</span>,<span class='kw'>state</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'>slice</span>(<span class='fl'>1</span>) <span class='op'>%&gt;%</span> <span class='co'>#keeping the first observation of each state + year</span>
-  <span class='fu'>ungroup</span>() <span class='op'>%&gt;%</span>
-  <span class='fu'>group_by</span>(<span class='kw'>state</span>) <span class='op'>%&gt;%</span> <span class='co'>#grouping by state</span>
-  <span class='fu'>count</span>() <span class='op'>%&gt;%</span> <span class='co'>#counting how many years the state was included</span>
-  <span class='fu'>rename</span>(wave=<span class='kw'>n</span>) <span class='co'>#renaming as wave</span>
-<span class='kw'>brfss_cog</span><span class='op'>&lt;-</span><span class='fu'>full_join</span>(<span class='kw'>brfss_cog</span>,<span class='kw'>waves</span>,by=<span class='st'>"state"</span>) <span class='op'>%&gt;%</span>
-  <span class='fu'>mutate</span>(cog_wt_adj = <span class='kw'>cog_wt_raw</span><span class='op'>/</span><span class='kw'>wave</span>) <span class='co'>#adjusting the weight by number of waves</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>brfss_cog</span><span class='op'>)</span>
+<span class='va'>waves</span><span class='op'>&lt;-</span><span class='va'>brfss_cog</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>year</span> <span class='op'>%in%</span> <span class='fl'>2016</span><span class='op'>:</span><span class='fl'>2017</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#keeping only 2016-2017 for illustration</span>
+  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>year</span>,<span class='va'>state</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>slice</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#keeping the first observation of each state + year</span>
+  <span class='fu'>ungroup</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>group_by</span><span class='op'>(</span><span class='va'>state</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#grouping by state</span>
+  <span class='fu'>count</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='co'>#counting how many years the state was included</span>
+  <span class='fu'>rename</span><span class='op'>(</span>wave<span class='op'>=</span><span class='va'>n</span><span class='op'>)</span> <span class='co'>#renaming as wave</span>
+<span class='va'>brfss_cog</span><span class='op'>&lt;-</span><span class='fu'>full_join</span><span class='op'>(</span><span class='va'>brfss_cog</span>,<span class='va'>waves</span>,by<span class='op'>=</span><span class='st'>"state"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>mutate</span><span class='op'>(</span>cog_wt_adj <span class='op'>=</span> <span class='va'>cog_wt_raw</span><span class='op'>/</span><span class='va'>wave</span><span class='op'>)</span> <span class='co'>#adjusting the weight by number of waves</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

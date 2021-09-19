@@ -13,7 +13,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Behavioral Risk Factor Surveillance Survey (BRFSS) Data">
 <meta property="og:description" content="This package pools U.S. Centers for Disease Control and Prevention 
-    BRFSS study data from 2014-2019. In particular, the package cleans data 
+    BRFSS study data from 2014-2020. In particular, the package cleans data 
     from optional state modules on caregiving, cogntive decline, 
     emotional support, sexual/gender minorities, and influenza vaccine place.
     There are also cleaned demographic, socioeconomic, and health variables.">
@@ -35,7 +35,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">brfssR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -66,17 +66,17 @@
 <div id="brfssr" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#brfssr" class="anchor"></a>brfssR</h1></div>
-<p>This package contains five datasets provided by the Centers for Disease Control and Prevention Behavioral Risk Factor Surveillance System (BRFSS) between 2014-2019:</p>
+<p>This package contains five datasets provided by the Centers for Disease Control and Prevention Behavioral Risk Factor Surveillance System (BRFSS) between 2014-2020:</p>
 <ul>
-<li><p><code>brfss_cog</code>: The variables from the BRFSS optional state module on cognitive function, 2015-2019 (Source: <a href="https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf" class="uri">https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf</a>)</p></li>
-<li><p><code>brfss_cg</code>: The variables from the BRFSS optional state module on caregiving, 2015-2019 (Source: <a href="https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf" class="uri">https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf</a>)</p></li>
-<li><p><code>brfss_sgm</code>: The variables from the BRFSS optional state module on sexual orientation and gender identity, 2014-2019 (Reference: <a href="https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/" class="uri">https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/</a>)</p></li>
+<li><p><code>brfss_cog</code>: The variables from the BRFSS optional state module on cognitive function, 2015-2020 (Source: <a href="https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf" class="uri">https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf</a>)</p></li>
+<li><p><code>brfss_cg</code>: The variables from the BRFSS optional state module on caregiving, 2015-2020 (Source: <a href="https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf" class="uri">https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf</a>)</p></li>
+<li><p><code>brfss_sgm</code>: The variables from the BRFSS optional state module on sexual orientation and gender identity, 2014-2020 (Reference: <a href="https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/" class="uri">https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/</a>)</p></li>
 <li><p><code>brfss_dep</code>: The PHQ-2 optional module included in 2018.</p></li>
-<li><p><code>brfss_medexp</code>: A dataframe that lists the status of Medicaid expansion (expanded / not; year of implementation) for each state.</p></li>
+<li><p><code>brfss_medexp</code>: A dataframe that lists the status of Medicaid expansion (expanded / not; year of implementation) for each state. Current as of mid-2020.</p></li>
 <li><p><code>brfss_emspt</code>: The variables from the BRFSS optional state module on emptional support and life satisfaction, 2014-2017</p></li>
 <li><p><code>brfss_flu</code>: The variables from the BRFSS optional state module on place of influenza vaccination, 2016-2017</p></li>
 </ul>
-<p>It also includes core variables from each BRFSS year 2014-2019:</p>
+<p>It also includes core variables from each BRFSS year 2014-2020:</p>
 <ul>
 <li>
 <code>brfss_core</code>: demographic, socioeconomic, health care, health behavior, and health status variables (Source: <a href="https://www.cdc.gov/brfss/annual_data/annual_data.htm" class="uri">https://www.cdc.gov/brfss/annual_data/annual_data.htm</a>)</li>
@@ -86,8 +86,7 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit">
 <span class="co"># Install the development version from GitHub</span>
-<span class="kw">devtools</span>::<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"bencapistrant/brfssR"</span>)
-</pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"bencapistrant/brfssR"</span><span class="op">)</span></pre></div>
 </div>
 <div id="how-the-raw-data-files-are-stored" class="section level2">
 <h2 class="hasAnchor">
