@@ -116,7 +116,7 @@ data_2018_2<- SGM_2018_2 %>%
 rm(SGM_2018_2)
 
 data_2018 <- bind_rows(data_2018_0, data_2018_2)
-
+rm(data_2018_0, data_2018_2)
 # recode 2018 sexual orientation vars (delivered seperately for men and women)
 ## NOTE: coded to match 2017 levels
 ### in 2018, SXORIENT is two variables, SOMALE and SOFEMALE
@@ -127,20 +127,110 @@ data_2018 <- data_2018 %>%
   mutate(SXORIENT = ifelse(SXORIENT == 1, 2,
                            ifelse(SXORIENT == 2, 1, SXORIENT)))
 
-### COMBINING 2014-2018
-brfss_sgm<-bind_rows(data_2018,data_2017,data_2016,data_2015,data_2014)
+
+### 2019
+
+# states administered SOGI Module in 2019: Alaska, Arizona, Colorado,
+### Connecticut, Delaware, Florida, Georgia, Guam, Hawaii, Idaho, Iowa,
+### Kansas, Louisiana, Maryland, Minnesota, Mississippi, Montana, New York,
+### North Carolina, Ohio, Oklahoma, Rhode Island, South Carolina, Tennessee,
+### Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin
+
+sgm2019_0 <- c(2,4,8,9,10,
+              12,13,15,16,19,
+              20,22,24,27,28,
+              30,36,37,39,
+              40,44,45,47,48,49,
+              50,51,53,54,55,66)
+
+SGM_2019_0 <- read.xport("data-raw/LLCP2019.XPT")
+
+data_2019<- SGM_2019_0 %>%
+  filter(X_STATE %in% sgm2019_0) %>%
+  mutate(YEAR=2019,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+rm(SGM_2019_0)
+
+#data_2019 <- bind_rows(data_2019_0, data_2019_2)
+
+# recode 2019 sexual orientation vars (delivered seperately for men and women)
+## NOTE: coded to match 2017 levels
+### in 2019, SXORIENT is two variables, SOMALE and SOFEMALE
+### in 2017, 1 is straight and 2 is gay, opposite in 2019
+
+data_2019 <- data_2019 %>%
+  mutate(SXORIENT = ifelse(is.na(SOMALE) == FALSE, SOMALE, SOFEMALE)) %>%
+  mutate(SXORIENT = ifelse(SXORIENT == 1, 2,
+                           ifelse(SXORIENT == 2, 1, SXORIENT)))
+
+#---------------------------------------------------------------------------#
+### 2020
+
+# states administered SOGI Module in 2020: Alaska, Arkansas, California,
+### Colorado, Connecticut, Georgia, Guam, Hawaii, Idaho, Illinois, Indiana,
+### Iowa, Kansas, Louisiana, Massachusetts, Michigan, Minnesota, Montana,
+### New Jersey, New Mexico, New York, North Carolina, Ohio, Oklahoma,
+### Rhode Island, South Carolina, Texas, Utah, Vermont, Virginia, Washington,
+### West Virginia, Wisconsin
+
+sgm2020_0 <- c(2,5,6,8,9,
+              13,15,16,17,18,19,
+              20,22,25,26,27,
+              30,34,35,36,37,39,
+              40,44,45,48,49,
+              50,51,53,54,55,66)
+
+SGM_2020_0 <- read.xport("data-raw/LLCP2020.XPT")
+
+data_2020<- SGM_2020_0 %>%
+  filter(X_STATE %in% sgm2020_0) %>%
+  mutate(YEAR=2020,
+         VERSION_SGM="X_LLCPWT",
+         sgm_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+rm(SGM_2020_0)
+
+#data_2020 <- bind_rows(data_2020_0, data_2020_2)
+
+# recode 2020 sexual orientation vars (delivered seperately for men and women)
+## NOTE: coded to match 2017 levels
+### in 2020, SXORIENT is two variables, SOMALE and SOFEMALE
+### in 2017, 1 is straight and 2 is gay, opposite in 2020
+
+data_2020 <- data_2020 %>%
+  mutate(SXORIENT = ifelse(is.na(SOMALE) == FALSE, SOMALE, SOFEMALE)) %>%
+  mutate(SXORIENT = ifelse(SXORIENT == 1, 2,
+                           ifelse(SXORIENT == 2, 1, SXORIENT)))
+
+### COMBINING 2014-2020
+brfss_sgm_A<-bind_rows(data_2020,data_2019,data_2018)
+rm(data_2020,data_2019,data_2018)
+brfss_sgm_A <- brfss_sgm_A %>%
+  select(SXORIENT, TRNSGNDR, X_STATE, YEAR, SEQNO, X_PSU, X_STSTR, sgm_wt_raw,VERSION_SGM)
+
+brfss_sgm_B<-bind_rows(data_2017,data_2016,data_2015,data_2014)
+rm(data_2017,data_2016,data_2015,data_2014)
+brfss_sgm_B <- brfss_sgm_B %>%
+  select(SXORIENT, TRNSGNDR, X_STATE, YEAR, SEQNO, X_PSU, X_STSTR, sgm_wt_raw,VERSION_SGM)
+
+brfss_sgm<-bind_rows(brfss_sgm_A,brfss_sgm_B)
+rm(brfss_sgm_A,brfss_sgm_B)
 
 ### Labeling State indicators
-sgmstates<-c(4,6,8,9,10,12,13,15,
-             16,17,18,19,20,21,22,
-             24,25,27,28,29,30,32,
-             36,37,39,40,42,44,45,47,
-             48,50,51,53,54,55,56,66)
-sgmstatelabel<-c("AZ","CA","CO","CT","DE","FL","GA","HI",
-                 "ID","IL","IN","IA","KS","KY","LA",
-                 "MD","MA","MN","MS","MO","MT","NV",
-                 "NY","NC","OH","OK","PA","RI","SC", "TN",
-                 "TX","VT","VA","WA","WV","WI","WY","GU")
+sgmstates<- c(1,2,4,5,6,8,9,10,
+              11,12,13,15,16,17,18,19,
+              20,21,22,23,24,25,26,27,28,29,
+              30,31,32,33,34,35,36,37,38,39,
+              40,41,42,44,45,46,47,48,49,
+              50,51,53,54,55,56,66,72)
+sgmstatelabel<-c("AL","AK","AZ","AR","CA","CO","CT","DE",
+                 "DC","FL","GA","HI","ID","IL","IN","IA",
+                 "KS","KY","LA","ME","MD","MA","MI","MN","MS","MO",
+                 "MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH",
+                 "OK","OR","PA","RI","SC","SD","TN","TX","UT",
+                 "VT","VA","WA","WV","WI","WY","GU","PR")
 brfss_sgm$state<-factor(brfss_sgm$X_STATE, levels=sgmstates, labels=sgmstatelabel)
 
 #------------------------------------------------------------------------------------#

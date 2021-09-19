@@ -145,7 +145,7 @@ COG_2018_0 <- COG_2018_0 %>%
          COG_wt_raw=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
 
-COG_2018_1<-read.xport("data-raw/LLCP17V1.XPT")
+COG_2018_1<-read.xport("data-raw/LLCP18V1.XPT")
 COG_2018_1 <- COG_2018_1 %>%
   filter(X_STATE %in% COG2018_1) %>%
   mutate(YEAR=2018,
@@ -153,7 +153,7 @@ COG_2018_1 <- COG_2018_1 %>%
          COG_wt_raw=X_LCPWTV1,
          SEQNO=as.integer(SEQNO))
 
-COG_2018_2<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2018_2<-read.xport("data-raw/LLCP18V2.XPT")
 COG_2018_2 <- COG_2018_2 %>%
   filter(X_STATE %in% COG2018_2) %>%
   mutate(YEAR=2018,
@@ -183,7 +183,7 @@ COG_2019_0 <- COG_2019_0 %>%
          COG_wt_raw=X_LLCPWT,
          SEQNO=as.integer(SEQNO))
 
-COG_2019_1<-read.xport("data-raw/LLCP17V1.XPT")
+COG_2019_1<-read.xport("data-raw/LLCP19V1.XPT")
 COG_2019_1 <- COG_2019_1 %>%
   filter(X_STATE %in% COG2019_1) %>%
   mutate(YEAR=2019,
@@ -191,7 +191,7 @@ COG_2019_1 <- COG_2019_1 %>%
          COG_wt_raw=X_LCPWTV1,
          SEQNO=as.integer(SEQNO))
 
-COG_2019_2<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2019_2<-read.xport("data-raw/LLCP19V2.XPT")
 COG_2019_2 <- COG_2019_2 %>%
   filter(X_STATE %in% COG2019_2) %>%
   mutate(YEAR=2019,
@@ -199,7 +199,7 @@ COG_2019_2 <- COG_2019_2 %>%
          COG_wt_raw=X_LCPWTV2,
          SEQNO=as.integer(SEQNO))
 
-COG_2019_3<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2019_3<-read.xport("data-raw/LLCP19V3.XPT")
 COG_2019_3 <- COG_2019_3 %>%
   filter(X_STATE %in% COG2019_3) %>%
   mutate(YEAR=2019,
@@ -207,14 +207,57 @@ COG_2019_3 <- COG_2019_3 %>%
          COG_wt_raw=X_LCPWTV3,
          SEQNO=as.integer(SEQNO))
 
-list2019<-list(COG_2019_0, COG_2019_1,COG_2019_2)
+list2019<-list(COG_2019_0, COG_2019_1,COG_2019_2, COG_2019_3)
 data_2019<-bind_rows(list2019)
 rm(COG_2019_0,COG_2019_1,COG_2019_2, COG_2019_3, list2019)
 
 
-### COMBINING 2015-2017
-brfss_COG<-bind_rows(data_2019,data_2018, data_2017,data_2016,data_2015)
-rm(data_2019,data_2018,data_2017,data_2016,data_2015)
+# LLCP2020	_LLCPWT	Alaska, Arizona, Arkansas, Delaware, District of Columbia,
+# Hawaii, Idaho, Illinois, Kentucky, Maine, Nevada, New Hampshire,
+# North Carolina, Oregon, Puerto Rico, Vermont, Washington, Wyoming
+# LLCP20V1	_LCPWTV1	California, Michigan, New York, Ohio
+# LLCP20V2	_LCPWTV2	Utah
+
+COG2020_0<-c(2,4,5,10,
+              11,15,16,17,
+              21,23,24,25,26,27,28,29,
+              30,31,42,44,47,49,
+              50,53,56,72)
+COG2020_1<-c(6,26,36,39)
+COG2020_2<-c(49)
+
+
+COG_2020_0<-read.xport("data-raw/LLCP2020.XPT")
+COG_2020_0 <- COG_2020_0 %>%
+  filter(X_STATE %in% COG2020_0) %>%
+  mutate(YEAR=2020,
+         version_cog="X_LLCPWT",
+         COG_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO))
+
+COG_2020_1<-read.xport("data-raw/LLCP17V1.XPT")
+COG_2020_1 <- COG_2020_1 %>%
+  filter(X_STATE %in% COG2020_1) %>%
+  mutate(YEAR=2020,
+         version_cog="X_LCPWTV1",
+         COG_wt_raw=X_LCPWTV1,
+         SEQNO=as.integer(SEQNO))
+
+COG_2020_2<-read.xport("data-raw/LLCP17V2.XPT")
+COG_2020_2 <- COG_2020_2 %>%
+  filter(X_STATE %in% COG2020_2) %>%
+  mutate(YEAR=2020,
+         version_cog="X_LCPWTV2",
+         COG_wt_raw=X_LCPWTV2,
+         SEQNO=as.integer(SEQNO))
+
+list2020<-list(COG_2020_0, COG_2020_1,COG_2020_2)
+data_2020<-bind_rows(list2020)
+rm(COG_2020_0,COG_2020_1,COG_2020_2, list2020)
+
+### COMBINING 2015-2020
+brfss_COG<-bind_rows(data_2020,data_2019,data_2018, data_2017,data_2016,data_2015)
+rm(data_2020,data_2019,data_2018,data_2017,data_2016,data_2015)
 
 ### Labeling State indicators
 COGstates<- c(1,2,4,5,6,8,9,10,

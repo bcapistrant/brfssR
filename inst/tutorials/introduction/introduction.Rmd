@@ -112,9 +112,9 @@ For categorical variables, we are usually interested in the frequencies of the d
 - what percent of the total sample is in a given category,
 - whether there are enough people in each category to support hypothesis testing (i.e., enough statistical power to testing group differences).
 
-#### Ex. 3.A: Visualizing Which States Fave Which Data
+#### Ex. 3.A: Visualizing Which States Have Which Data
 
-Since the states can opt into the different modules, an initial question is typically, "Which states have include the module I'm interested in?" While [CDC documents these for each given year](https://www.cdc.gov/brfss/questionnaires/index.htm), it is a little more painstaking to track this across multiple years. The `brfssR` package simplifies that by having brought all of the data together such that an useful first step is to look at thow much data there are, and/or from which states.
+Since the states can opt into the different modules, an initial question is typically, "Which states have include the module I'm interested in?" While [CDC documents these for each given year](https://www.cdc.gov/brfss/questionnaires/index.htm), it is a little more painstaking to track this across multiple years. The `brfssR` package simplifies that by having brought all of the data together such that an useful first step is to look at how much data there are, and/or from which states.
 
 The code below works for the caregiving module, which has up since 2015, so a range of 0-5. You could run the following code to get a map of which states included the module more times.
 
@@ -167,7 +167,7 @@ brfss_cog %>%
   filter(cog_mem_d_fct=="Yes") %>%
   mutate(Percent = (n/total)*100) %>%
   ungroup() %>%
-  #Reordering the states factor in descenging rather than alphabetical order
+  #Reordering the states factor in descending rather than alphabetical order
   mutate(State_Abbreviation = fct_reorder(state, desc(Percent))) %>%
   #plotting
   ggplot(aes(y=Percent, x=State_Abbreviation)) + geom_bar(stat="identity") + 
@@ -175,7 +175,7 @@ brfss_cog %>%
            axis.text.x  = element_text(angle=45, hjust = 1))
 ```
 
-For exploratory analyses, the `ggplot2` and `dplyr` packages for this kind of summarization and visualizing means and frequencies. The complex sampling design of the data collection or repeats of some states (5 years of data from NY but 1 from PA) may not matter much at this point. Once you get to bivariate associations, you will likely need to consider these issues for hypothesis testing as they will need to be factored into the standard error estimation and sampling weighting, respectively.
+For exploratory analyses, the `ggplot2` and `dplyr` packages for this kind of summary and visualizing means and frequencies. The complex sampling design of the data collection or repeats of some states (5 years of data from NY but 1 from PA) may not matter much at this point. Once you get to bi-variate associations, you will likely need to consider these issues for hypothesis testing as they will need to be factored into the standard error estimation and sampling weighting, respectively.
 
 
 ## 4. Survey Adjusted Data Analysis
@@ -283,7 +283,7 @@ Like above with the `survey` modules, how you merge two datasets from this data 
 
 ### Merging to core data
 
-When merging the module to core data, you likely want an inner join so that you keep only those individuals who were included in the module and in the core data. Morover, when merging multiple modules together, an inner join makes more sense so that you're left with just those who responded to both modules.
+When merging the module to core data, you likely want an inner join so that you keep only those individuals who were included in the module and in the core data. Moreover, when merging multiple modules together, an inner join makes more sense so that you're left with just those who responded to both modules.
 
 The primary key between the different components is the `seqno` variable, which is essentially each respondent's unique ID variable. Since these ID variables are generated annually, there is a possibility that it is not unique over time, so I include the state and year as additional merge variables. 
 

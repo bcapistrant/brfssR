@@ -216,9 +216,50 @@ list2019<-list(BRFSS_2019_0, BRFSS_2019_1, BRFSS_2019_2, BRFSS_2019_3)
 data_2019<-bind_rows(list2019)
 rm(BRFSS_2019_0, BRFSS_2019_1, BRFSS_2019_2, BRFSS_2019_3, list2019)
 
-### COMBINING 2015-2018
-brfss_cg<-bind_rows(data_2019,data_2018, data_2017,data_2016,data_2015)
-rm(data_2019,data_2018, data_2017,data_2016,data_2015)
+### 2020
+
+#Version 0 Florida, Georgia, Oregon, Pennsylvania, West Virginia
+#Version 1	New York, Ohio
+#Version 2	Utah
+
+cg2020_0<-c(12,13,41,42,54)
+cg2020_1<-c( 36, 39)
+cg2020_2<-c(49)
+
+BRFSS_2020_0 <- read.xport("data-raw/LLCP2020.XPT")
+BRFSS_2020_0 <- BRFSS_2020_0 %>%
+  filter(X_STATE %in% cg2020_0) %>%
+  mutate(YEAR=2020,
+         CG_WT_RAW=X_LLCPWT,
+         VERSION_CG="X_LLCPWT",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2020_1<-read.xport("data-raw/LLCP19V1.XPT")
+BRFSS_2020_1 <- BRFSS_2020_1 %>%
+  filter(X_STATE %in% cg2020_1) %>%
+  mutate(YEAR=2020,
+         CG_WT_RAW=X_LCPWTV1,
+         VERSION_CG="X_LCPWTV1",
+         SEQNO=as.integer(SEQNO))
+
+BRFSS_2020_2<-read.xport("data-raw/LLCP19V2.XPT")
+BRFSS_2020_2 <- BRFSS_2020_2 %>%
+  filter(X_STATE %in% cg2020_2) %>%
+  mutate(YEAR=2020,
+         CG_WT_RAW=X_LCPWTV2,
+         VERSION_CG="X_LCPWTV2",
+         SEQNO=as.integer(SEQNO))
+
+
+### Adding data sets together
+list2020<-list(BRFSS_2020_0, BRFSS_2020_1, BRFSS_2020_2)
+
+data_2020<-bind_rows(list2020)
+rm(BRFSS_2020_0, BRFSS_2020_1, BRFSS_2020_2, list2020)
+
+### COMBINING 2015-2020
+brfss_cg<-bind_rows(data_2020,data_2019,data_2018, data_2017,data_2016,data_2015)
+rm(data_2020, data_2019,data_2018, data_2017,data_2016,data_2015)
 
 cgsgmstates<-c(1,2,4,5,6,8,9,11,12,13,
                15,16,17,18,19,20,21,22,23,24,

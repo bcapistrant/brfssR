@@ -15,7 +15,7 @@ data_2014 <- VAR_2014_0 %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character) %>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV4,X_BMI5CAT,X_BMI5,
-       FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       FLUSHOT = FLUSHOT6,FLSHTMY=FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
@@ -33,7 +33,7 @@ data_2015 <- VAR_2015_0 %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character)%>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1, SEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV5,X_BMI5CAT,X_BMI5,
-       FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       FLUSHOT =FLUSHOT6,FLSHTMY=FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
@@ -56,7 +56,7 @@ data_2016 <- VAR_2016_0 %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character) %>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1, SEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV5,X_BMI5CAT,X_BMI5,
-       HIVRISK=HIVRISK4,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
+       HIVRISK=HIVRISK4,FLUSHOT = FLUSHOT6,FLSHTMY=FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
@@ -79,7 +79,7 @@ data_2017 <- VAR_2017_0 %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character) %>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV5,X_BMI5CAT,X_BMI5,
-       HIVRISK=HIVRISK5,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       HIVRISK=HIVRISK5,FLUSHOT = FLUSHOT6,FLSHTMY=FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
@@ -102,20 +102,23 @@ data_2018 <- VAR_2018_0 %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character) %>%
 select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX=SEX1,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV6,X_BMI5CAT,X_BMI5,
-       HIVRISK=HIVRISK5,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       HIVRISK=HIVRISK5,FLUSHOT = FLUSHOT6,FLSHTMY=FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 rm(VAR_2018_0)
-table(data_2018$HVYDRNK,useNA = c("always"))
+#table(data_2018$HVYDRNK,useNA = c("always"))
 ## 2018 Notes:
 ### No Imputed Race variable (X_IMPRACE)
 ### Sex renamed from SEX1 (now includes "Sex assigned at birth")
 ### Heavy Drinking Changed and renamed
 
+
+#----------------------------------------------------------------------------------#
+
 ### 2019
 
-VAR_2019_0<-read.xport("data-raw/LLCP2018.XPT")
+VAR_2019_0<-read.xport("data-raw/LLCP2019.XPT")
 data_2019 <- VAR_2019_0 %>%
   mutate(YEAR=2019,
          VERSION_VAR="X_LLCPWT",
@@ -123,28 +126,52 @@ data_2019 <- VAR_2019_0 %>%
          SEQNO=as.integer(SEQNO)) %>%
   mutate_if(is.double, as.integer) %>%
   mutate_if(is.factor, as.character) %>%
-select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX=SEX1,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV6,X_BMI5CAT,X_BMI5,
-       HIVRISK=HIVRISK5,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
-       CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
-       ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX=SEXVAR,
+       BIRTHSEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV7,X_BMI5CAT,X_BMI5,
+       HIVRISK=HIVRISK5,FLUSHOT = FLUSHOT7,FLSHTMY=FLSHTMY3,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       CVDCRHD4,CVDSTRK3,DIABETE3=DIABETE4,ASTHMA3,HAVARTH3=HAVARTH4,CHCCOPD1=CHCCOPD2,CHCOCNCR,CHCKDNY1 = CHCKDNY2,
+       ADDEPEV2=ADDEPEV3,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
        X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 rm(VAR_2019_0)
-table(data_2019$HVYDRNK,useNA = c("always"))
+#table(data_2019$HVYDRNK,useNA = c("always"))
 
 #----------------------------------------------------------------------------------#
 
-table(data_2014$SEX,useNA = c("always"))
-table(data_2015$SEX,useNA = c("always"))
-table(data_2016$SEX,useNA = c("always"))
-table(data_2017$SEX,useNA = c("always"))
-table(data_2018$SEX,useNA = c("always"))
-table(data_2019$SEX,useNA = c("always"))
+### 2020
+
+VAR_2020_0<-read.xport("data-raw/LLCP2020.XPT")
+data_2020 <- VAR_2020_0 %>%
+  mutate(YEAR=2020,
+         VERSION_VAR="X_LLCPWT",
+         VAR_wt_raw=X_LLCPWT,
+         SEQNO=as.integer(SEQNO)) %>%
+  mutate_if(is.double, as.integer) %>%
+  mutate_if(is.factor, as.character) %>%
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,X_IMPRACE, SEX=SEXVAR,
+       BIRTHSEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK=X_RFDRHV7,X_BMI5CAT,X_BMI5,
+       HIVRISK=HIVRISK5,FLUSHOT = FLUSHOT7,FLSHTMY=FLSHTMY3,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,
+       CVDCRHD4,CVDSTRK3,DIABETE3=DIABETE4,ASTHMA3,HAVARTH3=HAVARTH4,CHCCOPD1=CHCCOPD2,CHCOCNCR,CHCKDNY1 = CHCKDNY2,
+       ADDEPEV2=ADDEPEV3,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
+       X_STATE,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
+rm(VAR_2020_0)
+#table(data_2020$HVYDRNK,useNA = c("always"))
+
+#----------------------------------------------------------------------------------#
+
+
+# table(data_2014$SEX,useNA = c("always"))
+# table(data_2015$SEX,useNA = c("always"))
+# table(data_2016$SEX,useNA = c("always"))
+# table(data_2017$SEX,useNA = c("always"))
+# table(data_2018$SEX,useNA = c("always"))
+# table(data_2019$SEX,useNA = c("always"))
+# table(data_2020$SEX,useNA = c("always"))
 
 ### COMBINING 2014-2018
-brfss_VAR<-bind_rows(data_2019,data_2018,data_2017,data_2016,data_2015,data_2014)
+brfss_VAR<-bind_rows(data_2020,data_2019,data_2018,data_2017,data_2016,data_2015,data_2014)
 
-table(brfss_VAR$SEX,useNA = c("always"))
-table(data_2018$HVYDRNK,useNA = c("always"))
+#table(brfss_VAR$SEX,useNA = c("always"))
+#table(data_2018$HVYDRNK,useNA = c("always"))
 
 varstates<-c(1,2,4,5,6,8,9,10,
               11,12,13,15,16,17,18,19,20,
@@ -162,13 +189,13 @@ brfss_VAR$state<- factor(brfss_VAR$X_STATE, levels=varstates, labels=varstatelab
 
 brfss_VAR1<-brfss_VAR%>%
 mutate(fips=X_STATE) %>%
-select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK,X_BMI5CAT,X_BMI5,
-       HIVRISK,FLUSHOT6,FLSHTMY2,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
+select(X_AGE80,MARITAL,CHILDREN,X_CHLDCNT,X_RACEGR3,X_HISPANC,X_MRACE1,SEX,BIRTHSEX,VETERAN3,MSCODE,X_RFBING5,HVYDRNK,X_BMI5CAT,X_BMI5,
+       HIVRISK,FLUSHOT,FLSHTMY,X_TOTINDA,X_SMOKER3,MEDCOST,HLTHPLN1,CHECKUP1,LASTDEN3,
        CVDCRHD4,CVDSTRK3,DIABETE3,ASTHMA3,HAVARTH3,CHCCOPD1,CHCOCNCR,CHCKDNY1,
        ADDEPEV2,MENTHLTH,PHYSHLTH,PREGNANT,GENHLTH,EMPLOY1,INCOME2,X_EDUCAG,X_METSTAT,X_URBSTAT,
        fips,X_STATE,state,YEAR,SEQNO,VAR_wt_raw,VERSION_VAR,X_PSU, X_STSTR)
 
-rm(data_2019,data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
+rm(data_2020,data_2019,data_2018,data_2017,data_2016,data_2015,data_2014,brfss_VAR)
 #---------------------------------------#
 #           FUNCTIONS
 #---------------------------------------#
@@ -257,7 +284,10 @@ brfss_covariates<-brfss_VAR1 %>%
   mutate(sex_d_fct = as.factor(if_else(SEX == 1, "Male",
                                if_else(SEX == 2, "Female", NA_character_))),
          fem_d_num = as.numeric(if_else(SEX == 1, 0,
-                                if_else(SEX == 2, 1, NA_real_)))
+                                if_else(SEX == 2, 1, NA_real_))),
+         sexab_cat_fct = as.factor(if_else(BIRTHSEX == 1, "Male",
+                                if_else(BIRTHSEX == 2, "Female",
+                                if_else(BIRTHSEX %in% c(7,9), "Other", NA_character_)))),
         ) %>%
 
 # Race/Ethnicity (X_RACEGR3, X_MRACE1 & X_HISPANC)
@@ -438,12 +468,12 @@ brfss_covariates<-brfss_VAR1 %>%
 
 
 # Influenza Vaccine: Any Vaccine, When, and Where the vaccine happened
-    mutate(fluvac_cat_fct = as.factor(if_else(FLUSHOT6==1, "Yes",
-                                  if_else(FLUSHOT6==2, "No", "DK/Refused"))),
-          fluvac_d_fct = as.factor(if_else(FLUSHOT6==1, "Yes",
-                                  if_else(FLUSHOT6==2, "No",NA_character_))),
-         fluvac_d_num = as.numeric(if_else(FLUSHOT6==1, 1,
-                                  if_else(FLUSHOT6==2, 0, NA_real_)))
+    mutate(fluvac_cat_fct = as.factor(if_else(FLUSHOT==1, "Yes",
+                                  if_else(FLUSHOT==2, "No", "DK/Refused"))),
+          fluvac_d_fct = as.factor(if_else(FLUSHOT==1, "Yes",
+                                  if_else(FLUSHOT==2, "No",NA_character_))),
+         fluvac_d_num = as.numeric(if_else(FLUSHOT==1, 1,
+                                  if_else(FLUSHOT==2, 0, NA_real_)))
 
           #FLSHTMY3=if_else(FLSHTMY2 %in% 777777:999999, NA_real_, FLSHTMY2),
           #fluvac_date_num = mdy(FLSHTMY3)
@@ -585,7 +615,7 @@ brfss_core<-brfss_covariates %>%
     mstat_cat_fct,mstat_cat_fct,married_d_fct,
     chld_num,chld_cat_fct,kids_d_fct,
     race_cat_fct,ethn_cat_fct,raceth_cat_fct,
-    sex_d_fct,fem_d_num,
+    sex_d_fct,fem_d_num,sexab_cat_fct,
     vtrn_d_num,vtrn_d_fct,
     msa_cat_fct,msa_d_fct,
     metro_d_fct,urban_d_fct,
@@ -611,11 +641,11 @@ brfss_core<-brfss_covariates %>%
     var_wt_raw,version_var
   )
 
-    rm(brfss_covariates,brfss_VAR1)
+rm(brfss_covariates,brfss_VAR1)
 rm(brfss_covariates2)
 
 table(brfss_core$employed_d_fct,useNA = c("always"))
 
 
 #save(brfss_core, file = "data/brfss_core.rda", compress = "bzip2", version=2)
-  use_data(brfss_core, overwrite = TRUE,compress = "bzip2")
+use_data(brfss_core, overwrite = TRUE,compress = "bzip2")

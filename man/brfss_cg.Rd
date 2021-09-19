@@ -11,8 +11,8 @@ A "long" data frame with XX rows of individual BRFSS respondents in a given stat
   \item{cg_d_fct}{indicator, factor variable of whether respondent was Caregiver (cg_d_fct="CG") or not (cg_d_fct="Non-CG")}
   \item{state}{state FIPS code, labeled with state alphabetic abbreviation}
   \item{seqno}{identificaiton variable}
-  \item{year}{Numeric year, 2014-2019}
-  \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2019}
+  \item{year}{Numeric year, 2014-2020}
+  \item{sgm_wt_raw}{Original, raw sampling weight: 2014-2020}
 }
 }
 \source{
@@ -22,7 +22,7 @@ BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.
 brfss_cg
 }
 \description{
-BRFSS Caregiving Module Questions asked from 2015-2019
+BRFSS Caregiving Module Questions asked from 2015-2020
 \url{https://www.cdc.gov/aging/healthybrain/brfss-faq-caregiver.htm}.
 }
 \examples{

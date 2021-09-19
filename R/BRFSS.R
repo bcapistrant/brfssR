@@ -78,7 +78,7 @@
 #'   \item{year}{Numeric year: 2014-2019}
 #'   \item{x_psu}{Primary Sampling Unit Variable}
 #'   \item{x_ststr}{Sampling Strata Variable}
-#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2019}
+#'   \item{var_wt_raw}{Original,raw sampling weight: 2014-2020}
 #'   \item{version_var}{Character, Version of data: Core (X_LLCPWT), V1 (X_LCPWTV1), V2(X_LCPWTV2), V3 (X_LCPWTV3)}
 #' }
 #' @source BRFSS Annual Survey Data \url{https://www.cdc.gov/brfss/annual_data/annual_data.htm}.
