@@ -1,25 +1,25 @@
 # brfssR
 
-This package contains five datasets provided by the Centers for Disease Control and Prevention Behavioral Risk Factor Surveillance System (BRFSS) between 2014-2019:
+This package contains five datasets provided by the Centers for Disease Control and Prevention Behavioral Risk Factor Surveillance System (BRFSS) between 2014-2020:
 
-* `brfss_cog`: The variables from the BRFSS optional state module on cognitive function, 2015-2019
+* `brfss_cog`: The variables from the BRFSS optional state module on cognitive function, 2015-2020
   (Source: https://www.cdc.gov/aging/pdf/2015-brfss-cognitive-decline-module.pdf)
 
-* `brfss_cg`: The variables from the BRFSS optional state module on caregiving, 2015-2019
+* `brfss_cg`: The variables from the BRFSS optional state module on caregiving, 2015-2020
   (Source: https://www.cdc.gov/aging/pdf/2015-caregiving-module.pdf)
 
-* `brfss_sgm`: The variables from the BRFSS optional state module on sexual orientation and gender identity, 2014-2019
+* `brfss_sgm`: The variables from the BRFSS optional state module on sexual orientation and gender identity, 2014-2020
   (Reference: https://www.americanprogress.org/issues/lgbt/reports/2016/03/29/134182/sexual-orientation-and-gender-identity-data-collection-in-the-behavioral-risk-factor-surveillance-system/)
 
 * `brfss_dep`: The PHQ-2 optional module included in 2018.
 
-* `brfss_medexp`: A dataframe that lists the status of Medicaid expansion (expanded / not; year of implementation) for each state.
+* `brfss_medexp`: A dataframe that lists the status of Medicaid expansion (expanded / not; year of implementation) for each state. Current as of mid-2020.
   
 * `brfss_emspt`: The variables from the BRFSS optional state module on emptional support and life satisfaction, 2014-2017
 
 * `brfss_flu`: The variables from the BRFSS optional state module on place of influenza vaccination, 2016-2017
 
-It also includes core variables from each BRFSS year 2014-2019:
+It also includes core variables from each BRFSS year 2014-2020:
 
 * `brfss_core`: demographic, socioeconomic, health care, health behavior, and health status variables
   (Source: https://www.cdc.gov/brfss/annual_data/annual_data.htm)
